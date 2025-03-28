@@ -9,20 +9,22 @@ namespace livin_paris
 {
     internal class Program
     {
+        static MySqlConnection connexion;
         static void Main()
         {
 
-            Console.OutputEncoding = System.Text.Encoding.UTF8; // Active le support Unicode
-                                                                //string filePath = "../../../../soc-karate.mtx";
-                                                                //new Graphe(filePath);
-
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            //string filePath = "../../../../soc-karate.mtx";
+            //new Graphe(filePath);
 
             string connectionString = "Server=localhost;Database=psi;User ID=root;Password=root;SslMode=none;";
-            MySqlConnection conn = ConnexionSQL(connectionString);
+            connexion = ConnexionSQL(connectionString);
 
             AffichageMenu();
 
             Console.Read();
+
+
         }
 
         static void AffichageMenu()
@@ -56,7 +58,7 @@ namespace livin_paris
                 switch (reponse)
                 {
                     case "1":
-                        entreeCorrecte=true;
+                        entreeCorrecte = true;
                         ModuleClient();
                         break;
                     case "2":
@@ -76,7 +78,7 @@ namespace livin_paris
                         //moduleClient();
                         break;
                     default:
-                        messageErreur = "ERREUR : Entrée incorrecte !" ;
+                        messageErreur = "ERREUR : Entrée incorrecte !";
                         break;
 
                 }
@@ -94,21 +96,21 @@ namespace livin_paris
             int height = Console.WindowHeight; // Nombre de lignes (hauteur)
 
             libelle = " AJOUTER CLIENT ";
-            Console.SetCursorPosition(width/2 - (libelle.Length / 2), height/4);
+            Console.SetCursorPosition((width / 2) - (libelle.Length / 2), height /4);
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine(libelle);
             Console.ResetColor();
 
             libelle = " MODIFIER CLIENT ";
-            Console.SetCursorPosition((width / 4)-(libelle.Length/2), height / 2);
+            Console.SetCursorPosition((width / 4) - (libelle.Length / 2), height / 2);
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(libelle);
             Console.ResetColor();
 
-            libelle = " SUPPRIMER CLIENT⇧ ◄▲◣";
-            Console.SetCursorPosition(3*(width / 4) - (libelle.Length / 2), height / 2);
+            libelle = " SUPPRIMER CLIENT ";
+            Console.SetCursorPosition(3 * (width / 4) - (libelle.Length / 2), height /2);
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(libelle);
@@ -121,7 +123,7 @@ namespace livin_paris
             {
                 if (Console.KeyAvailable)
                 {
-                    ConsoleKeyInfo keyInfo = Console.ReadKey(true); 
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                     if (keyInfo.Key == ConsoleKey.UpArrow)
                     {
                         entreeCorrecte = true;
@@ -137,57 +139,152 @@ namespace livin_paris
                 "◢ ■ ◣");
 
 
-            static void AjouterClient(){
+            static void AjouterClient()
+            {
                 Console.Clear();
                 Console.WriteLine("Ajout client\n");
 
                 string reponse = "";
-                string requeteInsert = "INSERT INTO Client (entreprise, prenom, nom, nom_etreprise) VALUES (";
+                string entreprise = "", prenom = "", nom = "", nom_entreprise, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe;
                 Console.WriteLine("Champs obligatoires marqués par *");
-                Console.WriteLine("Ajoutez un espace pour ne pas répondre à une question\n");
 
-                do
+
+                while (reponse.ToLower() != "oui" && reponse.ToLower() != "non")
                 {
-                    Console.WriteLine("Ce client est il une entreprise ? [Oui/Non] *");
-                    Console.Write("=> ");
-                    reponse = Console.ReadLine();
-                    if (reponse.ToLower() == "oui")
                     {
-                        requeteInsert += "TRUE, ";
+                        reponse = Demander("Ce client est il une entreprise ? [Oui/Non]", "string", true);
+                        if (reponse.ToLower() == "oui")
+                        {
+                            entreprise = "TRUE";
 
-                        Console.WriteLine("\nPrénom référent *");
-                        Console.Write("=> ");
-                        requeteInsert += Console.ReadLine() + ", ";
+                            prenom = Demander("Prénom référent", "string", true);
 
-                        Console.WriteLine("\nNom référent *");
-                        Console.Write("=> ");
-                        requeteInsert += Console.ReadLine() + ", ";
+                            nom = Demander("Prénom référent", "string", true);
 
-                        Console.WriteLine("\nNom de l'entreprise *");
-                        Console.Write("=> ");
-                        requeteInsert += Console.ReadLine();
+                            nom_entreprise = Demander("Nom de l'entreprise", "string", true);
+
+                        }
+                        else if (reponse.ToLower() == "non")
+                        {
+                            entreprise = "FALSE";
+
+                            prenom = Demander("Prénom", "string", true);
+
+                            nom = Demander("Prénom", "string", true);
+
+                            nom_entreprise = "NULL";
+                        }
 
                     }
-                    else if (reponse.ToLower() == "non")
-                    {
-                        requeteInsert += "FALSE, ";
+                }
 
-                        Console.WriteLine("\nPrénom *");
-                        Console.Write("=> ");
-                        requeteInsert += Console.ReadLine()+", ";
+                
+                telephone = Demander("Numéro de téléphone", "string", true);
 
-                        Console.WriteLine("\nNom *");
-                        Console.Write("=> ");
-                        requeteInsert += Console.ReadLine() + ", ";
+                rue = Demander("Nom de rue de résidence", "string", true);
 
-                        requeteInsert += "NULL";
-                    }
+                numero = Demander("Numéro de rue de résidence", "int", true);
 
-                    requeteInsert += ");";
-                } while (reponse.ToLower() != "oui" && reponse.ToLower() != "non");
+                code_postal = Demander("Code postal de résidence", "int", true);
+
+                ville = Demander("Ville de résidence", "string", true);
+
+                metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+
+                email = Demander("Adresse e-mail", "string", true);
+
+                mot_de_passe = Demander("Mot de passe", "string", true);
+
+
+                string requeteInsert = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
+                Console.WriteLine(requeteInsert);
+
+                InsertSQL(requeteInsert);
             }
         }
-        
+
+        static string Demander(string question, string type, bool required)
+        {
+            string reponse = "";
+            bool correcte = false;
+            while (correcte == false)
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write(" " + question + " ");
+
+                if (required)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("* ");
+                } else
+                {
+                    Console.WriteLine();
+                }
+
+                    Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write("➜  ");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                reponse = Console.ReadLine();
+                Console.ResetColor();
+
+                if (required && reponse != null)
+                {
+                    if (type == "string" && reponse.Trim() != "")
+                    {
+                        correcte = true;
+                        reponse = reponse.ToLower().Trim();
+                    }
+                    else if (type == "int" && int.TryParse(reponse, out int n)) 
+                    {
+                        correcte = true;
+                        reponse = reponse.Trim();
+                    }
+                }
+                else if (!required)
+                {
+                    if (reponse == null)
+                    {
+                        correcte = true;
+                    } else if (type == "int" && int.TryParse(reponse, out int n))
+                    {
+                        correcte = true;
+                        reponse = reponse.Trim();
+                    }
+                }
+
+                if (!correcte) { 
+                    Console.Write("\t");
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" Erreur : Format incorrect ! ");
+                    Console.ResetColor();
+                }
+
+                Console.WriteLine();
+            }
+            return reponse;
+        }
+
+        static void InsertSQL(string req)
+        {
+            MySqlCommand command = connexion.CreateCommand();
+            command.CommandText = req;
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(" ErreurConnexion : " + e.ToString());
+                Console.ReadLine();
+                return;
+            }
+
+            command.Dispose();
+        }
         static MySqlConnection ConnexionSQL(string connectionString)
         {
             MySqlConnection conn = new MySqlConnection(connectionString);
@@ -204,5 +301,6 @@ namespace livin_paris
 
             return conn;
         }
+        
     }
 }
