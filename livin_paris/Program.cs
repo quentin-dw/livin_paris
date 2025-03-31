@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 using livin_paris;
 using MySql.Data.MySqlClient;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 
 namespace livin_paris
@@ -128,6 +130,14 @@ namespace livin_paris
                     {
                         entreeCorrecte = true;
                         AjouterClient();
+                    } else if (keyInfo.Key == ConsoleKey.LeftArrow)
+                    {
+                        entreeCorrecte = true;
+                        ModifierClient();
+                    } else if (keyInfo.Key == ConsoleKey.RightArrow)
+                    {
+                        entreeCorrecte = true;
+                        SupprimerClient();
                     }
                 }
 
@@ -145,7 +155,7 @@ namespace livin_paris
                 Console.WriteLine("Ajout client\n");
 
                 string reponse = "";
-                string entreprise = "", prenom = "", nom = "", nom_entreprise, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe;
+                string entreprise = "", prenom = "", nom = "", nom_entreprise="", telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe;
                 Console.WriteLine("Champs obligatoires marqués par *");
 
 
@@ -159,7 +169,7 @@ namespace livin_paris
 
                             prenom = Demander("Prénom référent", "string", true);
 
-                            nom = Demander("Prénom référent", "string", true);
+                            nom = Demander("Nom référent", "string", true);
 
                             nom_entreprise = Demander("Nom de l'entreprise", "string", true);
 
@@ -170,7 +180,7 @@ namespace livin_paris
 
                             prenom = Demander("Prénom", "string", true);
 
-                            nom = Demander("Prénom", "string", true);
+                            nom = Demander("Nom", "string", true);
 
                             nom_entreprise = "NULL";
                         }
@@ -196,10 +206,74 @@ namespace livin_paris
                 mot_de_passe = Demander("Mot de passe", "string", true);
 
 
-                string requeteInsert = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
-                Console.WriteLine(requeteInsert);
+                string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
+                Console.WriteLine("Compte : " + requeteInsertCompte);
+                DML_SQL(requeteInsertCompte);
 
-                InsertSQL(requeteInsert);
+                string requete = "SELECT LAST_INSERT_ID();";
+                List<string[]> resultat_id_compte = DQL_SQL(requete, false);
+
+                string requeteInsertClient = $"INSERT INTO Client (entreprise, nom_entreprise, id_compte) VALUES ({entreprise}, '{nom_entreprise}', {Convert.ToInt32(resultat_id_compte[0][0])});";
+                Console.WriteLine("Client : "+requeteInsertClient);
+                DML_SQL(requeteInsertClient);
+            }
+
+            static void ModifierClient()
+            {
+                Console.Clear();
+                Console.WriteLine("Modification client\n");
+
+                string reponse = "";
+                Console.WriteLine("Champs obligatoires marqués par *");
+
+                string id_client = Demander("Entrez l'id du client à modifier", "int", true);
+
+                string table_client_requete = $"SELECT * FROM Client WHERE id_client = {Convert.ToInt32(id_client)};";
+                string[] table_client = DQL_SQL(table_client_requete, false)[0];
+
+                Console.WriteLine("Table CLIENT :");
+                Console.WriteLine("id_client | entreprise | nom_entreprise | id_compte |");
+                for (int i = 0; i < table_client.Length; i++)
+                {
+                    Console.Write(table_client[i]+" | ");
+                }
+
+                string table_compte_requete = $"SELECT * FROM Client WHERE id_client = {Convert.ToInt32(id_client)};";
+                string[] table_compte = DQL_SQL(table_compte_requete, false)[0];
+
+                Console.WriteLine("Table COMPTE :");
+                Console.WriteLine("id_compte | prenom | nom | telephone | rue | numero | code_postal | ville | metro_le_plus_proche | email | mot_de_passe");
+                for (int i = 0; i < table_compte.Length; i++)
+                {
+                    Console.Write(table_compte[i] + " | ");
+                }
+
+                string nbr_colonnes_update = Demander("Combien de colonnes souhaitez vous modifier ?", "int", true);
+
+            }
+
+            static void SupprimerClient()
+            {
+                Console.Clear();
+                Console.WriteLine("Suppression client\n");
+
+                string reponse = "";
+                Console.WriteLine("Champs obligatoires marqués par *");
+
+                string id_client = Demander("Entrez l'id du client à supprimer", "int", true);
+
+                string id_compte_requete = $"SELECT id_compte FROM Client WHERE id_client = {Convert.ToInt32(id_client)};";
+                string id_compte = DQL_SQL(id_compte_requete, false)[0][0];
+
+                string requeteDeleteClient = $"DELETE FROM Client WHERE id_client = {Convert.ToInt32(id_client)};";
+                Console.WriteLine("Compte : " + requeteDeleteClient);
+                DML_SQL(requeteDeleteClient);
+
+                string requeteDeleteCompte = $"DELETE FROM Compte WHERE id_compte = {Convert.ToInt32(id_compte)};";
+                Console.WriteLine("Compte : " + requeteDeleteCompte);
+                DML_SQL(requeteDeleteCompte);
+
+                
             }
         }
 
@@ -213,6 +287,7 @@ namespace livin_paris
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.Write(" " + question + " ");
 
+
                 if (required)
                 {
                     Console.BackgroundColor = ConsoleColor.White;
@@ -223,7 +298,7 @@ namespace livin_paris
                     Console.WriteLine();
                 }
 
-                    Console.ResetColor();
+                Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.Write("➜  ");
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -268,7 +343,7 @@ namespace livin_paris
             return reponse;
         }
 
-        static void InsertSQL(string req)
+        static void DML_SQL(string req)
         {
             MySqlCommand command = connexion.CreateCommand();
             command.CommandText = req;
@@ -278,13 +353,45 @@ namespace livin_paris
             }
             catch (MySqlException e)
             {
-                Console.WriteLine(" ErreurConnexion : " + e.ToString());
+                Console.WriteLine(" Erreur : " + e.ToString());
                 Console.ReadLine();
                 return;
             }
 
             command.Dispose();
         }
+
+        static List<string[]> DQL_SQL(string req, bool affichage)
+        {
+            MySqlCommand command = connexion.CreateCommand();
+            command.CommandText = req;
+
+            List<string[]> resultat = new List<string[]>();
+            MySqlDataReader reader = command.ExecuteReader();
+
+            string[] valueString = new string[reader.FieldCount];
+            while (reader.Read())
+            {
+                for (int i = 0; i <reader.FieldCount; i++)
+                {
+                    valueString[i] = reader.GetValue(i).ToString();
+                    if (affichage)
+                    {
+                        Console.Write(valueString[i] + ", ");
+                    }
+                }
+                resultat.Add(valueString);
+                if (affichage)
+                {
+                    Console.WriteLine();
+                }
+            }
+            reader.Close();
+            command.Dispose();
+
+            return resultat;
+        }
+
         static MySqlConnection ConnexionSQL(string connectionString)
         {
             MySqlConnection conn = new MySqlConnection(connectionString);
