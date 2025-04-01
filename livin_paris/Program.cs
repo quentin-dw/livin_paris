@@ -89,64 +89,93 @@ namespace livin_paris
 
         static void ModuleClient()
         {
-            Console.Clear();
-            //Console.SetCursorPosition(10, 5); // Colonne 10, Ligne 5
-            //Console.Write("Texte placé ici !");
-
-            string libelle = "";
-            int width = Console.WindowWidth;   // Nombre de colonnes (largeur)
-            int height = Console.WindowHeight; // Nombre de lignes (hauteur)
-
-            libelle = " AJOUTER CLIENT ";
-            Console.SetCursorPosition((width / 2) - (libelle.Length / 2), height /4);
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine(libelle);
-            Console.ResetColor();
-
-            libelle = " MODIFIER CLIENT ";
-            Console.SetCursorPosition((width / 4) - (libelle.Length / 2), height / 2);
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(libelle);
-            Console.ResetColor();
-
-            libelle = " SUPPRIMER CLIENT ";
-            Console.SetCursorPosition(3 * (width / 4) - (libelle.Length / 2), height /2);
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(libelle);
-            Console.ResetColor();
-
-            Console.SetCursorPosition(width / 2, height / 2);
-
-            bool entreeCorrecte = false;
-            while (!entreeCorrecte)
+            bool end = false;
+            while (!end)
             {
-                if (Console.KeyAvailable)
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Clear();
+
+                string libelle = "";
+                int width = Console.WindowWidth;
+                int height = Console.WindowHeight;
+
+                libelle = " AJOUTER CLIENT ";
+                Console.SetCursorPosition((width / 2) - (libelle.Length / 2), height / 4);
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine(libelle);
+                Console.ResetColor();
+
+                libelle = " MODIFIER CLIENT ";
+                Console.SetCursorPosition((width / 4) - (libelle.Length / 2), height / 2);
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.WriteLine(libelle);
+                Console.ResetColor();
+
+                libelle = " AFFICHER CLIENT ";
+                Console.SetCursorPosition((width / 2) - (libelle.Length / 2), 3 * (height / 4) + 2);
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(libelle);
+                Console.ResetColor();
+
+                libelle = " SUPPRIMER CLIENT ";
+                Console.SetCursorPosition(3 * (width / 4) - (libelle.Length / 2), height / 2);
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(libelle);
+                Console.ResetColor();
+
+
+                Console.SetCursorPosition(width / 2, height / 2 - 1);
+                Console.Write("▲");
+
+                Console.SetCursorPosition(width / 2 - 2, height / 2);
+                Console.Write("◀ ■ ▶");
+
+                Console.SetCursorPosition(width / 2, height / 2 + 1);
+                Console.Write("▼");
+
+                Console.SetCursorPosition(width / 2, height / 2 + 2);
+
+                bool entreeCorrecte = false;
+                while (!entreeCorrecte)
                 {
-                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.UpArrow)
+                    if (Console.KeyAvailable)
                     {
-                        entreeCorrecte = true;
-                        AjouterClient();
-                    } else if (keyInfo.Key == ConsoleKey.LeftArrow)
-                    {
-                        entreeCorrecte = true;
-                        ModifierClient();
-                    } else if (keyInfo.Key == ConsoleKey.RightArrow)
-                    {
-                        entreeCorrecte = true;
-                        SupprimerClient();
+                        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                        if (keyInfo.Key == ConsoleKey.UpArrow)
+                        {
+                            entreeCorrecte = true;
+                            AjouterClient();
+                        }
+                        else if (keyInfo.Key == ConsoleKey.LeftArrow)
+                        {
+                            entreeCorrecte = true;
+                            ModifierClient();
+                        }
+                        else if (keyInfo.Key == ConsoleKey.DownArrow)
+                        {
+                            entreeCorrecte = true;
+                            ModifierClient();
+                        }
+                        else if (keyInfo.Key == ConsoleKey.RightArrow)
+                        {
+                            entreeCorrecte = true;
+                            SupprimerClient();
+                        }
+                        else if (keyInfo.Key == ConsoleKey.Escape)
+                        {
+                            entreeCorrecte = true;
+                            end = true;
+                        }
                     }
+
+                    Thread.Sleep(50);
                 }
-
-                Thread.Sleep(50);
             }
-
             Console.WriteLine("Programme terminé !");
-            Console.WriteLine("  ▲\n" +
-                "◢ ■ ◣");
 
 
             static void AjouterClient()
@@ -207,15 +236,22 @@ namespace livin_paris
 
 
                 string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
-                Console.WriteLine("Compte : " + requeteInsertCompte);
                 DML_SQL(requeteInsertCompte);
 
                 string requete = "SELECT LAST_INSERT_ID();";
                 List<string[]> resultat_id_compte = DQL_SQL(requete, false);
 
                 string requeteInsertClient = $"INSERT INTO Client (entreprise, nom_entreprise, id_compte) VALUES ({entreprise}, '{nom_entreprise}', {Convert.ToInt32(resultat_id_compte[0][0])});";
-                Console.WriteLine("Client : "+requeteInsertClient);
                 DML_SQL(requeteInsertClient);
+
+                string requete2 = "SELECT LAST_INSERT_ID();";
+                string[] resultat_id_client = DQL_SQL(requete2, false)[0];
+                Console.WriteLine("\nRequête executée, identifiant du nouveau client : " + resultat_id_client);
+
+                Console.BackgroundColor = ConsoleColor.Magenta;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
+                Console.ReadLine();
             }
 
             static void ModifierClient()
@@ -224,13 +260,14 @@ namespace livin_paris
                 Console.WriteLine("Modification client\n");
 
                 string reponse = "";
-                Console.WriteLine("Champs obligatoires marqués par *");
+                Console.WriteLine("Champs obligatoires marqués par *\n");
 
                 string id_client = Demander("Entrez l'id du client à modifier", "int", true);
 
                 string table_client_requete = $"SELECT * FROM Client WHERE id_client = {Convert.ToInt32(id_client)};";
                 string[] table_client = DQL_SQL(table_client_requete, false)[0];
 
+                string[] colonnesClient = DQL_SQL("SHOW COLUMNS FROM Client;", false)[0];
                 Console.WriteLine("Table CLIENT :");
                 Console.WriteLine("id_client | entreprise | nom_entreprise | id_compte |");
                 for (int i = 0; i < table_client.Length; i++)
@@ -238,18 +275,29 @@ namespace livin_paris
                     Console.Write(table_client[i]+" | ");
                 }
 
-                string table_compte_requete = $"SELECT * FROM Client WHERE id_client = {Convert.ToInt32(id_client)};";
+                string id_compte_requete = $"SELECT id_compte FROM Client WHERE id_client = {Convert.ToInt32(id_client)};";
+                string id_compte = DQL_SQL(id_compte_requete, false)[0][0];
+
+                string table_compte_requete = $"SELECT * FROM Compte WHERE id_compte = {Convert.ToInt32(id_compte)};";
                 string[] table_compte = DQL_SQL(table_compte_requete, false)[0];
 
-                Console.WriteLine("Table COMPTE :");
+                string[] colonnesCompte = DQL_SQL("SHOW COLUMNS FROM Compte;", false)[0];
+
+                Console.WriteLine("\n\nTable COMPTE :");
                 Console.WriteLine("id_compte | prenom | nom | telephone | rue | numero | code_postal | ville | metro_le_plus_proche | email | mot_de_passe");
                 for (int i = 0; i < table_compte.Length; i++)
                 {
                     Console.Write(table_compte[i] + " | ");
                 }
+                Console.WriteLine();
 
                 string nbr_colonnes_update = Demander("Combien de colonnes souhaitez vous modifier ?", "int", true);
+                string[] colonnes = new string[Convert.ToInt32(nbr_colonnes_update)];
 
+                for (int i = 0; i < colonnes.Length; i++)
+                {
+
+                }
             }
 
             static void SupprimerClient()
@@ -292,18 +340,16 @@ namespace livin_paris
                 {
                     Console.BackgroundColor = ConsoleColor.White;
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("* ");
-                } else
-                {
-                    Console.WriteLine();
+                    Console.Write("* ");
                 }
-
                 Console.ResetColor();
+                Console.WriteLine();
+
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.Write("➜  ");
                 Console.ForegroundColor = ConsoleColor.Yellow;
+
                 reponse = Console.ReadLine();
-                Console.ResetColor();
 
                 if (required && reponse != null)
                 {
@@ -340,6 +386,8 @@ namespace livin_paris
 
                 Console.WriteLine();
             }
+
+            Console.ResetColor();
             return reponse;
         }
 
