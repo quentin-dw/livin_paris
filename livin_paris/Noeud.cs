@@ -6,29 +6,51 @@ using System.Threading.Tasks;
 
 namespace livin_paris
 {
-    internal class Noeud
+    internal class Noeud<T>
     {
-        private int id;
+        private T id;
+        private string ligne;
+        private string nom;
+        private double latitude;
+        private double longitude;
+        private string nom_commune;
+        private string code_insee;
 
-        public Noeud(int id)
+        public Noeud(T id, string ligne, string nom, double latitude, double longitude, string nom_commune, string code_insee)
         {
             this.id = id;
+            this.ligne = ligne;
+            this.nom = nom;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.nom_commune = nom_commune;
+            this.code_insee = code_insee;
         }
 
-        public int Id
+        public T Id
         {
             get { return id; }
         }
 
-        public bool isEqual(Noeud n2)
+        public string Nom
         {
-            if (this.id == n2.id)
-            {
-                return true;
-            }
-
-            return false;
+            get { return this.nom; }
         }
+
+        public override string ToString()
+        {
+            return $"ID: {this.id}, Nom: {this.nom}";
+        }
+
+        //public bool isEqual(Noeud<T> n2)
+        //{
+        //    if (this.id == n2.id)
+        //    {
+        //        return true;
+        //    }
+
+        //    return false;
+        //}
 
     }
 }

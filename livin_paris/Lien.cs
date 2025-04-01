@@ -6,15 +6,23 @@ using System.Threading.Tasks;
 
 namespace livin_paris
 {
-    internal class Lien
+    internal class Lien<T>
     {
-        private Noeud Noeud_1;
-        private Noeud Noeud_2;
+        private Noeud<T> noeud_1;
+        private Noeud<T> noeud_2;
+        private int temps_station_suivante;
+        private int temps_changement;
 
-        public Lien(Noeud noeud_1, Noeud noeud_2)
+        public Lien(Noeud<T> noeud_1, Noeud<T> noeud_2, int temps_station_suivante)
         {
-            this.Noeud_1 = noeud_1;
-            this.Noeud_2 = noeud_2;
+            this.noeud_1 = noeud_1;
+            this.noeud_2 = noeud_2;
+            this.temps_station_suivante = temps_station_suivante;
+        }
+
+        public string toString()
+        {
+            return $"{noeud_1.Nom} -> {noeud_2.Nom} : {temps_station_suivante} min";
         }
     }
 }

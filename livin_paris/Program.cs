@@ -11,8 +11,10 @@ namespace livin_paris
     {
         static void Main()
         {
-            string filePath = "../../../../soc-karate.mtx";
-            new Graphe(filePath);
+            //string filePath = "../../../../soc-karate.mtx";
+            string noeuds = "../../../../noeuds.csv";
+            string arcs = "../../../../arcs.csv";
+            new Graphe<int>(noeuds, arcs);
             /*
 
             string connectionString = "Server=localhost;Database=film;User ID=root;Password=root;SslMode=none;";
