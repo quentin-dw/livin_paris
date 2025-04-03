@@ -39,18 +39,28 @@ namespace livin_paris
 
         public override string ToString()
         {
-            return $"ID: {this.id}, Nom: {this.nom}";
+            return $"ID: {this.id}, {this.nom} ligne {this.ligne}";
         }
 
-        //public bool isEqual(Noeud<T> n2)
-        //{
-        //    if (this.id == n2.id)
-        //    {
-        //        return true;
-        //    }
+        public static bool isEqual(Noeud<int> n1, Noeud<int> n2)
+        {
+            if (n1.Id == n2.Id)
+            {
+                return true;
+            }
 
-        //    return false;
-        //}
+            return false;
+        }
+
+        public static bool memeStation(Noeud<int> n1, Noeud<int> n2)
+        {
+            if (n1.Nom == n2.Nom)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
     }
 }
