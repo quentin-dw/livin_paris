@@ -14,6 +14,9 @@ namespace Livin_paris_WinFormsApp
 
     internal class Program
     {
+
+
+        static MySqlConnection connexion;
         [DllImport("kernel32.dll")]
         static extern bool AllocConsole();
         /// <summary>
@@ -25,7 +28,7 @@ namespace Livin_paris_WinFormsApp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            AllocConsole(); // Ouvre la console
+            AllocConsole();
             Console.WriteLine("Console attachée !");
 
             string noeuds = "../../../../../noeuds.csv";
@@ -45,8 +48,6 @@ namespace Livin_paris_WinFormsApp
             Console.Read();
 
         }
-
-        static MySqlConnection connexion;
 
         static void AffichageMenu()
         {
@@ -129,6 +130,8 @@ namespace Livin_paris_WinFormsApp
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Clear();
+
+                Console.Write("Utilisez les touches flechées de votre clavier");
 
                 string libelle = "";
                 int width = Console.WindowWidth;
@@ -270,13 +273,27 @@ namespace Livin_paris_WinFormsApp
 
 
             string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
-            DML_SQL(requeteInsertCompte);
+            bool InsertCompte = DML_SQL(requeteInsertCompte);
+
+            if (InsertCompte)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Réussi ✅");
+                Console.ResetColor();
+            }
 
             string requete = "SELECT LAST_INSERT_ID();";
             List<string[]> resultat_id_compte = DQL_SQL(requete, false);
 
             string requeteInsertClient = $"INSERT INTO Client (entreprise, nom_entreprise, id_compte) VALUES ({entreprise}, '{nom_entreprise}', {Convert.ToInt32(resultat_id_compte[0][0])});";
-            DML_SQL(requeteInsertClient);
+            InsertCompte = DML_SQL(requeteInsertClient);
+
+            if (InsertCompte)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Réussi ✅");
+                Console.ResetColor();
+            }
 
             string requete2 = "SELECT LAST_INSERT_ID();";
             string[] resultat_id_client = DQL_SQL(requete2, false)[0];
@@ -400,13 +417,27 @@ namespace Livin_paris_WinFormsApp
             if (ColValClient.Length > 0)
             {
                 string modif_client_requete = $"UPDATE Client SET {ColValClient} WHERE id_compte = {Convert.ToInt32(id_compte)};";
-                DML_SQL(modif_client_requete);
+                bool modif_client = DML_SQL(modif_client_requete);
+
+                if (modif_client)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Réussi ✅");
+                    Console.ResetColor();
+                }
             }
 
             if (ColValCompte.Length > 0)
             {
                 string modif_compte_requete = $"UPDATE Compte SET {ColValCompte} WHERE id_compte = {Convert.ToInt32(id_compte)};";
-                DML_SQL(modif_compte_requete);
+                bool modif_compte = DML_SQL(modif_compte_requete);
+
+                if (modif_compte)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Réussi ✅");
+                    Console.ResetColor();
+                }
             }
 
             Console.BackgroundColor = ConsoleColor.Magenta;
@@ -429,10 +460,17 @@ namespace Livin_paris_WinFormsApp
             string id_compte = DQL_SQL(id_compte_requete, false)[0][0];
 
             string requeteDeleteClient = $"DELETE FROM Client WHERE id_client = {Convert.ToInt32(id_client)};";
-            DML_SQL(requeteDeleteClient);
+            bool deleteClient = DML_SQL(requeteDeleteClient);
 
             string requeteDeleteCompte = $"DELETE FROM Compte WHERE id_compte = {Convert.ToInt32(id_compte)};";
-            DML_SQL(requeteDeleteCompte);
+            bool deleteCompte = DML_SQL(requeteDeleteCompte);
+
+            if (deleteCompte && deleteClient)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Réussi ✅");
+                Console.ResetColor();
+            }
 
             Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
             Console.ReadLine();
@@ -488,7 +526,7 @@ namespace Livin_paris_WinFormsApp
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Clear();
-
+                Console.Write("Utilisez les touches flechées de votre clavier");
                 string libelle = "";
                 int width = Console.WindowWidth;
                 int height = Console.WindowHeight;
@@ -629,13 +667,27 @@ namespace Livin_paris_WinFormsApp
 
 
                     string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
-                    DML_SQL(requeteInsertCompte);
+                    bool InsertCompte = DML_SQL(requeteInsertCompte);
+
+                    if (InsertCompte)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Réussi ✅");
+                        Console.ResetColor();
+                    }
 
                     string requete = "SELECT LAST_INSERT_ID();";
                     List<string[]> resultat_id_compte = DQL_SQL(requete, false);
 
                     string requeteInsertCuisinier = $"INSERT INTO Cuisinier (id_compte) VALUES ({resultat_id_compte[0][0]});";
-                    DML_SQL(requeteInsertCuisinier);
+                    bool InsertCuisinier = DML_SQL(requeteInsertCuisinier);
+
+                    if (InsertCuisinier)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Réussi ✅");
+                        Console.ResetColor();
+                    }
 
                     string requete2 = "SELECT LAST_INSERT_ID();";
                     string[] resultat_id_cuisinier = DQL_SQL(requete2, false)[0];
@@ -710,7 +762,13 @@ namespace Livin_paris_WinFormsApp
                 if (ColValCompte.Length > 0)
                 {
                     string modif_compte_requete = $"UPDATE Compte SET {ColValCompte} WHERE id_compte = {Convert.ToInt32(id_compte)};";
-                    DML_SQL(modif_compte_requete);
+                    bool modif_compte = DML_SQL(modif_compte_requete);
+                    if (modif_compte)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Réussi ✅");
+                        Console.ResetColor();
+                    }
                 }
 
                 Console.BackgroundColor = ConsoleColor.Magenta;
@@ -733,10 +791,17 @@ namespace Livin_paris_WinFormsApp
                 string id_compte = DQL_SQL(id_compte_requete, false)[0][0];
 
                 string requeteDeleteCuisinier = $"DELETE FROM Cuisinier WHERE id_cuisinier = {Convert.ToInt32(id_cuisinier)};";
-                DML_SQL(requeteDeleteCuisinier);
+                bool DeleteCuisinier = DML_SQL(requeteDeleteCuisinier);
 
                 string requeteDeleteCompte = $"DELETE FROM Compte WHERE id_compte = {Convert.ToInt32(id_compte)};";
-                DML_SQL(requeteDeleteCompte);
+                bool DeleteCompte = DML_SQL(requeteDeleteCompte);
+
+                if (DeleteCompte && DeleteCuisinier)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Réussi ✅");
+                    Console.ResetColor();
+                }
 
                 Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
                 Console.ReadLine();
@@ -792,6 +857,8 @@ namespace Livin_paris_WinFormsApp
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Clear();
+
+                Console.Write("Utilisez les touches flechées de votre clavier");
 
                 string libelle = "";
                 int width = Console.WindowWidth;
@@ -1034,8 +1101,39 @@ namespace Livin_paris_WinFormsApp
 
                 Console.WriteLine("Livraison à votre adresse...");
 
+                string[] id_ligne_de_commande = DQL_SQL($"SELECT LDC.id_ligne_de_commande FROM ligne_de_commande LDC WHERE id_commande = {id_commande}", false)[0];
+
+                for (int i = 0; i < id_ligne_de_commande.Length; i++)
+                {
+                    Console.WriteLine($"Livraison {i+1}e commande ");
+                    string id_cuisinier = DQL_SQL($"SELECT P.id_cuisinier FROM Plat P JOIN ligne_de_commande ldc ON P.id_plat = ldc.id_plat WHERE id_ligne_de_commande = {id_ligne_de_commande[i]};", false)[0][0];
+                    string id_compte_cuisinier = DQL_SQL($"SELECT Cpt.id_compte FROM Compte Cpt JOIN cuisinier Cui ON cpt.id_compte = cui.id_compte WHERE cui.id_cuisinier = {id_cuisinier};", false)[0][0];
+                    string metro_le_plus_proche_client = DQL_SQL($"SELECT lieu_livraison FROM ligne_de_commande WHERE id_ligne_de_commande = {id_ligne_de_commande[i]};", false)[0][0];
+                    string metro_le_plus_proche_cusinier = DQL_SQL($"SELECT metro_le_plus_proche FROM compte WHERE id_compte ={id_compte_cuisinier};", false)[0][0];
+
+                    string noeuds = "../../../../../noeuds.csv";
+                    string arcs = "../../../../../arcs.csv";
+
+                    Console.WriteLine("station depart : " + metro_le_plus_proche_cusinier);
+                    Console.WriteLine("station arrivée : " + metro_le_plus_proche_client);
+
+                    Graphe<int> graphe = new Graphe<int>(noeuds, arcs);
+                    string depart = metro_le_plus_proche_cusinier.ToLower();
+                    string arrivee = metro_le_plus_proche_client.ToLower();
+                    var (chemin, coutG) = graphe.TrouverMeilleurChemin(depart, arrivee);
+
+                    if (chemin.Count == 0)
+                        Console.WriteLine("Aucun chemin trouvé.");
+                    else
+                        Console.WriteLine($"Plus court chemin ({coutG} min) :\n {string.Join("\n -> ", chemin)}");
+                }
                 Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
                 Console.ReadLine();
+            }
+
+            static void ModifierCommande()
+            {
+
             }
         }
         #endregion
@@ -1269,9 +1367,6 @@ namespace Livin_paris_WinFormsApp
                 reussi = false;
                 return reussi;
             }
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Réussi ✅");
             Console.ResetColor();
             command.Dispose();
             Console.WriteLine();
