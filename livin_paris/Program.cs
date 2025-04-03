@@ -14,7 +14,15 @@ namespace livin_paris
             //string filePath = "../../../../soc-karate.mtx";
             string noeuds = "../../../../noeuds.csv";
             string arcs = "../../../../arcs.csv";
-            new Graphe<int>(noeuds, arcs);
+            Graphe<int> graphe = new Graphe<int>(noeuds, arcs);
+
+            var (chemin, cout) = graphe.TrouverMeilleurChemin("Opera", "Exelmans");
+
+            // Affichage du résultat
+            if (chemin.Count == 0)
+                Console.WriteLine("Aucun chemin trouvé.");
+            else
+                Console.WriteLine($"Plus court chemin ({cout} min) :\n {string.Join("\n -> ", chemin)}");
             /*
 
             string connectionString = "Server=localhost;Database=film;User ID=root;Password=root;SslMode=none;";
