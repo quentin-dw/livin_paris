@@ -32,6 +32,12 @@ namespace Livin_paris_WinFormsApp
             get { return this.noeud_2; }
         }
 
+        /// <summary>
+        /// Retourne une représentation sous forme de chaîne de caractères du noeud de depart, d'arrivee et de la durée
+        /// </summary>
+        /// <returns>
+        /// Une chaîne de caractères représentant le noeud, sous la forme : "{nom station depart} -> {nom station arrivee} : {duree} min"
+        /// </returns>
         public string toString()
         {
             return $"{noeud_1.Nom} -> {noeud_2.Nom} : {temps_station_suivante} min";
