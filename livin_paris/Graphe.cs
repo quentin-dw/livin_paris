@@ -195,7 +195,10 @@ namespace livin_paris
                 }
             }
 
-            return meilleurCout == int.MaxValue ? (new List<Noeud<int>>(), -1) : (meilleurChemin, meilleurCout);
+            if (meilleurCout == int.MaxValue)
+                return (new List<Noeud<int>>(), -1);
+
+            return (meilleurChemin, meilleurCout);
         }
 
 
