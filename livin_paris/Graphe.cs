@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -185,7 +186,22 @@ namespace livin_paris
             {
                 foreach (var arrivee in stationsArrivee)
                 {
+                    // DIJKSTRA *********************************************
                     var (chemin, cout) = Dijkstra(depart, arrivee);
+
+                    // BELLMAN-FORD *****************************************
+                    //var (chemin, cout) = BellmanFord(depart, arrivee);
+
+                    // FLOYD-WARSHALL ***************************************
+                    //var distances = FloydWarshall();
+                    //foreach (var n1 in distances.Keys)
+                    //{
+                    //    foreach (var n2 in distances[depart].Keys)
+                    //    {
+                    //        Console.WriteLine($"Distance de {depart.Nom} à {arrivee.Nom} : {distances[depart][arrivee]}");
+                    //    }
+                    //}
+                    // ******************************************************
 
                     if (chemin.Count > 0 && cout < meilleurCout)
                     {
@@ -195,106 +211,119 @@ namespace livin_paris
                 }
             }
 
-            return meilleurCout == int.MaxValue ? (new List<Noeud<int>>(), -1) : (meilleurChemin, meilleurCout);
+            if (meilleurCout == int.MaxValue)
+                return (new List<Noeud<int>>(), -1);
+
+            return (meilleurChemin, meilleurCout);
         }
 
+        public (List<Noeud<int>>, int) BellmanFord(Noeud<int> depart, Noeud<int> arrivee)
+        {
+            Dictionary<Noeud<int>, int> distances = new Dictionary<Noeud<int>, int>();
+            Dictionary<Noeud<int>, Noeud<int>> predecesseurs = new Dictionary<Noeud<int>, Noeud<int>>();
 
-        //private void ChargerGrapheMTX(string fichier)
-        //{
-        //    try
-        //    {
-        //        string[] lignes = File.ReadAllLines(fichier);
-        //        foreach (string ligne in lignes)
-        //        {
-        //            if (ligne[0] != '%')
-        //            {
-        //                string[] noeudsLigne = ligne.Split(' ');
+            foreach (var noeud in this.listeAdjacence.Keys)
+            {
+                distances[noeud] = int.MaxValue;
+                predecesseurs[noeud] = null;
+            }
+            distances[depart] = 0;
 
-        //                if (noeudsLigne.Length == 3)
-        //                {
-        //                    this.nbNoeuds = int.Parse(noeudsLigne[0]);
-        //                    for (int i = 1; i <= nbNoeuds; i++)
-        //                    {
-        //                        this.listeAdjacence.Add(i, new List<Noeud>());
-        //                    }
-        //                }
-        //                if (noeudsLigne.Length == 2)
-        //                {
+            int nombreDeNoeuds = this.listeAdjacence.Count;
 
-        //                    Noeud n1 = new Noeud(int.Parse(noeudsLigne[0]));
-        //                    Noeud n2 = new Noeud(int.Parse(noeudsLigne[1]));
+            for (int i = 0; i < nombreDeNoeuds - 1; i++)
+            {
+                foreach (var u in this.listeAdjacence.Keys)
+                {
+                    foreach (var v in this.listeAdjacence[u])
+                    {
+                        int poids = v.Value;
+                        if (distances[u] != int.MaxValue && distances[u] + poids < distances[v.Key])
+                        {
+                            distances[v.Key] = distances[u] + poids;
+                            predecesseurs[v.Key] = u;
+                        }
+                    }
+                }
+            }
 
-        //                    bool verif = true;
-        //                    foreach (Noeud noeud in this.listeAdjacence[n1.Id])
-        //                    {
-        //                        if (noeud.isEqual(n2))
-        //                        {
-        //                            verif = false;
-        //                        }
-        //                    }
+            foreach (var u in this.listeAdjacence.Keys)
+            {
+                foreach (var v in this.listeAdjacence[u])
+                {
+                    int poids = v.Value;
+                    if (distances[u] != int.MaxValue && distances[u] + poids < distances[v.Key])
+                    {
+                        Console.WriteLine("Cycle negatif détecté, calcul impossible.");
+                        return (new List<Noeud<int>>(), -1);
+                    }
+                }
+            }
 
-        //                    if (verif == true)
-        //                    {
-        //                        this.listeAdjacence[n1.Id].Add(n2);
-        //                    }
+            List<Noeud<int>> chemin = new List<Noeud<int>>();
+            Noeud<int> courant = arrivee;
 
-        //                    verif = true;
-        //                    foreach (Noeud noeud in this.listeAdjacence[n2.Id])
-        //                    {
-        //                        if (noeud.isEqual(n1))
-        //                        {
-        //                            verif = false;
-        //                        }
-        //                    }
-        //                    if (verif == true)
-        //                    {
-        //                        this.listeAdjacence[n2.Id].Add(n1);
-        //                    }
+            while (courant != null)
+            {
+                chemin.Add(courant);
+                courant = predecesseurs[courant];
+            }
 
-        //                    Lien l = new Lien(n1, n2);
-        //                }
-        //            }
-        //        }
+            chemin.Reverse();
 
-        //        for (int i = 1; i <= this.nbNoeuds; i++)
-        //        {
-        //            Console.Write("- " + i + " : ");
-        //            foreach (var n in this.listeAdjacence[i])
-        //            {
-        //                Console.Write(n.Id + ", ");
-        //            }
-        //            Console.WriteLine();
-        //        }
+            if (distances[arrivee] == int.MaxValue)
+                return (new List<Noeud<int>>(), -1);
 
-        //        this.matriceAdjacence = new int[this.nbNoeuds, this.nbNoeuds];
-        //        foreach (string ligne in lignes)
-        //        {
-        //            if (ligne[0] != '%')
-        //            {
-        //                string[] noeudsLigne = ligne.Split(' ');
-        //                if (noeudsLigne.Length == 2)
-        //                {
-        //                    matriceAdjacence[int.Parse(noeudsLigne[0]) - 1, int.Parse(noeudsLigne[1]) - 1]++;
-        //                    matriceAdjacence[int.Parse(noeudsLigne[1]) - 1, int.Parse(noeudsLigne[0]) - 1]++;
-        //                }
-        //            }
-        //        }
-        //        for (int i = 0; i < matriceAdjacence.GetLength(0); i++)
-        //        {
-        //            for (int j = 0; j < matriceAdjacence.GetLength(0); j++)
-        //            {
-        //                Console.Write(matriceAdjacence[i, j]);
-        //            }
-        //            Console.WriteLine();
-        //        }
+            return (chemin, distances[arrivee]);
+        }
 
+        public Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> FloydWarshall()
+        {
+            Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> distances = new Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>>();
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("erreur : " + ex.Message);
-        //    }
-        //}
+            foreach (var u in this.listeAdjacence.Keys)
+            {
+                distances[u] = new Dictionary<Noeud<int>, int>();
+
+                foreach (var v in this.listeAdjacence.Keys)
+                {
+                    if (u == v)
+                        distances[u][v] = 0;
+                    else if (this.listeAdjacence[u].ContainsKey(v))
+                        distances[u][v] = this.listeAdjacence[u][v];
+                    else
+                        distances[u][v] = int.MaxValue;
+                }
+            }
+
+            foreach (var k in this.listeAdjacence.Keys)
+            {
+                foreach (var i in this.listeAdjacence.Keys)
+                {
+                    foreach (var j in this.listeAdjacence.Keys)
+                    {
+                        if (distances[i][k] != int.MaxValue && distances[k][j] != int.MaxValue)
+                        {
+                            distances[i][j] = Math.Min(distances[i][j], distances[i][k] + distances[k][j]);
+                        }
+                    }
+                }
+            }
+
+            return distances;
+        }
+
+        public void Chronometrer(Action algorithme, string nom)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            algorithme();
+
+            stopwatch.Stop();
+            Console.WriteLine($"{nom} : {stopwatch.ElapsedMilliseconds} ms");
+        }
+
 
         /// <summary>
         /// Algorithme de parcours en profondeur d'abord (DFS) à partir du point de départ en entrée.
@@ -461,17 +490,21 @@ namespace livin_paris
         //        return contientCicuits;
         //    }
 
-        //    /// <summary>
-        //    /// Permet d'afficher dans la console une liste de Noeuds.
-        //    /// </summary>
-        //    /// <param name="liste">Liste de noeuds à afficher</param>
-        //    private void AfficherListe(List<Noeud> liste)
-        //    {
-        //        for (int i = 0; i < liste.Count; i++)
-        //        {
-        //            Console.Write(liste[i].Id + ", ");
-        //        }
-        //        Console.WriteLine();
-        //    }
+        /// <summary>
+        /// Permet d'afficher dans la console une liste de Noeuds.
+        /// </summary>
+        /// <param name="liste">Liste de noeuds à afficher</param>
+        private void AfficherListe()
+        {
+            foreach (var noeud in this.listeAdjacence)
+            {
+                Console.Write($"{noeud.Key} -> ");
+                foreach (var voisin in noeud.Value)
+                {
+                    Console.Write($"[{voisin.Key} : {voisin.Value} min]  ");
+                }
+                Console.WriteLine();
+            }
+        }
     }
 }
