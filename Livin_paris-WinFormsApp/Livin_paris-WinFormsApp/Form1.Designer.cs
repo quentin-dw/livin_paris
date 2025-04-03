@@ -1,4 +1,4 @@
-﻿namespace WinFormsApp
+﻿namespace Livin_paris_WinFormsApp
 {
     partial class Form1
     {

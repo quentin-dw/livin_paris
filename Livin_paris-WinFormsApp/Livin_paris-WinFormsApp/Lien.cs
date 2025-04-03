@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace livin_paris
+namespace Livin_paris_WinFormsApp
 {
     internal class Lien<T>
     {
@@ -18,6 +20,16 @@ namespace livin_paris
             this.noeud_1 = noeud_1;
             this.noeud_2 = noeud_2;
             this.temps_station_suivante = temps_station_suivante;
+        }
+
+        public Noeud<T> Noeud1
+        {
+            get { return this.noeud_1; }
+        }
+
+        public Noeud<T> Noeud2
+        {
+            get { return this.noeud_2; }
         }
 
         public string toString()

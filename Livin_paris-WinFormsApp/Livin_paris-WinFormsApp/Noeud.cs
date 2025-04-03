@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace livin_paris
+namespace Livin_paris_WinFormsApp
 {
     internal class Noeud<T>
     {
@@ -37,20 +39,19 @@ namespace livin_paris
             get { return this.nom; }
         }
 
+        public double Latitude
+        {
+            get { return this.latitude; }
+        }
+
+        public double Longitude
+        {
+            get { return this.longitude; }
+        }
+
         public override string ToString()
         {
             return $"ID: {this.id}, Nom: {this.nom}";
         }
-
-        //public bool isEqual(Noeud<T> n2)
-        //{
-        //    if (this.id == n2.id)
-        //    {
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
     }
 }
