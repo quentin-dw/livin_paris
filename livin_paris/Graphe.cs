@@ -52,6 +52,12 @@ namespace livin_paris
             //this.ContientCicuits();
         }
 
+
+        /// <summary>
+        /// Charge le graphe depuis deux fichiers CSV : un contenant les noeuds (stations) et l'autre les arcs (liaisons).
+        /// </summary>
+        /// <param name="noeuds">Chemin du fichier CSV contenant les noeuds.</param>
+        /// <param name="arcs">Chemin du fichier CSV contenant les arcs.</param>
         private void ChargerGrapheCSV(string noeuds, string arcs)
         {
             try
@@ -114,6 +120,17 @@ namespace livin_paris
             }
         }
 
+
+        /// <summary>
+        /// Implémente l'algorithme de Dijkstra pour trouver le plus court chemin entre deux noeuds.
+        /// </summary>
+        /// <param name="depart">Le noeud de départ du chemin.</param>
+        /// <param name="arrivee">Le noeud d'arrivée du chemin.</param>
+        /// <returns>
+        /// Un tuple contenant :
+        /// - La liste des noeuds constituant le plus court chemin, ou une liste vide si aucun chemin n'existe.
+        /// - Le coût total du chemin, ou -1 si aucun chemin n'existe.
+        /// </returns>
         public (List<Noeud<int>>, int) Dijkstra(Noeud<int> depart, Noeud<int> arrivee)
         {
             var distances = new Dictionary<Noeud<int>, int>();
@@ -163,11 +180,29 @@ namespace livin_paris
         }
 
 
+        /// <summary>
+        /// Recherche toutes les stations ayant un nom correspondant à celui donné.
+        /// </summary>
+        /// <param name="nom">Le nom de la station à rechercher.</param>
+        /// <returns>
+        /// Une liste de noeuds (stations) correspondant au nom donné. Si aucune station n'est trouvée, la liste sera vide.
+        /// </returns>
         public List<Noeud<int>> TrouverStationsParNom(string nom)
         {
             return this.noeuds.Where(station => station.Nom == nom).ToList();
         }
 
+
+        /// <summary>
+        /// Trouve le meilleur chemin entre deux stations, en utilisant un des 3 algorithmes de plus court chemin (Dijkstra, Bellman-Ford, Floyd-Warshall) en fonction desquels qont passés en commentaires.
+        /// </summary>
+        /// <param name="nomDepart">Le nom de la station de départ.</param>
+        /// <param name="nomArrivee">Le nom de la station d'arrivée.</param>
+        /// <returns>
+        /// Un tuple contenant :
+        /// - La liste des noeuds constituant le meilleur chemin trouvé.
+        /// - Le coût total du chemin, ou -1 si aucun chemin n'est trouvé.
+        /// </returns>
         public (List<Noeud<int>>, int) TrouverMeilleurChemin(string nomDepart, string nomArrivee)
         {
             List<Noeud<int>> stationsDepart = TrouverStationsParNom(nomDepart);
@@ -217,6 +252,17 @@ namespace livin_paris
             return (meilleurChemin, meilleurCout);
         }
 
+
+        /// <summary>
+        /// Implémente l'algorithme de Bellman-Ford pour trouver le plus court chemin entre deux noeuds
+        /// </summary>
+        /// <param name="depart">Le noeud de départ du chemin.</param>
+        /// <param name="arrivee">Le noeud d'arrivée du chemin.</param>
+        /// <returns>
+        /// Un tuple contenant :
+        /// - La liste des noeuds constituant le plus court chemin, ou une liste vide si aucun chemin n'existe.
+        /// - Le coût total du chemin, ou -1 si un cycle négatif est détecté ou aucun chemin n'existe.
+        /// </returns>
         public (List<Noeud<int>>, int) BellmanFord(Noeud<int> depart, Noeud<int> arrivee)
         {
             Dictionary<Noeud<int>, int> distances = new Dictionary<Noeud<int>, int>();
@@ -247,6 +293,7 @@ namespace livin_paris
                 }
             }
 
+            // pas de poids negatifs donc inutile
             foreach (var u in this.listeAdjacence.Keys)
             {
                 foreach (var v in this.listeAdjacence[u])
@@ -254,7 +301,7 @@ namespace livin_paris
                     int poids = v.Value;
                     if (distances[u] != int.MaxValue && distances[u] + poids < distances[v.Key])
                     {
-                        Console.WriteLine("Cycle negatif détecté, calcul impossible.");
+                        Console.WriteLine("cycle negatif détecté");
                         return (new List<Noeud<int>>(), -1);
                     }
                 }
@@ -277,6 +324,13 @@ namespace livin_paris
             return (chemin, distances[arrivee]);
         }
 
+
+        /// <summary>
+        /// Implémente l'algorithme de Floyd-Warshall pour calculer les plus courts chemins entre tous les pairs de noeuds dans un graphe.
+        /// </summary>
+        /// <returns>
+        /// Un dictionnaire contenant les distances minimales entre chaque paire de noeuds.
+        /// </returns>
         public Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> FloydWarshall()
         {
             Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> distances = new Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>>();
@@ -309,10 +363,15 @@ namespace livin_paris
                     }
                 }
             }
-
             return distances;
         }
 
+
+        /// <summary>
+        /// Chronomètre l'exécution d'un algorithme donné et affiche le temps écoulé en millisecondes.
+        /// </summary>
+        /// <param name="algorithme">L'algorithme à exécuter, passé sous forme d'une action.</param>
+        /// <param name="nom">Le nom de l'algorithme, utilisé pour l'affichage des résultats.</param>
         public void Chronometrer(Action algorithme, string nom)
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -322,6 +381,24 @@ namespace livin_paris
 
             stopwatch.Stop();
             Console.WriteLine($"{nom} : {stopwatch.ElapsedMilliseconds} ms");
+        }
+
+
+        /// <summary>
+        /// Affiche la liste des noeuds et leurs voisins dans la console.
+        /// Chaque noeud est affiché avec les voisins qui lui sont adjacents et le poids des arcs les reliant.
+        /// </summary>
+        public void AfficherListe()
+        {
+            foreach (var noeud in this.listeAdjacence)
+            {
+                Console.Write($"{noeud.Key} -> ");
+                foreach (var voisin in noeud.Value)
+                {
+                    Console.Write($"[{voisin.Key} : {voisin.Value} min]  ");
+                }
+                Console.WriteLine();
+            }
         }
 
 
@@ -494,17 +571,6 @@ namespace livin_paris
         /// Permet d'afficher dans la console une liste de Noeuds.
         /// </summary>
         /// <param name="liste">Liste de noeuds à afficher</param>
-        private void AfficherListe()
-        {
-            foreach (var noeud in this.listeAdjacence)
-            {
-                Console.Write($"{noeud.Key} -> ");
-                foreach (var voisin in noeud.Value)
-                {
-                    Console.Write($"[{voisin.Key} : {voisin.Value} min]  ");
-                }
-                Console.WriteLine();
-            }
-        }
+
     }
 }
