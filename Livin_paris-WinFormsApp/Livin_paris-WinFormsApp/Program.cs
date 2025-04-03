@@ -25,7 +25,7 @@ namespace Livin_paris_WinFormsApp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            AllocConsole(); // Ouvre la console
+            AllocConsole();
             Console.WriteLine("Console attachée !");
 
             string noeuds = "../../../../../noeuds.csv";

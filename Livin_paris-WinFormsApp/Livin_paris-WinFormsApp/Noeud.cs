@@ -39,6 +39,11 @@ namespace Livin_paris_WinFormsApp
             get { return this.nom; }
         }
 
+        public string Ligne
+        {
+            get { return this.ligne; }
+        }
+
         public double Latitude
         {
             get { return this.latitude; }
