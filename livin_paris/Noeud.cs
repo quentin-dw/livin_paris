@@ -37,11 +37,27 @@ namespace livin_paris
             get { return this.nom; }
         }
 
+
+        /// <summary>
+        /// Retourne une représentation sous forme de chaîne de caractères d'un noeud, comprenant son ID, son nom et sa ligne.
+        /// </summary>
+        /// <returns>
+        /// Une chaîne de caractères représentant le noeud, sous la forme : "ID: [id], [nom] ligne [ligne]".
+        /// </returns>
         public override string ToString()
         {
             return $"ID: {this.id}, {this.nom} ligne {this.ligne}";
         }
 
+
+        /// <summary>
+        /// Compare deux noeuds pour vérifier s'ils ont le meme ID
+        /// </summary>
+        /// <param name="n1">Le premier noeud à comparer</param>
+        /// <param name="n2">Le second noeud à comparer</param>
+        /// <returns>
+        /// True si les deux noeuds ont le même ID, sinon False
+        /// </returns>
         public static bool isEqual(Noeud<int> n1, Noeud<int> n2)
         {
             if (n1.Id == n2.Id)
@@ -52,6 +68,15 @@ namespace livin_paris
             return false;
         }
 
+
+        /// <summary>
+        /// Vérifie si deux noeuds représentent la meme station, en comparant leur nom
+        /// </summary>
+        /// <param name="n1">Le premier noeud à comparer</param>
+        /// <param name="n2">Le second noeud à comparer</param>
+        /// <returns>
+        /// True si les deux noeuds ont le meme nom, sinon False
+        /// </returns>
         public static bool memeStation(Noeud<int> n1, Noeud<int> n2)
         {
             if (n1.Nom == n2.Nom)
