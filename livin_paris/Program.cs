@@ -15,14 +15,23 @@ namespace livin_paris
             string noeuds = "../../../../noeuds.csv";
             string arcs = "../../../../arcs.csv";
             Graphe<int> graphe = new Graphe<int>(noeuds, arcs);
-
-            var (chemin, cout) = graphe.TrouverMeilleurChemin("Opera", "Exelmans");
+            string depart = "Opera";
+            string arrivee = "Exelmans";
+            var (chemin, cout) = graphe.TrouverMeilleurChemin(depart, arrivee);
 
             // Affichage du résultat
             if (chemin.Count == 0)
                 Console.WriteLine("Aucun chemin trouvé.");
             else
                 Console.WriteLine($"Plus court chemin ({cout} min) :\n {string.Join("\n -> ", chemin)}");
+
+            // COMPARER lES 3 ALGOS DE PLUS COURT CHEMIN (en moyenne Dijkstra = 3ms, BF = 100ms, FW = 7000ms)
+            //graphe.Chronometrer(() => graphe.Dijkstra(graphe.Noeuds[52], graphe.Noeuds[210]), "Dijkstra");
+            //graphe.Chronometrer(() => graphe.BellmanFord(graphe.Noeuds[52], graphe.Noeuds[210]), "Bellman-Ford");
+            //graphe.Chronometrer(() => graphe.FloydWarshall(), "Floyd-Warshall");
+            
+            
+            
             /*
 
             string connectionString = "Server=localhost;Database=film;User ID=root;Password=root;SslMode=none;";
