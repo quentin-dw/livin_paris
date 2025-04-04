@@ -5,6 +5,7 @@ using System;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using MySql.Data.MySqlClient;
+using System.Data;
 
 
 
@@ -49,6 +50,9 @@ namespace Livin_paris_WinFormsApp
 
         }
 
+        /// <summary>
+        /// S'occupe de l'affichage du menu pricnipal / selection des modules
+        /// </summary>
         static void AffichageMenu()
         {
 
@@ -76,7 +80,6 @@ namespace Livin_paris_WinFormsApp
                     Console.WriteLine("\t 2) Module cuisinier");
                     Console.WriteLine("\t 3) Module commande");
                     Console.WriteLine("\t 4) Module statistiques");
-                    Console.WriteLine("\t 5) Module autre");
 
                     Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine("\nEntrez 'stop' pour sortir");
@@ -105,10 +108,6 @@ namespace Livin_paris_WinFormsApp
                             entreeCorrecte = true;
                             moduleStats();
                             break;
-                        case "5":
-                            entreeCorrecte = true;
-                            //moduleClient();
-                            break;
                         case "stop":
                             entreeCorrecte = true;
                             finProgramme = true;
@@ -123,6 +122,9 @@ namespace Livin_paris_WinFormsApp
         }
 
         #region Module CLIENT
+        /// <summary>
+        /// Affichage et gestion du module Client
+        /// </summary>
         static void ModuleClient()
         {
             bool end = false;
@@ -215,6 +217,10 @@ namespace Livin_paris_WinFormsApp
             }
 
         }
+        /// <summary>
+        /// Permet d'ajouter un client en faisant apparaitre l'interface appropriée
+        /// </summary>
+        /// <returns>Retourne l'id du client ajouté</returns>
         static int AjouterClient()
         {
             Console.Clear();
@@ -307,6 +313,9 @@ namespace Livin_paris_WinFormsApp
             return Convert.ToInt32(resultat_id_client[0]);
         }
 
+        /// <summary>
+        /// Permet de modifier un client en faisant apparaitre l'interface appropriée
+        /// </summary>
         static void ModifierClient()
         {
             Console.Clear();
@@ -446,6 +455,9 @@ namespace Livin_paris_WinFormsApp
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Permet de supprimer un client en faisant apparaitre l'interface appropriée
+        /// </summary>
         static void SupprimerClient()
         {
             Console.Clear();
@@ -476,6 +488,9 @@ namespace Livin_paris_WinFormsApp
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Permet d'afficher un client en faisant apparaitre l'interface appropriée
+        /// </summary>
         static void AfficherClient()
         {
             Console.Clear();
@@ -519,6 +534,9 @@ namespace Livin_paris_WinFormsApp
 
 
         #region Module CUISINIER
+        /// <summary>
+        /// Affiche et gère le module cuisinier
+        /// </summary>
         static void ModuleCuisinier()
         {
             bool end = false;
@@ -609,7 +627,9 @@ namespace Livin_paris_WinFormsApp
             }
             Console.WriteLine("Programme terminé !");
 
-
+            /// <summary>
+            /// Permet d'ajouter un cuisinier en faisant apparaitre l'interface appropriée
+            /// </summary>
             static void AjouterCuisinier()
             {
                 Console.Clear();
@@ -701,6 +721,9 @@ namespace Livin_paris_WinFormsApp
                 Console.ReadLine();
             }
 
+            /// <summary>
+            /// Permet de modifier un cuisinier en faisant apparaitre l'interface appropriée
+            /// </summary>
             static void ModifierCuisinier()
             {
                 Console.Clear();
@@ -777,6 +800,9 @@ namespace Livin_paris_WinFormsApp
                 Console.ReadLine();
             }
 
+            /// <summary>
+            /// Permet de supprimer un cuisinier en faisant apparaitre l'interface appropriée
+            /// </summary>
             static void SupprimerCuisinier()
             {
                 Console.Clear();
@@ -807,6 +833,9 @@ namespace Livin_paris_WinFormsApp
                 Console.ReadLine();
             }
 
+            /// <summary>
+            /// Permet d'afficher un cuisinier en faisant apparaitre l'interface appropriée
+            /// </summary>
             static void AfficherCuisinier()
             {
                 Console.Clear();
@@ -849,7 +878,11 @@ namespace Livin_paris_WinFormsApp
         }
         #endregion
 
+
         #region Module COMMANDE
+        /// <summary>
+        /// Gestion et affichage du module de gestion des commandes
+        /// </summary>
         static void ModuleCommande()
         {
             bool end = false;
@@ -918,17 +951,17 @@ namespace Livin_paris_WinFormsApp
                         else if (keyInfo.Key == ConsoleKey.LeftArrow)
                         {
                             entreeCorrecte = true;
-                            //ModifierCommande();
+                            ModifierCommande();
                         }
                         else if (keyInfo.Key == ConsoleKey.DownArrow)
                         {
                             entreeCorrecte = true;
-                            //ParcoursCuisinier();
+                            ParcoursCuisinier();
                         }
                         else if (keyInfo.Key == ConsoleKey.RightArrow)
                         {
                             entreeCorrecte = true;
-                            //PrixCommande();
+                            PrixCommande();
                         }
                         else if (keyInfo.Key == ConsoleKey.Escape)
                         {
@@ -941,6 +974,9 @@ namespace Livin_paris_WinFormsApp
                 }
             }
 
+            /// <summary>
+            /// Permet de créer de nouvelles commandes en faisant apparaître l'interface appropriée
+            /// </summary>
             static void NouvelleCommande()
             {
                 Console.BackgroundColor = ConsoleColor.Black;
@@ -1131,14 +1167,103 @@ namespace Livin_paris_WinFormsApp
                 Console.ReadLine();
             }
 
+            /// <summary>
+            /// Permet de modifier des commandes en faisant apparaître l'interface appropriée
+            /// </summary>
             static void ModifierCommande()
             {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Clear();
+                Console.WriteLine("Modification d'une commande");
+
+                string id_commande = Demander("Entre l'identifiant de la commande à modfier", "int", true);
+
+                DQL_SQL($"SELECT * FROM Commande WHERE id_commande = {id_commande}", true);
+
+                Console.WriteLine();
+
+                string avis_client = Demander("Entre la valeur de l'avis client", "string", true);
+                string note_client = Demander("Entre la valeur de la note client", "int", true);
+                string cout_total = Demander("Entre la valeur du cout total ", "string", true);
+                string id_client = Demander("Entre la valeur de l'identifiant client ", "int", true);
+
+                bool result = DML_SQL($"UPDATE Commande SET avis_client = '{avis_client}', note_client= {note_client}, cout_total={cout_total}, id_client={id_client} WHERE id_commande = {id_commande}");
+                if (result)
+                {
+                    Console.WriteLine("Mise à jour réussie");
+                }
+                Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
+                Console.ReadLine();
+            }
+
+            /// <summary>
+            /// Permet de d'afficher le parcours que devra empreinter le cuisinier pour livre sa commande
+            /// </summary>
+            static void ParcoursCuisinier()
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Clear();
+                Console.WriteLine("Parcours cuisinier");
+
+                string id_cuisinier = Demander("Entrez l'identifiant du cuisinier", "string", true);
+                string id_commande = Demander("Entrez l'identifiant de la commande", "string", true);
+
+                string[] id_ligne_de_commande = DQL_SQL($"SELECT LDC.id_ligne_de_commande FROM ligne_de_commande LDC WHERE id_commande = {id_commande};", false)[0];
+
+                for (int i = 0; i < id_ligne_de_commande.Length; i++)
+                {
+                    Console.WriteLine($"Livraison {i + 1}e commande ");
+                    string id_compte_cuisinier = DQL_SQL($"SELECT Cpt.id_compte FROM Compte Cpt JOIN cuisinier Cui ON cpt.id_compte = cui.id_compte WHERE cui.id_cuisinier = {id_cuisinier};", false)[0][0];
+                    string metro_le_plus_proche_client = DQL_SQL($"SELECT lieu_livraison FROM ligne_de_commande WHERE id_ligne_de_commande = {id_ligne_de_commande[i]};", false)[0][0];
+                    string metro_le_plus_proche_cusinier = DQL_SQL($"SELECT metro_le_plus_proche FROM compte WHERE id_compte ={id_compte_cuisinier};", false)[0][0];
+
+                    string noeuds = "../../../../../noeuds.csv";
+                    string arcs = "../../../../../arcs.csv";
+
+                    Console.WriteLine("station depart : " + metro_le_plus_proche_cusinier);
+                    Console.WriteLine("station arrivée : " + metro_le_plus_proche_client);
+
+                    Graphe<int> graphe = new Graphe<int>(noeuds, arcs);
+                    string depart = metro_le_plus_proche_cusinier.ToLower();
+                    string arrivee = metro_le_plus_proche_client.ToLower();
+                    var (chemin, coutG) = graphe.TrouverMeilleurChemin(depart, arrivee);
+
+                    if (chemin.Count == 0)
+                        Console.WriteLine("Aucun chemin trouvé.");
+                    else
+                        Console.WriteLine($"Plus court chemin ({coutG} min) :\n {string.Join("\n -> ", chemin)}");
+                }
+                Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
+                Console.ReadLine();
 
             }
+
+            /// <summary>
+            /// Permet de d'afficher le prix d'une commande donnée
+            /// </summary>
+            static void PrixCommande() {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Clear();
+                Console.WriteLine("Prix commande");
+
+                string id_commande = Demander("Entrez l'identifiant de la commande", "string", true);
+                Console.Write("Prix de la commande : ");
+                DQL_SQL($"SELECT cout_total FROM commande WHERE id_commande = {id_commande};", true);
+
+                Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
+                Console.ReadLine();
+            }
+
+
+            Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
+            Console.ReadLine();
         }
         #endregion
 
         #region Module STATISTIQUES
+        /// <summary>
+        /// Affichage et gestion du module statistiques
+        /// </summary>
         static void moduleStats()
         {
             Console.Clear();
@@ -1265,6 +1390,13 @@ namespace Livin_paris_WinFormsApp
         #endregion
 
         #region Outils
+        /// <summary>
+        /// Permet la gestion centralisée des demandes d'entrée au près de l'utilisateur sur la console. L'entrée est vérifiée et sécurisée dans une certaine mesure.
+        /// </summary>
+        /// <param name="question">Question qui va être affichée</param>
+        /// <param name="type">Type de réponse attendue (int, string, bool)</param>
+        /// <param name="required">Indique si le champ est requis à l'endroit où il est placé</param>
+        /// <returns></returns>
         static string Demander(string question, string type, bool required)
         {
             string reponse = "";
@@ -1351,6 +1483,11 @@ namespace Livin_paris_WinFormsApp
             return reponse;
         }
 
+        /// <summary>
+        /// Permet de facilement exécuter des commandes de manipulation des données (DML)
+        /// </summary>
+        /// <param name="req">requete sql à executer</param>
+        /// <returns>retourne true si la requete a bien été exécutée, false sinon</returns>
         static bool DML_SQL(string req)
         {
             bool reussi = true;
@@ -1374,6 +1511,12 @@ namespace Livin_paris_WinFormsApp
             return reussi;
         }
 
+        /// <summary>
+        /// Permet de facilement exécuter des commandes de requête de données (DQL)
+        /// </summary>
+        /// <param name="req">requete sql à executer</param>
+        /// <param name="affichage">affiche les resultats de la requete sous forme de tableau si 'true'</param>
+        /// <returns></returns>
         static List<string[]> DQL_SQL(string req, bool affichage)
         {
             MySqlCommand command = connexion.CreateCommand();
@@ -1413,6 +1556,11 @@ namespace Livin_paris_WinFormsApp
             return resultat;
         }
 
+        /// <summary>
+        /// Permet l'établissement d'une connexion SQL
+        /// </summary>
+        /// <param name="connectionString">informations de connexion avec la base de donnée</param>
+        /// <returns>renvoie une instance de connexion avec la base de donnée</returns>
         static MySqlConnection ConnexionSQL(string connectionString)
         {
             MySqlConnection conn = new MySqlConnection(connectionString);
