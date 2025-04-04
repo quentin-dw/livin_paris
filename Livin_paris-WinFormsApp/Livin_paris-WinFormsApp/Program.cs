@@ -1492,7 +1492,7 @@ namespace Livin_paris_WinFormsApp
         /// </summary>
         /// <param name="req">requete sql à executer</param>
         /// <returns>retourne true si la requete a bien été exécutée, false sinon</returns>
-        static bool DML_SQL(string req)
+        public static bool DML_SQL(string req)
         {
             bool reussi = true;
             MySqlCommand command = connexion.CreateCommand();
