@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Livin_paris_WinFormsApp
 {
-    internal class Noeud<T>
+    public class Noeud<T>
     {
         private T id;
         private string ligne;
