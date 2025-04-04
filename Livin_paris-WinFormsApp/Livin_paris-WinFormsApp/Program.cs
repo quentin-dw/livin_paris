@@ -133,7 +133,8 @@ namespace Livin_paris_WinFormsApp
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Clear();
 
-                Console.Write("Utilisez les touches flechées de votre clavier");
+                Console.WriteLine("Utilisez les touches flechées de votre clavier");
+                Console.WriteLine("Appuyez sur ECHAP pour sortir");
 
                 string libelle = "";
                 int width = Console.WindowWidth;
@@ -544,7 +545,8 @@ namespace Livin_paris_WinFormsApp
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Clear();
-                Console.Write("Utilisez les touches flechées de votre clavier");
+                Console.WriteLine("Utilisez les touches flechées de votre clavier");
+                Console.WriteLine("Appuyez sur ECHAP pour sortir");
                 string libelle = "";
                 int width = Console.WindowWidth;
                 int height = Console.WindowHeight;
@@ -891,7 +893,8 @@ namespace Livin_paris_WinFormsApp
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Clear();
 
-                Console.Write("Utilisez les touches flechées de votre clavier");
+                Console.WriteLine("Utilisez les touches flechées de votre clavier");
+                Console.WriteLine("Appuyez sur ECHAP pour sortir");
 
                 string libelle = "";
                 int width = Console.WindowWidth;
