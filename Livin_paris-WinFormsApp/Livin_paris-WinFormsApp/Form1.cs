@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Diagnostics;
 
 
 namespace Livin_paris_WinFormsApp
@@ -25,9 +26,13 @@ namespace Livin_paris_WinFormsApp
         private Point lastMousePosition;
 
         private Button btnAfficherNoms;
-        private Button btnExporter;
-        private Panel panelBas;
         private bool afficherNoms = true;
+        private Button btnExporter;
+        TextBox txtStationDepart;
+        TextBox txtStationArrivee;
+        Button btnCalculerChemin;
+        private List<Noeud<int>> cheminActuel = new List<Noeud<int>>();
+        private Panel panelBas;
 
         public Form1(string noeudsFile, string arcsFile)
         {
@@ -53,6 +58,7 @@ namespace Livin_paris_WinFormsApp
                 Height = 60,
                 Padding = new Padding(5)
             };
+
             btnAfficherNoms = new Button
             {
                 Text = "Masquer les noms",
@@ -69,6 +75,29 @@ namespace Livin_paris_WinFormsApp
             };
             btnExporter.Click += BtnExporter_Click;
             panelBas.Controls.Add(btnExporter);
+            txtStationDepart = new TextBox
+            {
+                Width = 120,
+                PlaceholderText = "Station départ",
+                Location = new Point(150, 15)
+            };
+            panelBas.Controls.Add(txtStationDepart);
+            txtStationArrivee = new TextBox
+            {
+                Width = 120,
+                PlaceholderText = "Station arrivée",
+                Location = new Point(280, 15)
+            };
+            panelBas.Controls.Add(txtStationArrivee);
+            btnCalculerChemin = new Button
+            {
+                Text = "Calculer",
+                Width = 100,
+                Location = new Point(420, 12)
+            };
+            btnCalculerChemin.Click += BtnCalculerChemin_Click;
+            panelBas.Controls.Add(btnCalculerChemin);
+
             this.Controls.Add(panelBas);
 
             this.MouseWheel += GrapheForm_MouseWheel;
@@ -180,6 +209,38 @@ namespace Livin_paris_WinFormsApp
             this.Controls.Add(panel);
         }
 
+        private void CalculerChemin(string stationDepart, string stationArrivee)
+        {
+            if (string.IsNullOrWhiteSpace(stationDepart) || string.IsNullOrWhiteSpace(stationArrivee))
+            {
+                MessageBox.Show("Veuillez entrer deux noms de stations valides.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var noeudDepart = graphe.GetNoeuds().FirstOrDefault(n => n.Nom.Equals(stationDepart, StringComparison.OrdinalIgnoreCase));
+            var noeudArrivee = graphe.GetNoeuds().FirstOrDefault(n => n.Nom.Equals(stationArrivee, StringComparison.OrdinalIgnoreCase));
+
+            if (noeudDepart == null || noeudArrivee == null)
+            {
+                MessageBox.Show("Une ou les deux stations sont introuvables.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            (cheminActuel, int coutTotal) = graphe.TrouverMeilleurChemin(stationDepart, stationArrivee);
+
+            if (cheminActuel.Count == 0)
+            {
+                MessageBox.Show("Aucun chemin trouvé entre ces deux stations.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            MessageBox.Show("Chemin trouvé ! Coût total : " + coutTotal + " minutes \nStation parcourues : " + AfficherCheminActuel(), "Résultat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Invalidate();
+        }
+
+        private void BtnCalculerChemin_Click(object sender, EventArgs e)
+        {
+            CalculerChemin(txtStationDepart.Text, txtStationArrivee.Text);
+        }
+
         /// <summary>
         /// Cette fonction permet de dessiner le graphe (Noeuds et Liens)
         /// </summary>
@@ -200,6 +261,18 @@ namespace Livin_paris_WinFormsApp
                     PointF p1 = positions[lien.Noeud1.Id];
                     PointF p2 = positions[lien.Noeud2.Id];
                     g.DrawLine(pen, p1, p2);
+                }
+            }
+
+            if (cheminActuel.Count > 1)
+            {
+                Pen cheminPen = new Pen(Color.Red, 3);
+
+                for (int i = 0; i < cheminActuel.Count - 1; i++)
+                {
+                    PointF p1 = positions[cheminActuel[i].Id];
+                    PointF p2 = positions[cheminActuel[i + 1].Id];
+                    g.DrawLine(cheminPen, p1, p2);
                 }
             }
 
@@ -284,5 +357,19 @@ namespace Livin_paris_WinFormsApp
                 this.Invalidate();
             }
         }
+
+        /// <summary>
+        /// Méthode permettant l'affichage d'une liste (ici utilisé pour afficher le chemin trouvée par l'algorithme de parcours)
+        /// </summary>
+        private string AfficherCheminActuel()
+        {
+            if (cheminActuel == null || cheminActuel.Count == 0)
+            {
+                return "Aucun chemin trouvé.";
+            }
+            return string.Join(" -> ", cheminActuel.Select(n => n.Nom));
+        }
+
     }
 }
+
