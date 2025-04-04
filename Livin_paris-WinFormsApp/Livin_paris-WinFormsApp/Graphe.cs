@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Livin_paris_WinFormsApp
 {
-    internal class Graphe<T>
+    public class Graphe<T>
     {
         private Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> listeAdjacence;
         private List<Noeud<int>> noeuds = new List<Noeud<int>>();

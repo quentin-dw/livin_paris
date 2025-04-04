@@ -13,7 +13,7 @@ namespace Livin_paris_WinFormsApp
 {
 
 
-    internal class Program
+    public class Program
     {
 
 
@@ -41,7 +41,7 @@ namespace Livin_paris_WinFormsApp
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            string connectionString = "Server=localhost;Database=psi;User ID=root;Password=root;SslMode=none;";
+            string connectionString = "Server=localhost;Database=psi_demougeot_dehecohen_dewolf;User ID=root;Password=root;SslMode=none;";
             connexion = ConnexionSQL(connectionString);
 
             AffichageMenu();
