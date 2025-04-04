@@ -1137,14 +1137,15 @@ namespace Livin_paris_WinFormsApp
 
                 Console.WriteLine("Livraison à votre adresse...");
 
-                string[] id_ligne_de_commande = DQL_SQL($"SELECT LDC.id_ligne_de_commande FROM ligne_de_commande LDC WHERE id_commande = {id_commande}", false)[0];
+                List<string[]> id_ligne_de_commande = DQL_SQL($"SELECT LDC.id_ligne_de_commande FROM ligne_de_commande LDC WHERE id_commande = {id_commande}", false);
+                Console.WriteLine("Nombre de commandes à livrer : "+id_ligne_de_commande.Count+"\n");
 
-                for (int i = 0; i < id_ligne_de_commande.Length; i++)
+                for (int i = 0; i < id_ligne_de_commande.Count; i++)
                 {
-                    Console.WriteLine($"Livraison {i+1}e commande ");
-                    string id_cuisinier = DQL_SQL($"SELECT P.id_cuisinier FROM Plat P JOIN ligne_de_commande ldc ON P.id_plat = ldc.id_plat WHERE id_ligne_de_commande = {id_ligne_de_commande[i]};", false)[0][0];
+                    Console.WriteLine($"Livraison {i+1}e ligne de commande ");
+                    string id_cuisinier = DQL_SQL($"SELECT P.id_cuisinier FROM Plat P JOIN ligne_de_commande ldc ON P.id_plat = ldc.id_plat WHERE id_ligne_de_commande = {id_ligne_de_commande[i][0]};", false)[0][0];
                     string id_compte_cuisinier = DQL_SQL($"SELECT Cpt.id_compte FROM Compte Cpt JOIN cuisinier Cui ON cpt.id_compte = cui.id_compte WHERE cui.id_cuisinier = {id_cuisinier};", false)[0][0];
-                    string metro_le_plus_proche_client = DQL_SQL($"SELECT lieu_livraison FROM ligne_de_commande WHERE id_ligne_de_commande = {id_ligne_de_commande[i]};", false)[0][0];
+                    string metro_le_plus_proche_client = DQL_SQL($"SELECT lieu_livraison FROM ligne_de_commande WHERE id_ligne_de_commande = {id_ligne_de_commande[i][0]};", false)[0][0];
                     string metro_le_plus_proche_cusinier = DQL_SQL($"SELECT metro_le_plus_proche FROM compte WHERE id_compte ={id_compte_cuisinier};", false)[0][0];
 
                     string noeuds = "../../../../../noeuds.csv";
@@ -1154,8 +1155,8 @@ namespace Livin_paris_WinFormsApp
                     Console.WriteLine("station arrivée : " + metro_le_plus_proche_client);
 
                     Graphe<int> graphe = new Graphe<int>(noeuds, arcs);
-                    string depart = metro_le_plus_proche_cusinier.ToLower();
-                    string arrivee = metro_le_plus_proche_client.ToLower();
+                    string depart = metro_le_plus_proche_cusinier;
+                    string arrivee = metro_le_plus_proche_client;
                     var (chemin, coutG) = graphe.TrouverMeilleurChemin(depart, arrivee);
 
                     if (chemin.Count == 0)
@@ -1224,8 +1225,8 @@ namespace Livin_paris_WinFormsApp
                     Console.WriteLine("station arrivée : " + metro_le_plus_proche_client);
 
                     Graphe<int> graphe = new Graphe<int>(noeuds, arcs);
-                    string depart = metro_le_plus_proche_cusinier.ToLower();
-                    string arrivee = metro_le_plus_proche_client.ToLower();
+                    string depart = metro_le_plus_proche_cusinier;
+                    string arrivee = metro_le_plus_proche_client;
                     var (chemin, coutG) = graphe.TrouverMeilleurChemin(depart, arrivee);
 
                     if (chemin.Count == 0)
