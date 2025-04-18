@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static Livin_paris_WinFormsApp.Outils;
+
 namespace Livin_paris_WinFormsApp
 {
     internal class Client
@@ -28,13 +30,13 @@ namespace Livin_paris_WinFormsApp
 
         public Client(int id_compte)
         {
-            if(Program.DQL_SQL($"SELECT EXISTS (SELECT 1 FROM compte WHERE id_compte = {id_compte});", false)[0][0] == "1")
+            if(DQL_SQL($"SELECT EXISTS (SELECT 1 FROM compte WHERE id_compte = {id_compte});", false)[0][0] == "1")
             {
                 this.existe = true;
                 this.id_compte = id_compte;
 
                 string[] infosCompte = new string[10];
-                infosCompte = Program.DQL_SQL($"SELECT prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe FROM compte WHERE id_compte = {id_compte});", false)[0];
+                infosCompte = DQL_SQL($"SELECT prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe FROM compte WHERE id_compte = {id_compte});", false)[0];
 
                 this.prenom = infosCompte[0];
                 this.nom = infosCompte[1];
