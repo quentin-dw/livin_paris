@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using MySql.Data.MySqlClient;
 using System.Data;
+using ZstdSharp.Unsafe;
 
 
 
@@ -67,7 +68,6 @@ namespace Livin_paris_WinFormsApp
 
             AffichageMenuPrincipal();
 
-            Console.Read();
 
         }
 
@@ -110,6 +110,20 @@ namespace Livin_paris_WinFormsApp
                                     break;
                             }
                         }
+                        else if (keyInfo.Key == ConsoleKey.NumPad1 || keyInfo.Key == ConsoleKey.D1)
+                        {
+                            AffichageMenuAdmin();
+                            entreeCorrecte = true;
+                        }
+                        else if (keyInfo.Key == ConsoleKey.NumPad2 || keyInfo.Key == ConsoleKey.D2)
+                        {
+                            MenuCirculaire(3, "connexion", "associer un compte", "creer un compte", ".");
+                            entreeCorrecte = true;
+                        }
+                        else if (keyInfo.Key == ConsoleKey.NumPad3 || keyInfo.Key == ConsoleKey.D3)
+                        {
+                            entreeCorrecte = true;
+                        }
                         else if (keyInfo.Key == ConsoleKey.Escape)
                         {
                             entreeCorrecte = true;
@@ -151,7 +165,7 @@ namespace Livin_paris_WinFormsApp
                 "██║░░░░░██║░╚████╔╝░░░░██║██║╚████║  ██╔═══╝░██╔══██║██╔══██╗██║░╚═══██╗",
                 "███████╗██║░░╚██╔╝░░░░░██║██║░╚███║  ██║░░░░░██║░░██║██║░░██║██║██████╔╝",
                 "╚══════╝╚═╝░░░╚═╝░░░░░░╚═╝╚═╝░░╚══╝  ╚═╝░░░░░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝╚═════╝░"
-            };
+                };
 
                 //string textBienvenue = "\r\n ██▓     ██▓ ██▒   █▓ ██▓ ███▄    █     ██▓███   ▄▄▄       ██▀███   ██▓  ██████ \r\n▓██▒    ▓██▒▓██░   █▒▓██▒ ██ ▀█   █    ▓██░  ██▒▒████▄    ▓██ ▒ ██▒▓██▒▒██    ▒ \r\n▒██░    ▒██▒ ▓██  █▒░▒██▒▓██  ▀█ ██▒   ▓██░ ██▓▒▒██  ▀█▄  ▓██ ░▄█ ▒▒██▒░ ▓██▄   \r\n▒██░    ░██░  ▒██ █░░░██░▓██▒  ▐▌██▒   ▒██▄█▓▒ ▒░██▄▄▄▄██ ▒██▀▀█▄  ░██░  ▒   ██▒\r\n░██████▒░██░   ▒▀█░  ░██░▒██░   ▓██░   ▒██▒ ░  ░ ▓█   ▓██▒░██▓ ▒██▒░██░▒██████▒▒\r\n░ ▒░▓  ░░▓     ░ ▐░  ░▓  ░ ▒░   ▒ ▒    ▒▓▒░ ░  ░ ▒▒   ▓▒█░░ ▒▓ ░▒▓░░▓  ▒ ▒▓▒ ▒ ░\r\n░ ░ ▒  ░ ▒ ░   ░ ░░   ▒ ░░ ░░   ░ ▒░   ░▒ ░       ▒   ▒▒ ░  ░▒ ░ ▒░ ▒ ░░ ░▒  ░ ░\r\n  ░ ░    ▒ ░     ░░   ▒ ░   ░   ░ ░    ░░         ░   ▒     ░░   ░  ▒ ░░  ░  ░  \r\n    ░  ░ ░        ░   ░           ░                   ░  ░   ░      ░        ░  \r\n                 ░                                                              \r\n";
                 //string textBienvenue = "\r\n   __ _       _           ___           _     \r\n  / /(_)_   _(_)_ __     / _ \\__ _ _ __(_)___ \r\n / / | \\ \\ / / | '_ \\   / /_)/ _` | '__| / __|\r\n/ /__| |\\ V /| | | | | / ___/ (_| | |  | \\__ \\\r\n\\____/_| \\_/ |_|_| |_| \\/    \\__,_|_|  |_|___/\r\n                                              \r\n";
@@ -179,6 +193,15 @@ namespace Livin_paris_WinFormsApp
                         }
                     }
                 }
+
+                Console.ResetColor();
+                Console.SetCursorPosition((width - 53) / 2, height-5);
+                Console.Write("◀ ■ ▶ Utilisez les touches flechées de votre clavier");
+                Console.SetCursorPosition((width - 39) / 2, height - 4);
+                Console.Write("●  Appuyez sur ENTRER pour selectionner");
+                Console.SetCursorPosition((width - 32) / 2, height - 3);
+                Console.Write("○  Appuyez sur ECHAP pour sortir");
+
             }
 
             static void MenuAdminSelected()
@@ -192,7 +215,7 @@ namespace Livin_paris_WinFormsApp
                 Console.Write("┃ ");
                 Console.BackgroundColor = ConsoleColor.DarkYellow;
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(" Connexion Admin (𝟭) ");
+                Console.Write(" Connexion Admin (1) ");
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.Write(" ┃");
@@ -226,7 +249,7 @@ namespace Livin_paris_WinFormsApp
                 Console.SetCursorPosition(87, 3);
                 Console.Write("                           ");
                 Console.SetCursorPosition(87, 4);
-                Console.Write("  Connexion Cuisinier (𝟯)  ");
+                Console.Write("  Connexion Cuisinier (3)  ");
                 Console.SetCursorPosition(87, 5);
                 Console.Write("                           ");
 
@@ -241,7 +264,7 @@ namespace Livin_paris_WinFormsApp
                 Console.SetCursorPosition(10, 3);
                 Console.Write("                       ");
                 Console.SetCursorPosition(10, 4);
-                Console.Write("  Connexion Admin (𝟭)  ");
+                Console.Write("  Connexion Admin (1)  ");
                 Console.SetCursorPosition(10, 5);
                 Console.Write("                       ");
 
@@ -255,7 +278,7 @@ namespace Livin_paris_WinFormsApp
                 Console.Write("┃ ");
                 Console.BackgroundColor = ConsoleColor.Blue;
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(" Connexion Client (𝟮) ");
+                Console.Write(" Connexion Client (2) ");
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write(" ┃");
@@ -280,7 +303,7 @@ namespace Livin_paris_WinFormsApp
                 Console.SetCursorPosition(87, 3);
                 Console.Write("                           ");
                 Console.SetCursorPosition(87, 4);
-                Console.Write("  Connexion Cuisinier (𝟯)  ");
+                Console.Write("  Connexion Cuisinier (3)  ");
                 Console.SetCursorPosition(87, 5);
                 Console.Write("                           ");
 
@@ -295,7 +318,7 @@ namespace Livin_paris_WinFormsApp
                 Console.SetCursorPosition(10, 3);
                 Console.Write("                       ");
                 Console.SetCursorPosition(10, 4);
-                Console.Write("  Connexion Admin (𝟭)  ");
+                Console.Write("  Connexion Admin (1)  ");
                 Console.SetCursorPosition(10, 5);
                 Console.Write("                       ");
 
@@ -1779,6 +1802,154 @@ namespace Livin_paris_WinFormsApp
 
             Console.ResetColor();
             return reponse;
+        }
+
+        /// <summary>
+        /// Affichage et interaction avec le menu circulaire utilisé un peu partout dans l'application
+        /// </summary>
+        /// <param name="nbChoix">Nombre de choix possibles pour l'utilisateur (<=4)</param>
+        /// <param name="libelle1">Premier choix proposé à l'utilisateur</param>
+        /// <param name="libelle2">Deuxième choix proposé à l'utilisateur</param>
+        /// <param name="libelle3">Troisième choix proposé à l'utilisateur</param>
+        /// <param name="libelle4">Quatrieme choix proposé à l'utilisateur</param>
+        /// <returns>Retourne un chiffre entre 0 et 3 si un choix a été fait (sens de rotation antihoraire), 
+        /// retourne -1 si erreur, retourne -2 si l'utilisateur souhaite quitter le menu</returns>
+        public static int MenuCirculaire(int nbChoix, string libelle1, string libelle2, string libelle3, string libelle4)
+        {
+            int choixSelected = -1;
+            bool end = false;
+            while (!end)
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Clear();
+
+                Console.WriteLine("Utilisez les touches flechées de votre clavier");
+                Console.WriteLine("Appuyez sur ECHAP pour sortir");
+
+                string libelle = "";
+                int width = Console.WindowWidth;
+                int height = Console.WindowHeight;
+
+                if (nbChoix > 0)
+                {
+                    libelle = " " + libelle1.ToUpper() + " ";
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                } else
+                {
+                    libelle = " - ";
+                    Console.BackgroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                    Console.SetCursorPosition((width / 2) - (libelle.Length / 2), height / 4);
+                Console.WriteLine(libelle);
+                Console.ResetColor();
+
+                if (nbChoix > 1)
+                {
+                    libelle = " " + libelle2.ToUpper() + " ";
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                } else
+                {
+                    libelle = " - ";
+                    Console.BackgroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.SetCursorPosition((width / 4) - (libelle.Length / 2), height / 2);
+                Console.WriteLine(libelle);
+                Console.ResetColor();
+
+                if (nbChoix > 2)
+                {
+                    libelle = " " + libelle3.ToUpper() + " ";
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                } else
+                {
+                    libelle = " - ";
+                    Console.BackgroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.SetCursorPosition((width / 2) - (libelle.Length / 2), 3 * (height / 4) + 2);
+                Console.WriteLine(libelle);
+                Console.ResetColor();
+
+                if (nbChoix > 3)
+                {
+                    libelle = " " + libelle4.ToUpper() + " ";
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    
+                } else
+                {
+                    libelle = " - ";
+                    Console.BackgroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.SetCursorPosition(3 * (width / 4) - (libelle.Length / 2), height / 2);
+                Console.WriteLine(libelle);
+                Console.ResetColor();
+
+
+                Console.SetCursorPosition(width / 2, height / 2 - 1);
+                Console.Write("▲");
+
+                Console.SetCursorPosition(width / 2 - 2, height / 2);
+                Console.Write("◀ ■ ▶");
+
+                Console.SetCursorPosition(width / 2, height / 2 + 1);
+                Console.Write("▼");
+
+                Console.SetCursorPosition(width / 2, height / 2 + 2);
+
+                bool entreeCorrecte = false;
+                while (!entreeCorrecte)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                        if (keyInfo.Key == ConsoleKey.UpArrow && nbChoix > 0)
+                        {
+                            entreeCorrecte = true;
+
+                            end = true;
+                            choixSelected = 0;
+                        }
+                        else if (keyInfo.Key == ConsoleKey.LeftArrow && nbChoix > 1)
+                        {
+                            entreeCorrecte = true;
+
+                            end = true;
+                            choixSelected = 1;
+                        }
+                        else if (keyInfo.Key == ConsoleKey.DownArrow && nbChoix > 2)
+                        {
+                            entreeCorrecte = true;
+
+                            end = true;
+                            choixSelected = 2;
+                        }
+                        else if (keyInfo.Key == ConsoleKey.RightArrow && nbChoix > 3)
+                        {
+                            entreeCorrecte = true;
+
+                            end = true;
+                            choixSelected = 3;
+                        }
+                        else if (keyInfo.Key == ConsoleKey.Escape)
+                        {
+                            entreeCorrecte = true;
+                            end = true;
+                            choixSelected = -2;
+                        }
+                    }
+
+                    Thread.Sleep(50);
+                }
+            }
+
+            return choixSelected;
         }
 
         /// <summary>
