@@ -49,7 +49,7 @@ namespace Livin_paris_WinFormsApp
             int width = Console.WindowWidth;
             int height = Console.WindowHeight;
 
-            string[] fondAccueil = ["░", "▒", "▓"];
+            /*string[] fondAccueil = ["░", "▒", "▓"];
             ConsoleColor[] couleurAccueil = [ConsoleColor.Cyan, ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta];
 
             for (int i = 0; i < 5; i++)
@@ -66,7 +66,7 @@ namespace Livin_paris_WinFormsApp
                 }
                 Thread.Sleep(5);
             }
-
+            */
             AffichageMenuPrincipal();
 
 
@@ -104,6 +104,7 @@ namespace Livin_paris_WinFormsApp
                                     entreeCorrecte = true;
                                     break;
                                 case 1 :
+                                    TableauClient.AffichageMenuClient();
                                     entreeCorrecte = true;
                                     break;
                                 case 2 :
@@ -118,7 +119,7 @@ namespace Livin_paris_WinFormsApp
                         }
                         else if (keyInfo.Key == ConsoleKey.NumPad2 || keyInfo.Key == ConsoleKey.D2)
                         {
-                            AffichageMenuClient();
+                            TableauClient.AffichageMenuClient();
                             entreeCorrecte = true;
                         }
                         else if (keyInfo.Key == ConsoleKey.NumPad3 || keyInfo.Key == ConsoleKey.D3)
@@ -365,31 +366,6 @@ namespace Livin_paris_WinFormsApp
             }
         }
 
-
-        /// <summary>
-        /// S'occupe de l'affichage du menu pricnipal / selection des modules
-        /// </summary>
-
-        static void AffichageMenuClient()
-        {
-            int choix = MenuCirculaire(3, "connexion", "associer un compte", "creer un compte", "");
-            if (choix == -2)
-            {
-                return;
-            }
-            else if (choix == 0)
-            {
-
-            }
-            else if (choix == 1)
-            {
-
-            }
-            else if (choix == 2)
-            {
-
-            }
-        }
 
     }
 }

@@ -113,17 +113,24 @@ namespace Livin_paris_WinFormsApp
         /// <param name="libelle4">Quatrieme choix proposé à l'utilisateur</param>
         /// <returns>Retourne un chiffre entre 0 et 3 si un choix a été fait (sens de rotation antihoraire), 
         /// retourne -1 si erreur, retourne -2 si l'utilisateur souhaite quitter le menu</returns>
-        public static int MenuCirculaire(int nbChoix, string libelle1, string libelle2, string libelle3, string libelle4)
+        public static int MenuCirculaire(int nbChoix, string libelle1, string libelle2, string libelle3, string libelle4, string message)
         {
             int choixSelected = -1;
             bool end = false;
             while (!end)
             {
-                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ResetColor();
                 Console.Clear();
 
-                Console.WriteLine("Utilisez les touches flechées de votre clavier");
-                Console.WriteLine("Appuyez sur ECHAP pour sortir");
+                Console.SetCursorPosition(1, 0);
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write(" ▪ " + message+ " ");
+                Console.ResetColor();
+                Console.SetCursorPosition(1, 1);
+                Console.Write("Utilisez les touches flechées de votre clavier");
+                Console.SetCursorPosition(1, 2);
+                Console.Write("Appuyez sur ECHAP pour sortir");
 
                 string libelle = "";
                 int width = Console.WindowWidth;
@@ -204,7 +211,7 @@ namespace Livin_paris_WinFormsApp
                 Console.SetCursorPosition(width / 2, height / 2 + 1);
                 Console.Write("▼");
 
-                Console.SetCursorPosition(width / 2, height / 2 + 2);
+                Console.SetCursorPosition(0, height-1);
 
                 bool entreeCorrecte = false;
                 while (!entreeCorrecte)

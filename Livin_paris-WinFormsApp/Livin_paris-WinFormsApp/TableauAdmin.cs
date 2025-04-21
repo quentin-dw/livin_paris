@@ -25,51 +25,33 @@ namespace Livin_paris_WinFormsApp
                 string messageErreur = "";
                 while (!entreeCorrecte)
                 {
-                    Console.Clear();
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Bienvenue sur l'application Liv'in Paris ! \n\n\n");
-                    Console.ResetColor();
-
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(messageErreur);
                     Console.ResetColor();
 
                     Console.WriteLine("Interface Administrateur");
-                    Console.WriteLine("Selectionnez une option ci-dessous : ");
-                    Console.WriteLine("\t 1) Module client");
-                    Console.WriteLine("\t 2) Module cuisinier");
-                    Console.WriteLine("\t 3) Module commande");
-                    Console.WriteLine("\t 4) Module statistiques");
 
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.WriteLine("\nEntrez 'stop' pour sortir");
-                    Console.ResetColor();
-
-                    Console.Write("=> ");
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-
-                    string reponse = Console.ReadLine();
+                    int reponse = MenuCirculaire(4, "Module client", "Module cuisinier", "Module commande", "module statistiques", "Menu Administrateur");
                     Console.ResetColor();
                     switch (reponse)
                     {
-                        case "1":
+                        case 0:
                             entreeCorrecte = true;
                             ModuleClient();
                             break;
-                        case "2":
+                        case 1:
                             entreeCorrecte = true;
                             ModuleCuisinier();
                             break;
-                        case "3":
+                        case 2:
                             entreeCorrecte = true;
                             ModuleCommande();
                             break;
-                        case "4":
+                        case 3:
                             entreeCorrecte = true;
                             moduleStats();
                             break;
-                        case "stop":
+                        case -2:
                             entreeCorrecte = true;
                             finProgramme = true;
                             break;
@@ -82,26 +64,6 @@ namespace Livin_paris_WinFormsApp
             }
         }
 
-        static void AffichageMenuClient()
-        {
-            int choix = MenuCirculaire(3, "connexion", "associer un compte", "creer un compte", "");
-            if (choix == -2)
-            {
-                return;
-            }
-            else if (choix == 0)
-            {
-
-            }
-            else if (choix == 1)
-            {
-
-            }
-            else if (choix == 2)
-            {
-
-            }
-        }
 
 
         #region Module CLIENT
