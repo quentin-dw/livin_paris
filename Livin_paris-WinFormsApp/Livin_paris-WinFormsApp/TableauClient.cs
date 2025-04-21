@@ -25,7 +25,8 @@ namespace Livin_paris_WinFormsApp
             }
             else if (choix == 1)
             {
-                
+                AssocierCompteClient();
+                return;
             }
             else if (choix == 2)
             {
@@ -41,12 +42,19 @@ namespace Livin_paris_WinFormsApp
                 return;
             }
 
+            if(client == null)
+            {
+                return;
+            }
+
             NouvelleCommande(client);
         }
 
         #region Connexion, Asociation, Creation de compte, Trouver identifiant
         static Client ConnexionClient()
         {
+            Client client = null;
+
             Console.ResetColor();
             Console.Clear();
 
@@ -67,22 +75,33 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine(messageErreur);
 
                 Console.ResetColor();
-                id_compte = Convert.ToInt32(Demander("Entrez votre numero d'identifiant de compte", "int", true));
-                string idExists = DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE id_compte = {id_compte})", false)[0][0];
+                id_compte = Convert.ToInt32(Demander("Entrez votre numero d'identifiant de compte (ou -1 pour sortir)", "int", true));
+                if (id_compte == -1)
+                {
+                    return client;
+                }
 
+                string idExists = DQL_SQL($"SELECT EXISTS (SELECT * FROM client WHERE id_compte = {id_compte})", false)[0][0];
 
                 if (idExists == "1")
                 {
                     valide = true;
                 } else
                 {
-                    messageErreur = " Identifiant invalide ";
+                    if (DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE id_compte = {id_compte})", false)[0][0] == "1")
+                    {
+                        messageErreur = " Identifiant non associé à un compte client (veuillez d'abord l'associer) ";
+                    }
+                    else
+                    {
+                        messageErreur = " Identifiant invalide ";
+                    }
                 }
             }
 
             valide = false;
 
-            Client client = new Client(id_compte);
+            client = new Client(id_compte);
             if (client.Entreprise)
             {
                 Console.WriteLine("Bienvenue " + client.Nom_entreprise);
@@ -128,6 +147,60 @@ namespace Livin_paris_WinFormsApp
             Console.ResetColor();
 
             return client;
+        }
+
+        static void AssocierCompteClient()
+        {
+            Console.ResetColor();
+            Console.Clear();
+
+            Console.SetCursorPosition(1, 0);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(" ▪ " + "Associer un compte existant ");
+            Console.ResetColor();
+            Console.WriteLine();
+
+            int id_compte = Convert.ToInt32(Demander("Entrez votre identifiant de compte", "int", true));
+
+            string existsCompte = DQL_SQL($"SELECT EXISTS(SELECT * FROM Compte WHERE id_compte = {id_compte})", false)[0][0];
+            if (existsCompte != "1")
+            {
+                Console.WriteLine("Compte introuvable. Opération annulée.");
+                Thread.Sleep(1500);
+                return;
+            }
+
+            string cuisinierExists = DQL_SQL($"SELECT EXISTS(SELECT * FROM Client WHERE id_compte = {id_compte})", false)[0][0];
+            if (cuisinierExists == "1")
+            {
+                Console.WriteLine("Ce compte est déjà associé à un profil client.");
+                Thread.Sleep(1500);
+                return;
+            }
+
+            string isEntreprise = Demander("S'agit-il d'une entreprise ? (oui/non)", "bool", true);
+            bool entreprise = isEntreprise == "True";
+            string nomEntreprise = "NULL";
+            if (entreprise)
+            {
+                string nomEnt = Demander("Nom de l'entreprise", "string", true);
+                nomEntreprise = $"'{nomEnt}'";
+            }
+
+            string insertRequete = $"INSERT INTO Client (entreprise, nom_entreprise, id_compte) VALUES ({(entreprise ? 1 : 0)}, {nomEntreprise}, {id_compte});";
+            bool ok = DML_SQL(insertRequete);
+            if (!ok)
+            {
+                Console.WriteLine("Erreur lors de l'association. Réessayez.");
+                Thread.Sleep(1500);
+                return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Compte associé comme client ✅");
+            Console.ResetColor();
+            Thread.Sleep(1500);
         }
 
         static Client CreationCompteClient()

@@ -39,7 +39,7 @@ namespace Livin_paris_WinFormsApp
             new Graphe<int>(noeuds, arcs);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1("../../../../../noeuds.csv", "../../../../../arcs.csv"));
+            Application.Run(new Form1("../../../../../noeuds.csv", "../../../../../arcs.csv"));
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -49,7 +49,7 @@ namespace Livin_paris_WinFormsApp
             int width = Console.WindowWidth;
             int height = Console.WindowHeight;
 
-            /*string[] fondAccueil = ["░", "▒", "▓"];
+            string[] fondAccueil = ["░", "▒", "▓"];
             ConsoleColor[] couleurAccueil = [ConsoleColor.Cyan, ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta];
 
             for (int i = 0; i < 5; i++)
@@ -66,7 +66,7 @@ namespace Livin_paris_WinFormsApp
                 }
                 Thread.Sleep(5);
             }
-            */
+            
             AffichageMenuPrincipal();
 
 
@@ -172,8 +172,6 @@ namespace Livin_paris_WinFormsApp
                 "╚══════╝╚═╝░░░╚═╝░░░░░░╚═╝╚═╝░░╚══╝  ╚═╝░░░░░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝╚═════╝░"
                 };
 
-                //string textBienvenue = "\r\n ██▓     ██▓ ██▒   █▓ ██▓ ███▄    █     ██▓███   ▄▄▄       ██▀███   ██▓  ██████ \r\n▓██▒    ▓██▒▓██░   █▒▓██▒ ██ ▀█   █    ▓██░  ██▒▒████▄    ▓██ ▒ ██▒▓██▒▒██    ▒ \r\n▒██░    ▒██▒ ▓██  █▒░▒██▒▓██  ▀█ ██▒   ▓██░ ██▓▒▒██  ▀█▄  ▓██ ░▄█ ▒▒██▒░ ▓██▄   \r\n▒██░    ░██░  ▒██ █░░░██░▓██▒  ▐▌██▒   ▒██▄█▓▒ ▒░██▄▄▄▄██ ▒██▀▀█▄  ░██░  ▒   ██▒\r\n░██████▒░██░   ▒▀█░  ░██░▒██░   ▓██░   ▒██▒ ░  ░ ▓█   ▓██▒░██▓ ▒██▒░██░▒██████▒▒\r\n░ ▒░▓  ░░▓     ░ ▐░  ░▓  ░ ▒░   ▒ ▒    ▒▓▒░ ░  ░ ▒▒   ▓▒█░░ ▒▓ ░▒▓░░▓  ▒ ▒▓▒ ▒ ░\r\n░ ░ ▒  ░ ▒ ░   ░ ░░   ▒ ░░ ░░   ░ ▒░   ░▒ ░       ▒   ▒▒ ░  ░▒ ░ ▒░ ▒ ░░ ░▒  ░ ░\r\n  ░ ░    ▒ ░     ░░   ▒ ░   ░   ░ ░    ░░         ░   ▒     ░░   ░  ▒ ░░  ░  ░  \r\n    ░  ░ ░        ░   ░           ░                   ░  ░   ░      ░        ░  \r\n                 ░                                                              \r\n";
-                //string textBienvenue = "\r\n   __ _       _           ___           _     \r\n  / /(_)_   _(_)_ __     / _ \\__ _ _ __(_)___ \r\n / / | \\ \\ / / | '_ \\   / /_)/ _` | '__| / __|\r\n/ /__| |\\ V /| | | | | / ___/ (_| | |  | \\__ \\\r\n\\____/_| \\_/ |_|_| |_| \\/    \\__,_|_|  |_|___/\r\n                                              \r\n";
                 int startRow = (height / 2) - (asciiBienvenue.Length / 2);
                 for (int i = 0; i <= asciiBienvenue.Length; i++)
                 {
@@ -259,6 +257,7 @@ namespace Livin_paris_WinFormsApp
                 Console.Write("                           ");
 
                 Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(0, Console.WindowHeight - 1);
             }
 
             static void MenuClientSelected()
@@ -313,6 +312,7 @@ namespace Livin_paris_WinFormsApp
                 Console.Write("                           ");
 
                 Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(0, Console.WindowHeight - 1);
             }
 
             static void MenuCuisinierSelected()
@@ -366,6 +366,7 @@ namespace Livin_paris_WinFormsApp
                 Console.Write("╯");
 
                 Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(0, Console.WindowHeight - 1);
             }
         }
 
