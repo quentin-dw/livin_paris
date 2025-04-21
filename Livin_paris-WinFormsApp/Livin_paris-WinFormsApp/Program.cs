@@ -78,10 +78,11 @@ namespace Livin_paris_WinFormsApp
             MenuAdminSelected();
 
             bool finProgramme = false;
+
+            int menuSelected = 0;
             while (!finProgramme)
             {
                 bool entreeCorrecte = false;
-                int menuSelected = 0;
                 while (!entreeCorrecte)
                 {
                     if (Console.KeyAvailable)
@@ -108,6 +109,7 @@ namespace Livin_paris_WinFormsApp
                                     entreeCorrecte = true;
                                     break;
                                 case 2 :
+                                    TableauCuisinier.AffichageMenuCuisinier();
                                     entreeCorrecte = true;
                                     break;
                             }
@@ -124,6 +126,7 @@ namespace Livin_paris_WinFormsApp
                         }
                         else if (keyInfo.Key == ConsoleKey.NumPad3 || keyInfo.Key == ConsoleKey.D3)
                         {
+                            TableauCuisinier.AffichageMenuCuisinier();
                             entreeCorrecte = true;
                         }
                         else if (keyInfo.Key == ConsoleKey.Escape)

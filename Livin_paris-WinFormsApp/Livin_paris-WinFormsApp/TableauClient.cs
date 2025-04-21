@@ -8,12 +8,13 @@ using static Livin_paris_WinFormsApp.Outils;
 
 namespace Livin_paris_WinFormsApp
 {
+    //faire truc qui affiche historique de ttes les transactions
     public class TableauClient
     {
         public static void AffichageMenuClient()
         {
             Client client = null;
-            int choix = MenuCirculaire(3, "connexion", "associer un compte", "creer un compte", "", "Menu Client");
+            int choix = MenuCirculaire(4, "connexion", "associer un compte", "creer un compte", "trouver mon identifiant", "Menu Client");
             if (choix == -2)
             {
                 return;
@@ -24,16 +25,26 @@ namespace Livin_paris_WinFormsApp
             }
             else if (choix == 1)
             {
-                //client = ConnexionClient();
+                
             }
             else if (choix == 2)
             {
-                //client = ConnexionClient();
+                client = CreationCompteClient();
+                if (client == null)
+                {
+                    return;
+                }
+            }
+            else if (choix == 3)
+            {
+                TrouverIdentifiantClient();
+                return;
             }
 
             NouvelleCommande(client);
         }
 
+        #region Connexion, Asociation, Creation de compte, Trouver identifiant
         static Client ConnexionClient()
         {
             Console.ResetColor();
@@ -100,6 +111,14 @@ namespace Livin_paris_WinFormsApp
                 }
             }
 
+            /*Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.Clear();
+            string message = " Connexion réussie ";
+            Console.SetCursorPosition((Console.WindowWidth / 2) - (message.Length / 2), Console.WindowHeight / 2);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write(message);
+            Thread.Sleep(1500);*/
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine();
@@ -110,6 +129,198 @@ namespace Livin_paris_WinFormsApp
 
             return client;
         }
+
+        static Client CreationCompteClient()
+        {
+            Client client = null;
+
+            Console.ResetColor();
+            Console.Clear();
+
+            Console.SetCursorPosition(1, 0);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(" ▪ " + "Creation compte ");
+            Console.ResetColor();
+            Console.WriteLine();
+
+
+            string reponse = "";
+            string entreprise = "", prenom = "", nom = "", nom_entreprise = "", telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe;
+            Console.WriteLine("Champs obligatoires marqués par *");
+
+
+            reponse = Demander("Representez-vous une entreprise ? [Oui/Non]", "bool", true);
+            if (reponse.ToLower() == "oui")
+            {
+                entreprise = "TRUE";
+
+                prenom = Demander("Prénom référent", "string", true);
+
+                nom = Demander("Nom référent", "string", true);
+
+                nom_entreprise = Demander("Nom de l'entreprise", "string", true);
+
+            }
+            else if (reponse.ToLower() == "non")
+            {
+                entreprise = "FALSE";
+
+                prenom = Demander("Prénom", "string", true);
+
+                nom = Demander("Nom", "string", true);
+
+                nom_entreprise = "NULL";
+            }
+
+
+
+            telephone = Demander("Numéro de téléphone", "string", true);
+
+            numero = Demander("Numéro de rue de résidence", "int", true);
+
+            rue = Demander("Nom de rue de résidence", "string", true);
+
+            ville = Demander("Ville de résidence", "string", true);
+
+            code_postal = Demander("Code postal de ville de résidence", "int", true);
+
+            metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+
+            email = Demander("Adresse e-mail", "string", true);
+
+            mot_de_passe = Demander("Mot de passe", "string", true);
+
+
+            string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
+            bool InsertCompte = DML_SQL(requeteInsertCompte);
+
+            string requete = "SELECT LAST_INSERT_ID();";
+            int id_compte = Convert.ToInt32(DQL_SQL(requete, false)[0][0]);
+
+            string requeteInsertClient = $"INSERT INTO Client (entreprise, nom_entreprise, id_compte) VALUES ({entreprise}, '{nom_entreprise}', {id_compte});";
+            InsertCompte = DML_SQL(requeteInsertClient);
+
+            if (InsertCompte)
+            {
+                client = new Client(id_compte);
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine();
+                Console.WriteLine(" Compte Client Créé ✅ ");
+
+                Console.ResetColor();
+                Console.WriteLine();
+
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                Console.Write(" Votre n° d'identifiant de compte : ");
+                Console.BackgroundColor = ConsoleColor.Magenta;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(id_compte + " ");
+
+                Console.ResetColor();
+                Console.WriteLine("\n");
+
+                Thread.Sleep(3000);
+            }
+
+            return client;
+        }
+
+        static void TrouverIdentifiantClient()
+        {
+            Console.ResetColor();
+            Console.Clear();
+
+            Console.SetCursorPosition(1, 0);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(" ▪ " + "Trouver mon identifiant ");
+            Console.ResetColor();
+            Console.WriteLine();
+
+            Console.WriteLine("Les moyens d'authentification disponible sont : ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(" 1. ");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("email");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(" 2. ");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("numero de telephone");
+            Console.WriteLine();
+            int modeAuth = Convert.ToInt32(Demander("Quel moyen d'authentification souhaitez vous utiliser ? [1/2]", "int", true));
+            Console.WriteLine();
+
+            if (modeAuth == 1)
+            {
+                string email = Demander("Entrez votre adresse e-mail", "string", true);
+                Console.WriteLine();
+
+                if (Convert.ToInt32(DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE email='{email}')", false)[0][0])==0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+
+                    Console.WriteLine("L'adresse email entrée est incorrecte, veuillez réessayer");
+                    Thread.Sleep(3000);
+                    return;
+                }
+
+                string[] retourRequete = DQL_SQL($"SELECT prenom, nom, id_compte FROM compte WHERE email='{email}'", false)[0];
+                string prenom = retourRequete[0];
+                string nom = retourRequete[1];
+                string id_compte = retourRequete[2];
+
+                Console.Write("Ce compte appartient à ");
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine(prenom + " " + nom);
+                Console.ResetColor();
+
+                Console.Write("Votre numéro d'identifiant de compte : ");
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write(id_compte);
+            }
+            else if (modeAuth == 2)
+            {
+                string telephone = Demander("Entrez votre numero de telephone", "string", true);
+                Console.WriteLine();
+
+                if (Convert.ToInt32(DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE telephone='{telephone}')", false)[0][0])==0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+
+                    Console.WriteLine("Le numéro de téléphone entré est incorrecte, veuillez réessayer");
+                    Thread.Sleep(3000);
+                    return;
+                }
+
+                string[] retourRequete = DQL_SQL($"SELECT prenom, nom, id_compte FROM compte WHERE telephone='{telephone}'", false)[0];
+                string prenom = retourRequete[0];
+                string nom = retourRequete[1];
+                string id_compte = retourRequete[2];
+
+                Console.Write("Ce compte appartient à ");
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine(prenom + " " + nom);
+                Console.ResetColor();
+
+                Console.Write("Votre numéro d'identifiant de compte : ");
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine(id_compte);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nUne erreur s'est produite, veuillez reesayer");
+            }
+            Console.ResetColor();
+            Console.WriteLine("\n\nPressez ENTREE pour sortir");
+            Console.ReadLine();
+        }
+
+        #endregion
 
         /// <summary>
         /// Permet de créer de nouvelles commandes en faisant apparaître l'interface appropriée
@@ -259,18 +470,17 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine($"Livraison {i + 1}e ligne de commande ");
                 string id_cuisinier = DQL_SQL($"SELECT P.id_cuisinier FROM Plat P JOIN ligne_de_commande ldc ON P.id_plat = ldc.id_plat WHERE id_ligne_de_commande = {id_ligne_de_commande[i][0]};", false)[0][0];
                 string id_compte_cuisinier = DQL_SQL($"SELECT Cpt.id_compte FROM Compte Cpt JOIN cuisinier Cui ON cpt.id_compte = cui.id_compte WHERE cui.id_cuisinier = {id_cuisinier};", false)[0][0];
-                string metro_le_plus_proche_client = DQL_SQL($"SELECT lieu_livraison FROM ligne_de_commande WHERE id_ligne_de_commande = {id_ligne_de_commande[i][0]};", false)[0][0];
                 string metro_le_plus_proche_cusinier = DQL_SQL($"SELECT metro_le_plus_proche FROM compte WHERE id_compte ={id_compte_cuisinier};", false)[0][0];
 
                 string noeuds = "../../../../../noeuds.csv";
                 string arcs = "../../../../../arcs.csv";
 
                 Console.WriteLine("station depart : " + metro_le_plus_proche_cusinier);
-                Console.WriteLine("station arrivée : " + metro_le_plus_proche_client);
+                Console.WriteLine("station arrivée : " + client.Metro_le_plus_proche);
 
                 Graphe<int> graphe = new Graphe<int>(noeuds, arcs);
                 string depart = metro_le_plus_proche_cusinier;
-                string arrivee = metro_le_plus_proche_client;
+                string arrivee = client.Metro_le_plus_proche;
                 var (chemin, coutG) = graphe.TrouverMeilleurChemin(depart, arrivee);
 
                 if (chemin.Count == 0)
