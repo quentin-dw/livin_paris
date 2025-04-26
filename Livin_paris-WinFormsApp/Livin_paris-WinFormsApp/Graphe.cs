@@ -187,7 +187,15 @@ namespace Livin_paris_WinFormsApp
         /// </returns>
         public List<Noeud<int>> TrouverStationsParNom(string nom)
         {
-            return this.noeuds.Where(station => station.Nom == nom).ToList();
+            List<Noeud<int>> resultat = new List<Noeud<int>>();
+            foreach (Noeud<int> station in this.noeuds)
+            {
+                if (station.Nom == nom)
+                {
+                    resultat.Add(station);
+                }
+            }
+            return resultat;
         }
 
 
