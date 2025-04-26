@@ -144,7 +144,7 @@ namespace Livin_paris_WinFormsApp
 
                 Console.ResetColor();
 
-                string mot_de_passe = Demander("Entrez votre mot de passe", "string", true);
+                string mot_de_passe = Demander("Entrez votre mot de passe", "mdp", true);
                 if (mot_de_passe == cuisinier.Mot_de_passe)
                 {
                     valide = true;
@@ -247,7 +247,7 @@ namespace Livin_paris_WinFormsApp
 
             email = Demander("Adresse e-mail", "string", true);
 
-            mot_de_passe = Demander("Mot de passe", "string", true);
+            mot_de_passe = Demander("Mot de passe", "mdp", true);
 
 
             string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
@@ -393,8 +393,8 @@ namespace Livin_paris_WinFormsApp
 
             string nomPlat = Demander("Nom du plat", "string", true);
             string typePlat = Demander("Type du plat (entrée/plat principal/dessert)", "string", true);
-            string dateFab = Demander("Date de fabrication (AAAA-MM-JJ)", "date", true);
-            string datePer = Demander("Date de péremption (AAAA-MM-JJ)", "date", true);
+            string dateFab = Demander("Date de fabrication (AAAA-MM-JJ)", "string", true);
+            string datePer = Demander("Date de péremption (AAAA-MM-JJ)", "string", true);
             string prixStr = Demander("Prix par personne (ex: 12.50)", "string", true);
             string nationalite = Demander("Nationalité de la cuisine", "string", true);
             string regime = Demander("Régime alimentaire", "string", true);
