@@ -33,6 +33,7 @@ namespace Livin_paris_WinFormsApp
         {
             this.listeAdjacence = new Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>>();
             this.nbNoeuds = 0;
+            this.tempsChangement = 3;
             ChargerGrapheCSV(noeuds, arcs);
 
             //List<Noeud<T>> dfs = DFS(new Noeud(1));
