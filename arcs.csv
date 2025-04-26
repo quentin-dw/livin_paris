@@ -10,7 +10,7 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 9,Palais Royal - Musee du Louvre,8,10,2,,FALSE
 10,Louvre - Rivoli,9,11,3,,FALSE
 11,Chatelet,10,12,2,3,FALSE
-12,Hôtel de Ville,11,13,2,,FALSE
+12,Hotel de Ville,11,13,2,,FALSE
 13,Saint-Paul (Le Marais),12,14,1,,FALSE
 14,Bastille,13,15,1,3,FALSE
 15,Gare de Lyon,14,16,2,3,FALSE
@@ -50,7 +50,7 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 49,Villiers,48,50,2,2,FALSE
 50,Europe,49,51,1,,FALSE
 51,Saint-Lazare,50,52,2,3,FALSE
-52,Havre-Caumartin,51,53,1,,FALSE
+52,Havre-Caumartin,51,53,1,3,FALSE
 53,Opera,52,54,2,2,FALSE
 54,Quatre Septembre,53,55,1,,FALSE
 55,Bourse,54,56,2,,FALSE
@@ -87,7 +87,7 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 86,Saint-Germain-des-Pres,85,87,1,,FALSE
 87,Saint-Sulpice,86,88,1,,FALSE
 88,Saint-Placide,87,89,2,,FALSE
-89,Montparnasse Bienvenüe,88,90,2,3,FALSE
+89,Montparnasse Bienvenue,88,90,2,3,FALSE
 90,Vavin,89,91,1,,FALSE
 91,Raspail,90,92,2,2,FALSE
 92,Denfert-Rochereau,91,93,2,3,FALSE
@@ -175,7 +175,7 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 174,Bolivar,173,175,1,,FALSE
 175,Buttes Chaumont,174,176,1,1,FALSE
 176,Botzaris,175,177,1,,FALSE
-177,Place des Fêtes,176,178,1,2,TRUE
+177,Place des Fetes,176,178,1,2,TRUE
 178,Pre-Saint-Gervais,177,179,1,,TRUE
 179,Danube,178,180,1,,TRUE
 180,Botzaris,179,,1,,TRUE
@@ -237,7 +237,7 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 236,Rue des Boulets,235,237,2,3,FALSE
 237,Nation,236,238,3,3,FALSE
 238,Buzenval,237,239,2,3,FALSE
-239,Maraîchers,238,240,2,3,FALSE
+239,Maraichers,238,240,2,3,FALSE
 240,Porte de Montreuil,239,,3,,FALSE
 241,Gare d'Austerlitz,,242,0,3,FALSE
 242,Jussieu,241,243,2,,FALSE
@@ -261,7 +261,7 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 260,Chardon Lagache,259,261,2,,TRUE
 261,Mirabeau,260,,2,,TRUE
 262,Chatelet,,263,1,,FALSE
-263,Hôtel de Ville,262,264,1,1,FALSE
+263,Hotel de Ville,262,264,1,1,FALSE
 264,Rambuteau,263,265,1,,FALSE
 265,Arts et Metiers,264,266,1,1,FALSE
 266,Republique,265,267,1,,FALSE
@@ -269,7 +269,7 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 268,Belleville,267,269,1,,FALSE
 269,Pyrenees,268,270,2,1,FALSE
 270,Jourdain,269,271,2,,FALSE
-271,Place des Fêtes,270,272,2,2,FALSE
+271,Place des Fetes,270,272,2,2,FALSE
 272,Telegraphe,271,273,2,,FALSE
 273,Porte des Lilas,272,,2,,FALSE
 274,Porte de la Chapelle,,275,0,,FALSE
@@ -301,10 +301,10 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 300,Porte de Vanves,,301,0,,FALSE
 301,Plaisance,300,302,1,,FALSE
 302,Pernety,301,303,1,,FALSE
-303,Gaîte,302,304,2,,FALSE
+303,Gaite,302,304,2,,FALSE
 304,Montparnasse Bienvenue,303,305,1,,FALSE
 305,Duroc,304,306,2,,FALSE
-306,Saint-François-Xavier,305,307,1,,FALSE
+306,Saint-Francois-Xavier,305,307,1,,FALSE
 307,Varenne,306,308,1,,FALSE
 308,Invalides,307,309,1,,FALSE
 309,Champs-Elysees - Clemenceau,308,310,2,,FALSE
@@ -313,7 +313,7 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 312,Liege,311,313,1,,FALSE
 313,Place de Clichy,312,314,2,,FALSE
 314,La Fourche,313,315,1,,FALSE
-315,Guy Môquet,314,316,2,,FALSE
+315,Guy Moquet,314,316,2,,FALSE
 316,Porte de Saint-Ouen,315,,1,,FALSE
 317,La Fourche,313,318,1,,FALSE
 318,Brochant,317,319,2,,FALSE
@@ -327,6 +327,6 @@ Station Id,Station,Precedent,Suivant,Temps entre 2 stations,Temps de Changement,
 326,Gare de Lyon,325,327,2,,FALSE
 327,Bercy,326,328,3,,FALSE
 328,Cour Saint-Emilion,327,329,2,,FALSE
-329,Bibliotheque François Mitterrand,328,330,2,,FALSE
+329,Bibliotheque Francois Mitterrand,328,330,2,,FALSE
 330,Olympiades,329,331,3,,FALSE
 331,Maison Blanche,330,,2,,FALSE
