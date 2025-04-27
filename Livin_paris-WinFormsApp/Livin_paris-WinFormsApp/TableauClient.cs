@@ -342,7 +342,7 @@ namespace Livin_paris_WinFormsApp
 
                 email = Demander("Adresse e-mail", "string", true);
 
-                mot_de_passe = Demander("Mot de passe", "string", true);
+                mot_de_passe = Demander("Mot de passe", "mdp", true);
             }
 
 
