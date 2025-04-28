@@ -6,7 +6,9 @@ using System.IO;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Diagnostics;
-
+using GMap.NET.WindowsForms.Markers;
+using GMap.NET.WindowsForms;
+using GMap.NET;
 
 namespace Livin_paris_WinFormsApp
 {
@@ -20,6 +22,7 @@ namespace Livin_paris_WinFormsApp
         private HashSet<string> lignesAffichees;
         private Dictionary<string, CheckBox> boutonsLignes = new Dictionary<string, CheckBox>();
         private Dictionary<string, Color> couleursLignes;
+        private Panel panelLignes;
 
         private float zoomFactor = 1.0f;
         private Point panOffset = new Point(0, 0);
@@ -28,19 +31,21 @@ namespace Livin_paris_WinFormsApp
         private Button btnAfficherNoms;
         private bool afficherNoms = true;
         private Button btnExporter;
-        TextBox txtStationDepart;
-        TextBox txtStationArrivee;
-        Button btnCalculerChemin;
+        private TextBox txtStationDepart;
+        private TextBox txtStationArrivee;
+        private Button btnCalculerChemin;
         private List<Noeud<int>> cheminActuel = new List<Noeud<int>>();
         private Panel panelBas;
+
 
         public Form1(string noeudsFile, string arcsFile)
         {
             InitializeComponent();
+
             this.Text = "Visualisation du Graphe";
             this.Width = 800;
             this.Height = 600;
-            this.DoubleBuffered = true; 
+            this.DoubleBuffered = true;
 
             graphe = new Graphe<int>(noeudsFile, arcsFile);
             positions = new Dictionary<int, PointF>();
@@ -51,59 +56,13 @@ namespace Livin_paris_WinFormsApp
             CalculerLignes();
             AssignerCouleursLignes();
             AjouterBoutonsLignes();
-
-            panelBas = new Panel
-            {
-                Dock = DockStyle.Bottom,
-                Height = 60,
-                Padding = new Padding(5)
-            };
-
-            btnAfficherNoms = new Button
-            {
-                Text = "Masquer les noms",
-                Dock = DockStyle.Left,
-                Width = 120
-            };
-            btnAfficherNoms.Click += BtnAfficherNoms_Click;
-            panelBas.Controls.Add(btnAfficherNoms);
-            btnExporter = new Button
-            {
-                Text = "Exporter",
-                Dock = DockStyle.Right, 
-                Width = 120
-            };
-            btnExporter.Click += BtnExporter_Click;
-            panelBas.Controls.Add(btnExporter);
-            txtStationDepart = new TextBox
-            {
-                Width = 120,
-                PlaceholderText = "Station départ",
-                Location = new Point(150, 15)
-            };
-            panelBas.Controls.Add(txtStationDepart);
-            txtStationArrivee = new TextBox
-            {
-                Width = 120,
-                PlaceholderText = "Station arrivée",
-                Location = new Point(280, 15)
-            };
-            panelBas.Controls.Add(txtStationArrivee);
-            btnCalculerChemin = new Button
-            {
-                Text = "Calculer",
-                Width = 100,
-                Location = new Point(420, 12)
-            };
-            btnCalculerChemin.Click += BtnCalculerChemin_Click;
-            panelBas.Controls.Add(btnCalculerChemin);
-
-            this.Controls.Add(panelBas);
-
+            AjouterPanelBas();
+            
             this.MouseWheel += GrapheForm_MouseWheel;
             this.MouseDown += GrapheForm_MouseDown;
             this.MouseMove += GrapheForm_MouseMove;
         }
+
         /// <summary>
         /// Fonction permettant de calculer la position des stations sur le plan en fonction de leur latitude et longitude.
         /// </summary>
@@ -170,13 +129,42 @@ namespace Livin_paris_WinFormsApp
         private void AjouterBoutonsLignes()
         {
             int y = 10;
-            Panel panel = new Panel
+            panelLignes = new Panel
             {
                 AutoScroll = true,
                 Width = 150,
                 Height = this.ClientSize.Height,
-                Dock = DockStyle.Right
+                Dock = DockStyle.Right,
+                BackColor = Color.LightGray
             };
+
+            Button btnToggleAll = new Button
+            {
+                Text = "Afficher / Cacher tout",
+                Location = new Point(10, y),
+                Width = 130,
+                Height = 30
+            };
+            btnToggleAll.Click += (sender, e) =>
+            {
+                bool toutAffiche = lignesAffichees.Count == lignes.Count;
+                if (toutAffiche)
+                {
+                    lignesAffichees.Clear();
+                    foreach (var checkBox in boutonsLignes.Values)
+                        checkBox.Checked = false;
+                }
+                else
+                {
+                    lignesAffichees = new HashSet<string>(lignes.Keys);
+                    foreach (var checkBox in boutonsLignes.Values)
+                        checkBox.Checked = true;
+                }
+
+                this.Invalidate();
+            };
+            panelLignes.Controls.Add(btnToggleAll);
+            y += 40;
 
             foreach (var ligne in lignes.Keys)
             {
@@ -188,7 +176,7 @@ namespace Livin_paris_WinFormsApp
                     AutoSize = true
                 };
 
-                checkBox.BackColor = couleursLignes[ligne]; 
+                checkBox.BackColor = couleursLignes[ligne];
                 checkBox.ForeColor = Color.White;
 
                 checkBox.CheckedChanged += (sender, e) =>
@@ -197,16 +185,13 @@ namespace Livin_paris_WinFormsApp
                         lignesAffichees.Add(ligne);
                     else
                         lignesAffichees.Remove(ligne);
-
                     this.Invalidate();
                 };
-
                 boutonsLignes[ligne] = checkBox;
-                panel.Controls.Add(checkBox);
+                panelLignes.Controls.Add(checkBox);
                 y += 25;
             }
-
-            this.Controls.Add(panel);
+            this.Controls.Add(panelLignes);
         }
 
         private void CalculerChemin(string stationDepart, string stationArrivee)
@@ -240,7 +225,7 @@ namespace Livin_paris_WinFormsApp
         {
             CalculerChemin(txtStationDepart.Text, txtStationArrivee.Text);
         }
-
+        
         /// <summary>
         /// Cette fonction permet de dessiner le graphe (Noeuds et Liens)
         /// </summary>
@@ -289,7 +274,7 @@ namespace Livin_paris_WinFormsApp
                 }
             }
         }
-
+        
         /// <summary>
         /// Cette fonction permet d'exporter le graphe sous forme d'image .png en cliquant sur un bouton
         /// </summary>
@@ -316,7 +301,7 @@ namespace Livin_paris_WinFormsApp
             {
                 btnAfficherNoms.Text = "Afficher les noms";
             }
-            this.Invalidate(); 
+            this.Invalidate();
         }
 
 
@@ -370,6 +355,59 @@ namespace Livin_paris_WinFormsApp
             return string.Join(" -> ", cheminActuel.Select(n => n.Nom));
         }
 
+        /// <summary>
+        /// Cette méthode crée un panel en bas de la fenêtre et y implémente différents boutons
+        /// </summary>
+        private void AjouterPanelBas()
+        {
+            panelBas = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 60,
+                Padding = new Padding(5)
+            };
+
+            btnAfficherNoms = new Button
+            {
+                Text = "Masquer les noms",
+                Dock = DockStyle.Left,
+                Width = 120
+            };
+            btnAfficherNoms.Click += BtnAfficherNoms_Click;
+            panelBas.Controls.Add(btnAfficherNoms);
+            btnExporter = new Button
+            {
+                Text = "Exporter",
+                Dock = DockStyle.Right,
+                Width = 120
+            };
+            btnExporter.Click += BtnExporter_Click;
+            panelBas.Controls.Add(btnExporter);
+            txtStationDepart = new TextBox
+            {
+                Width = 120,
+                PlaceholderText = "Station départ",
+                Location = new Point(150, 15)
+            };
+            panelBas.Controls.Add(txtStationDepart);
+            txtStationArrivee = new TextBox
+            {
+                Width = 120,
+                PlaceholderText = "Station arrivée",
+                Location = new Point(280, 15)
+            };
+            panelBas.Controls.Add(txtStationArrivee);
+            btnCalculerChemin = new Button
+            {
+                Text = "Calculer",
+                Width = 100,
+                Location = new Point(420, 12)
+            };
+            btnCalculerChemin.Click += BtnCalculerChemin_Click;
+            panelBas.Controls.Add(btnCalculerChemin);
+
+            this.Controls.Add(panelBas);
+        }
     }
 }
 
