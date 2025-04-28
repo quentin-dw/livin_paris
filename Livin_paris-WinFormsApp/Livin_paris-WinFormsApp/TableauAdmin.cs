@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using static Livin_paris_WinFormsApp.Outils;
@@ -177,10 +178,45 @@ namespace Livin_paris_WinFormsApp
             Console.WriteLine("Champs obligatoires marqués par *");
 
 
-            while (reponse.ToLower() != "oui" && reponse.ToLower() != "non")
+            string viaJSON = Demander("Voulez-vous importer votre profil depuis le fichier nouveauClient.json ? [oui/non]", "string", true);
+            if (viaJSON.ToLower() == "oui")
             {
+                try
                 {
-                    reponse = Demander("Ce client est il une entreprise ? [Oui/Non]", "string", true);
+                    string jsonString = File.ReadAllText("../../../nouveauClient.json");
+
+                    using JsonDocument doc = JsonDocument.Parse(jsonString);
+                    JsonElement root = doc.RootElement;
+
+                    bool statut_entreprise = root.GetProperty("entreprise").GetBoolean();
+                    if (statut_entreprise)
+                    {
+                        entreprise = "TRUE";
+                        nom_entreprise = root.GetProperty("nom_entreprise").GetString();
+                    }
+                    else
+                    {
+                        entreprise = "FALSE";
+                        nom_entreprise = "NULL";
+                    }
+                    prenom = root.GetProperty("prenom").GetString().ToLower();
+                    nom = root.GetProperty("nom").GetString().ToLower();
+                    telephone = root.GetProperty("numero_telephone").GetString().ToLower();
+                    numero = root.GetProperty("numero_residence").GetString().ToLower();
+                    rue = root.GetProperty("rue").GetString().ToLower();
+                    ville = root.GetProperty("ville").GetString().ToLower();
+                    code_postal = root.GetProperty("code_postal").GetString().ToLower();
+                    metro_le_plus_proche = root.GetProperty("metro_le_plus_proche").GetString().ToLower();
+                    email = root.GetProperty("email").GetString().ToLower();
+                    mot_de_passe = root.GetProperty("mot_de_passe").GetString().ToLower();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Une erreur est survenue, nous allons créer le compte autrement");
+                    Console.WriteLine("Champs obligatoires marqués par *");
+
+
+                    reponse = Demander("Representez-vous une entreprise ? [Oui/Non]", "string", true);
                     if (reponse.ToLower() == "oui")
                     {
                         entreprise = "TRUE";
@@ -203,26 +239,69 @@ namespace Livin_paris_WinFormsApp
                         nom_entreprise = "NULL";
                     }
 
+                    telephone = Demander("Numéro de téléphone", "string", true);
+
+                    numero = Demander("Numéro de rue de résidence", "int", true);
+
+                    rue = Demander("Nom de rue de résidence", "string", true);
+
+                    ville = Demander("Ville de résidence", "string", true);
+
+                    code_postal = Demander("Code postal de ville de résidence", "int", true);
+
+                    metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+
+                    email = Demander("Adresse e-mail", "string", true);
+
+                    mot_de_passe = Demander("Mot de passe", "string", true);
                 }
             }
 
+            else
+            {
+                Console.WriteLine("Champs obligatoires marqués par *");
 
-            telephone = Demander("Numéro de téléphone", "string", true);
 
-            rue = Demander("Nom de rue de résidence", "string", true);
+                reponse = Demander("Representez-vous une entreprise ? [Oui/Non]", "string", true);
+                if (reponse.ToLower() == "oui")
+                {
+                    entreprise = "TRUE";
 
-            numero = Demander("Numéro de rue de résidence", "int", true);
+                    prenom = Demander("Prénom référent", "string", true);
 
-            code_postal = Demander("Code postal de résidence", "int", true);
+                    nom = Demander("Nom référent", "string", true);
 
-            ville = Demander("Ville de résidence", "string", true);
+                    nom_entreprise = Demander("Nom de l'entreprise", "string", true);
 
-            metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+                }
+                else if (reponse.ToLower() == "non")
+                {
+                    entreprise = "FALSE";
 
-            email = Demander("Adresse e-mail", "string", true);
+                    prenom = Demander("Prénom", "string", true);
 
-            mot_de_passe = Demander("Mot de passe", "mdp", true);
+                    nom = Demander("Nom", "string", true);
 
+                    nom_entreprise = "NULL";
+                }
+
+                telephone = Demander("Numéro de téléphone", "string", true);
+
+                numero = Demander("Numéro de rue de résidence", "int", true);
+
+                rue = Demander("Nom de rue de résidence", "string", true);
+
+                ville = Demander("Ville de résidence", "string", true);
+
+                code_postal = Demander("Code postal de ville de résidence", "int", true);
+
+                metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+
+
+                email = Demander("Adresse e-mail", "string", true);
+
+                mot_de_passe = Demander("Mot de passe", "mdp", true);
+            }
 
             string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
             bool InsertCompte = DML_SQL(requeteInsertCompte);
@@ -612,25 +691,78 @@ namespace Livin_paris_WinFormsApp
                 }
                 else
                 {
-                    prenom = Demander("Prénom", "string", true);
+                    string viaJSON = Demander("Voulez-vous importer votre profil depuis le fichier nouveauCuisinier.json ? [oui/non]", "string", true);
+                    if (viaJSON.ToLower() == "oui")
+                    {
+                        Console.WriteLine("Lecture du fichier et ajout du compte dans notre base de données...");
+                        try
+                        {
+                            string jsonString = File.ReadAllText("../../../nouveauCuisinier.json");
+                            using JsonDocument doc = JsonDocument.Parse(jsonString);
+                            JsonElement root = doc.RootElement;
 
-                    nom = Demander("Nom", "string", true);
+                            prenom = root.GetProperty("prenom").GetString().ToLower();
+                            nom = root.GetProperty("nom").GetString().ToLower();
+                            telephone = root.GetProperty("numero_telephone").GetString().ToLower();
+                            numero = root.GetProperty("numero_residence").GetString().ToLower();
+                            rue = root.GetProperty("rue").GetString().ToLower();
+                            ville = root.GetProperty("ville").GetString().ToLower();
+                            code_postal = root.GetProperty("code_postal").GetString().ToLower();
+                            metro_le_plus_proche = root.GetProperty("metro_le_plus_proche").GetString().ToLower();
+                            email = root.GetProperty("email").GetString().ToLower();
+                            mot_de_passe = root.GetProperty("mot_de_passe").GetString().ToLower();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Une erreur est survenue, nous allons créer le compte autrement");
+                            Console.WriteLine("Champs obligatoires marqués par *");
 
-                    telephone = Demander("Numéro de téléphone", "string", true);
+                            prenom = Demander("Prénom", "string", true);
 
-                    rue = Demander("Nom de rue de résidence", "string", true);
+                            nom = Demander("Nom", "string", true);
 
-                    numero = Demander("Numéro de rue de résidence", "int", true);
+                            telephone = Demander("Numéro de téléphone", "string", true);
 
-                    code_postal = Demander("Code postal de résidence", "int", true);
+                            numero = Demander("Numéro de rue de résidence", "int", true);
 
-                    ville = Demander("Ville de résidence", "string", true);
+                            rue = Demander("Nom de rue de résidence", "string", true);
 
-                    metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+                            ville = Demander("Ville de résidence", "string", true);
 
-                    email = Demander("Adresse e-mail", "string", true);
+                            code_postal = Demander("Code postal de ville de résidence", "int", true);
 
-                    mot_de_passe = Demander("Mot de passe", "mdp", true);
+                            metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+
+                            email = Demander("Adresse e-mail", "string", true);
+
+                            mot_de_passe = Demander("Mot de passe", "mdp", true);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Champs obligatoires marqués par *");
+
+                        prenom = Demander("Prénom", "string", true);
+
+
+                        nom = Demander("Nom", "string", true);
+
+                        telephone = Demander("Numéro de téléphone", "string", true);
+
+                        numero = Demander("Numéro de rue de résidence", "int", true);
+
+                        rue = Demander("Nom de rue de résidence", "string", true);
+
+                        ville = Demander("Ville de résidence", "string", true);
+
+                        code_postal = Demander("Code postal de ville de résidence", "int", true);
+
+                        metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+
+                        email = Demander("Adresse e-mail", "string", true);
+
+                        mot_de_passe = Demander("Mot de passe", "string", true);
+                    }
 
 
                     string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
@@ -657,7 +789,7 @@ namespace Livin_paris_WinFormsApp
                     }
 
                     string requete2 = "SELECT LAST_INSERT_ID();";
-                    string[] resultat_id_cuisinier = DQL_SQL(requete2, false)[0];
+                    int resultat_id_cuisinier = Convert.ToInt32(DQL_SQL(requete2, false)[0][0]);
                     Console.WriteLine("\nRequête executée, identifiant du nouveau cuisinier : " + resultat_id_cuisinier);
                 }
 
