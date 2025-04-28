@@ -119,7 +119,7 @@ namespace Livin_paris_WinFormsApp
 
                 Console.ResetColor();
                 
-                string mot_de_passe = Demander("Entrez votre mot de passe", "string", true);
+                string mot_de_passe = Demander("Entrez votre mot de passe", "mdp", true);
                 if (mot_de_passe == client.Mot_de_passe)
                 {
                     valide = true;
@@ -340,10 +340,12 @@ namespace Livin_paris_WinFormsApp
 
                 metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
 
+
                 email = Demander("Adresse e-mail", "string", true);
 
                 mot_de_passe = Demander("Mot de passe", "mdp", true);
             }
+
 
 
             string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";

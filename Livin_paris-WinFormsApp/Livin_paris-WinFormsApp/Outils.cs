@@ -18,7 +18,7 @@ namespace Livin_paris_WinFormsApp
         /// <param name="required">Indique si le champ est requis à l'endroit où il est placé</param>
         /// <returns></returns>
         public static string Demander(string question, string type, bool required)
-        {
+        {// daire prise en compte de la date
             string reponse = "";
             bool correcte = false;
             while (correcte == false)
@@ -67,6 +67,10 @@ namespace Livin_paris_WinFormsApp
                             correcte = true;
                             reponse = "False";
                         }
+                    } else if (type == "mdp" && reponse.Trim() != "")
+                    {
+                        correcte = true;
+                        reponse = reponse.Trim();
                     }
                 }
                 else if (!required)
