@@ -221,7 +221,7 @@ namespace Livin_paris_WinFormsApp
 
             email = Demander("Adresse e-mail", "string", true);
 
-            mot_de_passe = Demander("Mot de passe", "string", true);
+            mot_de_passe = Demander("Mot de passe", "mdp", true);
 
 
             string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
@@ -630,7 +630,7 @@ namespace Livin_paris_WinFormsApp
 
                     email = Demander("Adresse e-mail", "string", true);
 
-                    mot_de_passe = Demander("Mot de passe", "string", true);
+                    mot_de_passe = Demander("Mot de passe", "mdp", true);
 
 
                     string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
@@ -940,7 +940,7 @@ namespace Livin_paris_WinFormsApp
                     id_compte_requete = $"SELECT id_compte FROM Client WHERE id_client = {id_client};";
                     id_compte = DQL_SQL(id_compte_requete, false)[0][0];
 
-                    string mot_de_passe = Demander("Entrez votre mot de passe", "string", true);
+                    string mot_de_passe = Demander("Entrez votre mot de passe", "mdp", true);
                     string reel_mot_de_passe = DQL_SQL($"SELECT mot_de_passe FROM Compte WHERE id_compte = '{id_compte}'", false)[0][0];
 
                     if (mot_de_passe != reel_mot_de_passe)

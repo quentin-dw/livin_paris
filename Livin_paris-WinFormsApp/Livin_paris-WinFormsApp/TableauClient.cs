@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using static Livin_paris_WinFormsApp.Outils;
@@ -46,7 +47,6 @@ namespace Livin_paris_WinFormsApp
             {
                 return;
             }
-
             NouvelleCommande(client);
         }
 
@@ -119,7 +119,7 @@ namespace Livin_paris_WinFormsApp
 
                 Console.ResetColor();
                 
-                string mot_de_passe = Demander("Entrez votre mot de passe", "string", true);
+                string mot_de_passe = Demander("Entrez votre mot de passe", "mdp", true);
                 if (mot_de_passe == client.Mot_de_passe)
                 {
                     valide = true;
@@ -220,52 +220,136 @@ namespace Livin_paris_WinFormsApp
 
             string reponse = "";
             string entreprise = "", prenom = "", nom = "", nom_entreprise = "", telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe;
-            Console.WriteLine("Champs obligatoires marqués par *");
 
-
-            reponse = Demander("Representez-vous une entreprise ? [Oui/Non]", "bool", true);
-            if (reponse.ToLower() == "oui")
+            string viaJSON = Demander("Voulez-vous importer votre profil depuis le fichier nouveauClient.json ? [oui/non]", "string", true);
+            if (viaJSON.ToLower() == "oui")
             {
-                entreprise = "TRUE";
+                try
+                {
+                    string jsonString = File.ReadAllText("../../../nouveauClient.json");
 
-                prenom = Demander("Prénom référent", "string", true);
+                    using JsonDocument doc = JsonDocument.Parse(jsonString);
+                    JsonElement root = doc.RootElement;
 
-                nom = Demander("Nom référent", "string", true);
+                    bool statut_entreprise = root.GetProperty("entreprise").GetBoolean();
+                    if (statut_entreprise)
+                    {
+                        entreprise = "TRUE";
+                        nom_entreprise = root.GetProperty("nom_entreprise").GetString();
+                    }
+                    else
+                    {
+                        entreprise = "FALSE";
+                        nom_entreprise = "NULL";
+                    }
+                    prenom = root.GetProperty("prenom").GetString().ToLower();
+                    nom = root.GetProperty("nom").GetString().ToLower();
+                    telephone = root.GetProperty("numero_telephone").GetString().ToLower();
+                    numero = root.GetProperty("numero_residence").GetString().ToLower();
+                    rue = root.GetProperty("rue").GetString().ToLower();
+                    ville = root.GetProperty("ville").GetString().ToLower();
+                    code_postal = root.GetProperty("code_postal").GetString().ToLower();
+                    metro_le_plus_proche = root.GetProperty("metro_le_plus_proche").GetString().ToLower();
+                    email = root.GetProperty("email").GetString().ToLower();
+                    mot_de_passe = root.GetProperty("mot_de_passe").GetString().ToLower();
+                }
+                catch (Exception ex) 
+                { 
+                    Console.WriteLine("Une erreur est survenue, nous allons créer le compte autrement");
+                    Console.WriteLine("Champs obligatoires marqués par *");
 
-                nom_entreprise = Demander("Nom de l'entreprise", "string", true);
 
+                    reponse = Demander("Representez-vous une entreprise ? [Oui/Non]", "string", true);
+                    if (reponse.ToLower() == "oui")
+                    {
+                        entreprise = "TRUE";
+
+                        prenom = Demander("Prénom référent", "string", true);
+
+                        nom = Demander("Nom référent", "string", true);
+
+                        nom_entreprise = Demander("Nom de l'entreprise", "string", true);
+
+                    }
+                    else if (reponse.ToLower() == "non")
+                    {
+                        entreprise = "FALSE";
+
+                        prenom = Demander("Prénom", "string", true);
+
+                        nom = Demander("Nom", "string", true);
+
+                        nom_entreprise = "NULL";
+                    }
+
+                    telephone = Demander("Numéro de téléphone", "string", true);
+
+                    numero = Demander("Numéro de rue de résidence", "int", true);
+
+                    rue = Demander("Nom de rue de résidence", "string", true);
+
+                    ville = Demander("Ville de résidence", "string", true);
+
+                    code_postal = Demander("Code postal de ville de résidence", "int", true);
+
+                    metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+
+                    email = Demander("Adresse e-mail", "string", true);
+
+                    mot_de_passe = Demander("Mot de passe", "string", true);
+                }
             }
-            else if (reponse.ToLower() == "non")
+
+            else
             {
-                entreprise = "FALSE";
+                Console.WriteLine("Champs obligatoires marqués par *");
 
-                prenom = Demander("Prénom", "string", true);
 
-                nom = Demander("Nom", "string", true);
+                reponse = Demander("Representez-vous une entreprise ? [Oui/Non]", "string", true);
+                if (reponse.ToLower() == "oui")
+                {
+                    entreprise = "TRUE";
 
-                nom_entreprise = "NULL";
+                    prenom = Demander("Prénom référent", "string", true);
+
+                    nom = Demander("Nom référent", "string", true);
+
+                    nom_entreprise = Demander("Nom de l'entreprise", "string", true);
+
+                }
+                else if (reponse.ToLower() == "non")
+                {
+                    entreprise = "FALSE";
+
+                    prenom = Demander("Prénom", "string", true);
+
+                    nom = Demander("Nom", "string", true);
+
+                    nom_entreprise = "NULL";
+                }
+
+                telephone = Demander("Numéro de téléphone", "string", true);
+
+                numero = Demander("Numéro de rue de résidence", "int", true);
+
+                rue = Demander("Nom de rue de résidence", "string", true);
+
+                ville = Demander("Ville de résidence", "string", true);
+
+                code_postal = Demander("Code postal de ville de résidence", "int", true);
+
+                metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+
+
+                email = Demander("Adresse e-mail", "string", true);
+
+                mot_de_passe = Demander("Mot de passe", "mdp", true);
             }
 
-
-
-            telephone = Demander("Numéro de téléphone", "string", true);
-
-            numero = Demander("Numéro de rue de résidence", "int", true);
-
-            rue = Demander("Nom de rue de résidence", "string", true);
-
-            ville = Demander("Ville de résidence", "string", true);
-
-            code_postal = Demander("Code postal de ville de résidence", "int", true);
-
-            metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
-
-            email = Demander("Adresse e-mail", "string", true);
-
-            mot_de_passe = Demander("Mot de passe", "string", true);
 
 
             string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
+            
             bool InsertCompte = DML_SQL(requeteInsertCompte);
 
             string requete = "SELECT LAST_INSERT_ID();";
