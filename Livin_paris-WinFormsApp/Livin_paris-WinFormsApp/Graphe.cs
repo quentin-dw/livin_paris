@@ -33,6 +33,7 @@ namespace Livin_paris_WinFormsApp
         {
             this.listeAdjacence = new Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>>();
             this.nbNoeuds = 0;
+            this.tempsChangement = 3;
             ChargerGrapheCSV(noeuds, arcs);
 
             //List<Noeud<T>> dfs = DFS(new Noeud(1));
@@ -186,7 +187,15 @@ namespace Livin_paris_WinFormsApp
         /// </returns>
         public List<Noeud<int>> TrouverStationsParNom(string nom)
         {
-            return this.noeuds.Where(station => station.Nom == nom).ToList();
+            List<Noeud<int>> resultat = new List<Noeud<int>>();
+            foreach (Noeud<int> station in this.noeuds)
+            {
+                if (station.Nom == nom)
+                {
+                    resultat.Add(station);
+                }
+            }
+            return resultat;
         }
 
 
@@ -396,6 +405,22 @@ namespace Livin_paris_WinFormsApp
                 }
                 Console.WriteLine();
             }
+        }
+
+        public List<Noeud<T>> TriNoeuds()
+        {
+            List<int> degreeNoeuds = new List<int>();
+            foreach (var noeud in this.noeuds)
+            {
+                degreeNoeuds[noeud.Id] = listeAdjacence[noeud].Count;
+            }
+            List<Noeud<T>> noeudsTriés = new List<Noeud<T>>();
+            return noeudsTriés;
+        }
+        public Dictionary<Noeud<T>, int> AlgoWelshPowell(Graphe<T> graphe)
+        {
+            Dictionary<Noeud<T>, int> retour = new Dictionary<Noeud<T>, int>();
+            return retour;
         }
     }
 }

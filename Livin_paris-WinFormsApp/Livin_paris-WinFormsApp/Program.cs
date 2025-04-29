@@ -39,7 +39,8 @@ namespace Livin_paris_WinFormsApp
             new Graphe<int>(noeuds, arcs);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1("../../../../../noeuds.csv", "../../../../../arcs.csv"));
+            //Application.Run(new Form1("../../../../../noeuds.csv", "../../../../../arcs.csv"));
+            Application.Run(new Form2("../../../../../noeuds.csv", "../../../../../arcs.csv"));
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 

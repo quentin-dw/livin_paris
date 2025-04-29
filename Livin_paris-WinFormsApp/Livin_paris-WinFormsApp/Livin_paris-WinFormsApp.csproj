@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <RootNamespace>Livin_paris_WinFormsApp</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
@@ -10,7 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GMap.NET.WindowsForms" Version="1.7.5" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.4" />
     <PackageReference Include="MySql.Data" Version="9.2.0" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.4" />
   </ItemGroup>
 
 </Project>

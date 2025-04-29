@@ -13,6 +13,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GMap.NET.WindowsForms" Version="1.7.5" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.4" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Livin_paris-WinFormsApp\Livin_paris-WinFormsApp.csproj" />
   </ItemGroup>
 
