@@ -63,6 +63,10 @@ namespace Livin_paris_WinFormsApp
         public string Email { get { return this.email; } }
         public string Mot_de_passe { get { return this.mot_de_passe; } }
 
+        /// <summary>
+        /// Veirfie si un Cuisinier existe, il est possible qu'un cuisinier ait été créé mais pas en entier par exemple.
+        /// </summary>
+        /// <returns>Un booleen indiquant si le cuisinier est bien rempli</returns>
         public bool Existe()
         {
             bool retour = true;
@@ -73,6 +77,9 @@ namespace Livin_paris_WinFormsApp
             return retour;
         }
 
+        /// <summary>
+        /// Renvoie l'adresse du cuisinier sous un format lisible
+        /// </summary>
         public string Adresse()
         {
             return (this.numero + "," + this.rue + "," + this.ville + "," + this.code_postal);

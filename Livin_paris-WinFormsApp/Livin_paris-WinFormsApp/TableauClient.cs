@@ -86,6 +86,7 @@ namespace Livin_paris_WinFormsApp
                 if (idExists == "1")
                 {
                     valide = true;
+                    messageErreur = "";
                 } else
                 {
                     if (DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE id_compte = {id_compte})", false)[0][0] == "1")
@@ -123,6 +124,7 @@ namespace Livin_paris_WinFormsApp
                 if (mot_de_passe == client.Mot_de_passe)
                 {
                     valide = true;
+                    messageErreur = "";
                 }
                 else
                 {
@@ -130,14 +132,6 @@ namespace Livin_paris_WinFormsApp
                 }
             }
 
-            /*Console.BackgroundColor = ConsoleColor.DarkGreen;
-            Console.Clear();
-            string message = " Connexion réussie ";
-            Console.SetCursorPosition((Console.WindowWidth / 2) - (message.Length / 2), Console.WindowHeight / 2);
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write(message);
-            Thread.Sleep(1500);*/
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine();
@@ -386,6 +380,9 @@ namespace Livin_paris_WinFormsApp
             return client;
         }
 
+        /// <summary>
+        /// Permet de trouver l'identifiant d'un client à partir de son email ou numero de telephone
+        /// </summary>
         static void TrouverIdentifiantClient()
         {
             Console.ResetColor();
@@ -626,6 +623,7 @@ namespace Livin_paris_WinFormsApp
             {
                 Console.WriteLine($"Livraison {i + 1}e ligne de commande ");
                 string id_cuisinier = DQL_SQL($"SELECT P.id_cuisinier FROM Plat P JOIN ligne_de_commande ldc ON P.id_plat = ldc.id_plat WHERE id_ligne_de_commande = {id_ligne_de_commande[i][0]};", false)[0][0];
+                Console.WriteLine("Identifiant du cuisinier livreur : "+id_cuisinier);
                 string id_compte_cuisinier = DQL_SQL($"SELECT Cpt.id_compte FROM Compte Cpt JOIN cuisinier Cui ON cpt.id_compte = cui.id_compte WHERE cui.id_cuisinier = {id_cuisinier};", false)[0][0];
                 string metro_le_plus_proche_cusinier = DQL_SQL($"SELECT metro_le_plus_proche FROM compte WHERE id_compte ={id_compte_cuisinier};", false)[0][0];
 
@@ -648,5 +646,86 @@ namespace Livin_paris_WinFormsApp
             Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
             Console.ReadLine();
         }
+
+        #region MESSAGERIE CLIENT
+        // --- Menu messagerie principal ----------
+        static void MessagerieClient(Client client)
+        {
+            bool quitter = false;
+            while (!quitter)
+            {
+                Console.Clear();
+                Console.WriteLine("📬  VOS DISCUSSIONS (client)\n");
+
+                // liste des conversations triées par dernier message
+                string req = $@"
+            SELECT CU.id_cuisinier,
+                   CP.prenom, CP.nom,
+                   MAX(M.date_envoi) AS derniere
+            FROM   Message M
+              JOIN Cuisinier CU ON M.id_cuisinier = CU.id_cuisinier
+              JOIN Compte    CP ON CU.id_compte    = CP.id_compte
+            WHERE  M.id_client = {client.Id_client}
+            GROUP  BY CU.id_cuisinier, CP.prenom, CP.nom
+            ORDER  BY derniere DESC;";
+                var rows = DQL_SQL(req, true);
+
+                Console.WriteLine("\n0  ➜  Nouvelle discussion");
+                Console.WriteLine("-1 ➜  Retour\n");
+
+                int choix = Convert.ToInt32(Demander("Choix", "int", true));
+                if (choix == -1) quitter = true;
+                else if (choix == 0) NouvelleDiscussionClient(client);
+                else ConversationClient(client, choix); // l’ID tapé doit être celui affiché
+            }
+        }
+
+        // --- Créer / envoyer le 1er message ----------
+        static void NouvelleDiscussionClient(Client client)
+        {
+            int idCuis = Convert.ToInt32(Demander("ID du cuisinier destinataire", "int", true));
+            string texte = Demander("Votre message", "string", true);
+
+            string insert = $@"
+        INSERT INTO Message(id_client, id_cuisinier, contenu, from_client)
+        VALUES ({client.Id_client}, {idCuis}, '{texte.Replace("'", "''")}', 1);";
+            if (DML_SQL(insert)) Console.WriteLine("✅ Message envoyé");
+            Console.ReadLine();
+        }
+
+        // --- Afficher l’historique + répondre ----------
+        static void ConversationClient(Client client, int idCuisinier)
+        {
+            bool retour = false;
+            while (!retour)
+            {
+                Console.Clear();
+                Console.WriteLine($"💬  Discussion avec le cuisinier #{idCuisinier}\n");
+
+                string req = $@"
+            SELECT contenu, date_envoi, from_client
+            FROM   Message
+            WHERE  id_client    = {client.Id_client}
+              AND  id_cuisinier = {idCuisinier}
+            ORDER  BY date_envoi;";
+                foreach (var m in DQL_SQL(req, false))
+                {
+                    bool moi = m[2] == "1";
+                    Console.WriteLine($"{(moi ? "👤" : "👨‍🍳")} {m[1]}  :  {m[0]}");
+                }
+
+                Console.WriteLine("\n1 ➜ Répondre    0 ➜ Retour");
+                int c = Convert.ToInt32(Demander("Choix", "int", true));
+                if (c == 0) retour = true;
+                else
+                {
+                    string txt = Demander("Votre message", "string", true);
+                    DML_SQL($@"INSERT INTO Message(id_client,id_cuisinier,contenu,from_client)
+                       VALUES ({client.Id_client},{idCuisinier},'{txt.Replace("'", "''")}',1);");
+                }
+            }
+        }
+        #endregion
+
     }
 }

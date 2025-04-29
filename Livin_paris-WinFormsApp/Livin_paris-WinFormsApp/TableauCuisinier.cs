@@ -75,6 +75,8 @@ namespace Livin_paris_WinFormsApp
                 else if (choix2 == 3)
                 {
                     HistoriqueLivraisons();
+                } else if (choix2 == -5)
+                {
                 }
             }
         }
@@ -118,6 +120,7 @@ namespace Livin_paris_WinFormsApp
                 if (idExists == "1")
                 {
                     valide = true;
+                    messageErreur = "";
                 }
                 else
                 {
@@ -432,6 +435,7 @@ namespace Livin_paris_WinFormsApp
         }
         #endregion
 
+
         static void NouveauPlat()
         {
             Console.ResetColor();
@@ -445,9 +449,25 @@ namespace Livin_paris_WinFormsApp
             Console.WriteLine();
 
             string nomPlat = Demander("Nom du plat", "string", true);
-            string typePlat = Demander("Type du plat (entrée/plat principal/dessert)", "string", true);
+            string typePlat = null;
+            while(typePlat == null || (typePlat != "entrée" && typePlat != "plat principal" && typePlat != "dessert"))
+            {
+                if(typePlat != null && (typePlat != "entrée" || typePlat != "plat principal" || typePlat != "dessert"))
+                {
+                    Console.WriteLine("Erreur : le format d'entrée est incorrect, veuillez entrer 'entrée', 'plat principal' ou 'dessert'");
+                }
+                typePlat = Demander("Type du plat (entrée/plat principal/dessert)", "string", true);
+            }
             string dateFab = Demander("Date de fabrication (AAAA-MM-JJ)", "string", true);
-            string datePer = Demander("Date de péremption (AAAA-MM-JJ)", "string", true);
+            string datePer = null;
+            while (datePer == null || (Convert.ToInt32(dateFab.Substring(0,4))> Convert.ToInt32(datePer.Substring(0, 4)) || Convert.ToInt32(dateFab.Substring(5, 2)) > Convert.ToInt32(datePer.Substring(5,2)) || Convert.ToInt32(dateFab.Substring(8, 2)) > Convert.ToInt32(datePer.Substring(8, 2))))
+            {
+                if(datePer != null && (Convert.ToInt32(dateFab.Substring(0, 4)) > Convert.ToInt32(datePer.Substring(0, 4)) || Convert.ToInt32(dateFab.Substring(5, 2)) > Convert.ToInt32(datePer.Substring(5, 2)) || Convert.ToInt32(dateFab.Substring(8, 2)) > Convert.ToInt32(datePer.Substring(8, 2))))
+                {
+                    Console.WriteLine("Erreur : la date entrée est antérieure à la date de fabrication");
+                }
+                datePer = Demander("Date de péremption (AAAA-MM-JJ)", "string", true);
+            }
             string prixStr = Demander("Prix par personne (ex: 12.50)", "string", true);
             string nationalite = Demander("Nationalité de la cuisine", "string", true);
             string regime = Demander("Régime alimentaire", "string", true);
@@ -526,6 +546,7 @@ namespace Livin_paris_WinFormsApp
                 {
                     Console.WriteLine($"{i + 1}. {libelles[i]}");
                 }
+                Console.WriteLine("-1 : Quitter");
                 Console.WriteLine();
                 string choixChampStr = Demander("Entrez le numéro du champ", "int", true);
                 int choixChamp = Convert.ToInt32(choixChampStr) - 1;
