@@ -12,6 +12,10 @@ namespace Livin_paris_WinFormsApp
     //faire truc qui affiche historique de ttes les transactions
     public class TableauClient
     {
+        /// <summary>
+        /// Gestion de la connexion d'un utilisateur vers sont compte client
+        /// </summary>
+        /// <param name="graphe"></param>
         public static void AffichageMenuClient(Graphe<int> graphe)
         {
             Client client = null;
@@ -86,6 +90,7 @@ namespace Livin_paris_WinFormsApp
                 if (idExists == "1")
                 {
                     valide = true;
+                    messageErreur = "";
                 } else
                 {
                     if (DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE id_compte = {id_compte})", false)[0][0] == "1")
@@ -123,6 +128,7 @@ namespace Livin_paris_WinFormsApp
                 if (mot_de_passe == client.Mot_de_passe)
                 {
                     valide = true;
+                    messageErreur = "";
                 }
                 else
                 {
@@ -130,14 +136,6 @@ namespace Livin_paris_WinFormsApp
                 }
             }
 
-            /*Console.BackgroundColor = ConsoleColor.DarkGreen;
-            Console.Clear();
-            string message = " Connexion réussie ";
-            Console.SetCursorPosition((Console.WindowWidth / 2) - (message.Length / 2), Console.WindowHeight / 2);
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write(message);
-            Thread.Sleep(1500);*/
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine();

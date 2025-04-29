@@ -13,7 +13,11 @@ namespace Livin_paris_WinFormsApp
 {
     public class TableauCuisinier
     {
+        
         private static Cuisinier cuisinierCourant;
+        /// <summary>
+        /// Gestion de la connexion d'un utilisateur vers sont compte cuisinier
+        /// </summary>
         public static void AffichageMenuCuisinier(Graphe<int> graphe)
         {
             Cuisinier cuisinier = null;
@@ -76,10 +80,17 @@ namespace Livin_paris_WinFormsApp
                 {
                     HistoriqueLivraisons();
                 }
+                else if (choix2 == -5)
+                {
+                }
             }
         }
 
         #region Connexion, Association, Creation de compte, Trouver identifiant
+        /// <summary>
+        /// Affiche l'interface permettant au un utilisateur de se connecter en tant que cuisinier
+        /// </summary>
+        /// <returns></returns>
         static Cuisinier ConnexionCuisinier()
         {
             Cuisinier cuisinier = null;
@@ -118,6 +129,7 @@ namespace Livin_paris_WinFormsApp
                 if (idExists == "1")
                 {
                     valide = true;
+                    messageErreur = "";
                 }
                 else
                 {
@@ -149,6 +161,7 @@ namespace Livin_paris_WinFormsApp
                 if (mot_de_passe == cuisinier.Mot_de_passe)
                 {
                     valide = true;
+                    messageErreur = "";
                 }
                 else
                 {
@@ -167,6 +180,9 @@ namespace Livin_paris_WinFormsApp
             return cuisinier;
         }
 
+        /// <summary>
+        /// Permet l'association d'un compte client vers un compte cuisinier
+        /// </summary>
         static void AssocierCompteCuisinier()
         {
             Console.ResetColor();
@@ -340,6 +356,9 @@ namespace Livin_paris_WinFormsApp
             return cuisinier;
         }
 
+        /// <summary>
+        /// Permet de determiner l'identifiant d'un cuisinier en fonction de son email ou num de telephone
+        /// </summary>
         static void TrouverIdentifiantCuisinier()
         {
             Console.ResetColor();
@@ -432,6 +451,9 @@ namespace Livin_paris_WinFormsApp
         }
         #endregion
 
+        /// <summary>
+        /// Ajoute un nouveau plat dans la base de donnée
+        /// </summary>
         static void NouveauPlat()
         {
             Console.ResetColor();
@@ -498,6 +520,9 @@ namespace Livin_paris_WinFormsApp
             Thread.Sleep(1500);
         }
 
+        /// <summary>
+        /// Permet la modification des plats
+        /// </summary>
         static void ModifierPlats()
         {
             Console.ResetColor();
@@ -566,6 +591,9 @@ namespace Livin_paris_WinFormsApp
             }
         }
 
+        /// <summary>
+        /// Affiche les livraisons qui sont à effectuer pour un cuisinier
+        /// </summary>
         static void Livraisons()
         {
             Console.ResetColor();
@@ -584,6 +612,9 @@ namespace Livin_paris_WinFormsApp
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Affiche l'historique des livraisons d'un cuisinier
+        /// </summary>
         static void HistoriqueLivraisons()
         {
             Console.ResetColor();

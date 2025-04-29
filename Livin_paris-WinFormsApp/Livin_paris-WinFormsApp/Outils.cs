@@ -20,7 +20,7 @@ namespace Livin_paris_WinFormsApp
         /// <param name="required">Indique si le champ est requis à l'endroit où il est placé</param>
         /// <returns></returns>
         public static string Demander(string question, string type, bool required, Graphe<int> graphe = null)
-        {// daire prise en compte de la date
+        {
             string reponse = "";
             bool correcte = false;
             while (correcte == false)
@@ -135,7 +135,7 @@ namespace Livin_paris_WinFormsApp
         /// <param name="libelle4">Quatrieme choix proposé à l'utilisateur</param>
         /// <returns>Retourne un chiffre entre 0 et 3 si un choix a été fait (sens de rotation antihoraire), 
         /// retourne -1 si erreur, retourne -2 si l'utilisateur souhaite quitter le menu</returns>
-        public static int MenuCirculaire(int nbChoix, string libelle1, string libelle2, string libelle3, string libelle4, string message)
+        public static int MenuCirculaire(int nbChoix, string libelle1, string libelle2, string libelle3, string libelle4, string message, bool messagerie = false)
         {
             int choixSelected = -1;
             bool end = false;
@@ -223,6 +223,15 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine(libelle);
                 Console.ResetColor();
 
+                if (messagerie)
+                {
+                    Console.SetCursorPosition(2, height - 2);
+
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    Console.Write(" (A) Messagerie ");
+                    Console.ResetColor();
+                }
 
                 Console.SetCursorPosition(width / 2, height / 2 - 1);
                 Console.Write("▲");
@@ -275,7 +284,13 @@ namespace Livin_paris_WinFormsApp
                             end = true;
                             choixSelected = -2;
                         }
-                    }
+                        else if (keyInfo.Key == ConsoleKey.NumPad1)
+                        {
+                            entreeCorrecte = true;
+                            end = true;
+                            choixSelected = -5;
+
+                        }
 
                     Thread.Sleep(50);
                 }
