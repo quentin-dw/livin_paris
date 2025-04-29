@@ -28,6 +28,10 @@ namespace Livin_paris_WinFormsApp
             return liens;
         }
 
+        public Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> GetListeAdjacence()
+        {
+            return listeAdjacence;
+        }
 
         public Graphe(string noeuds, string arcs)
         {
@@ -403,8 +407,7 @@ namespace Livin_paris_WinFormsApp
         /// <returns>
         /// Un dictionnaire associant chaque nœud à un numéro de couleur tel qu’aucun nœud adjacent ne partage la même couleur.
         /// </returns>
-        public static Dictionary<Noeud<int>, int> WelshPowell(
-    Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> graphe)
+        public static Dictionary<Noeud<int>, int> WelshPowell(Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> graphe)
         {
             var couleurs = new Dictionary<Noeud<int>, int>();
 
@@ -419,13 +422,6 @@ namespace Livin_paris_WinFormsApp
             foreach (var kvp in degres)
             {
                 var noeud = kvp.Key;
-
-                var stationExistante = stationsColorées.Keys.FirstOrDefault(n => Noeud<int>.memeStation(n, noeud));
-                if (stationExistante != null)
-                {
-                    couleurs[noeud] = stationsColorées[stationExistante];
-                    continue;
-                }
 
                 if (!couleurs.ContainsKey(noeud))
                 {

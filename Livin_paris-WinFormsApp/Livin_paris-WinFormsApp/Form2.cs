@@ -17,16 +17,16 @@ namespace Livin_paris_WinFormsApp
 {
     public partial class Form2 : Form
     {
+        #region Attributs
         private Graphe<int> graphe;
-
-        private Dictionary<string, List<Noeud<int>>> lignes;
-        private HashSet<string> lignesAffichees;
-        private Dictionary<string, Color> couleursLignes;
 
         private GMapControl gmap;
         private GMapOverlay overlayStations;
         private Dictionary<string, GMarkerGoogle> marqueursStations;
         private GMapOverlay overlayLignes;
+        private Dictionary<string, List<Noeud<int>>> lignes;
+        private HashSet<string> lignesAffichees;
+        private Dictionary<string, Color> couleursLignes;
         private GMapOverlay overlayPlusCourtChemin;
 
         private Panel panelLignes;
@@ -41,7 +41,14 @@ namespace Livin_paris_WinFormsApp
         private Button btnCalculerChemin;
         private List<Noeud<int>> cheminActuel = new List<Noeud<int>>();
         private Button btnAfficherChemin;
+        private Button btnAfficherColoration;
+        #endregion
 
+        /// <summary>
+        /// Cette méthode permet de créer une fenêtre microsoft form pour l'affichage d'un plan interractif du metro et de son fond de carte.
+        /// </summary>
+        /// <param name="noeudsFile">Lien vers le fichier csv contenant les noeuds du graphe</param>
+        /// <param name="arcsFile">Lien vers le fichier csv contenant les arcs du graphe</param>
         public Form2(string noeudsFile, string arcsFile)
         {
             InitializeComponent();
@@ -81,13 +88,15 @@ namespace Livin_paris_WinFormsApp
         }
 
         #region Affichage carte
+        /// <summary>
+        /// Cette fonction crée un marqueur pour chaque station.
+        /// </summary>
         private void AfficherStations()
         {
             marqueursStations = new Dictionary<string, GMarkerGoogle>();
             foreach (var station in graphe.GetNoeuds())
             {
                 string nomLigne = station.Ligne;
-
                 if (marqueursStations.TryGetValue(station.Nom, out var existingMarker))
                 {
                     existingMarker.ToolTipText += ", " + nomLigne;
@@ -104,8 +113,9 @@ namespace Livin_paris_WinFormsApp
                 }
             }
         }
+
         /// <summary>
-        /// Cette fonction permet de regrouper les noeuds en fonction de leur ligne
+        /// Cette fonction permet de regrouper les noeuds en fonction de leur ligne.
         /// </summary>
         private void CalculerLignes()
         {
@@ -127,7 +137,7 @@ namespace Livin_paris_WinFormsApp
         }
 
         /// <summary>
-        /// Cette fonction permet de donner une couleur a chaque ligne
+        /// Cette fonction assigne une couleur aléatoire à chaque ligne.
         /// </summary>
         private void AssignerCouleursLignes()
         {
@@ -138,32 +148,29 @@ namespace Livin_paris_WinFormsApp
             }
         }
 
+        /// <summary>
+        /// Cette méthode crée et remplit un overlay pour les lignes.
+        /// </summary>
         private void AfficherLignes()
         {
             CalculerLignes();
             overlayLignes = new GMapOverlay("lignes");
-
             foreach (var ligne in lignes)
             {
                 string nomLigne = ligne.Key;
                 List<Noeud<int>> stations = ligne.Value;
-
-                // On trie les stations par ID pour éviter les zigzags (à affiner si besoin)
                 stations = stations.OrderBy(s => s.Id).ToList();
-
                 List<PointLatLng> points = new List<PointLatLng>();
                 foreach (var station in stations)
                 {
                     points.Add(new PointLatLng(station.Latitude, station.Longitude));
                 }
-
                 if (points.Count >= 2)
                 {
                     GMapRoute route = new GMapRoute(points, nomLigne)
                     {
-                        Stroke = new Pen(couleursLignes[nomLigne], 3) // couleur et épaisseur
+                        Stroke = new Pen(couleursLignes[nomLigne], 3)
                     };
-
                     overlayLignes.Routes.Add(route);
                 }
             }
@@ -174,7 +181,9 @@ namespace Livin_paris_WinFormsApp
 
         #region Pannel Lignes
         /// <summary>
-        /// Cette fonction sert à créer les boutons pour chacune des lignes permettant ensuite d'activer ou désactiver leur affichage
+        /// Cette méthode crée un panel sur la droite de l'écran. 
+        /// De plus elle crée directement des boutons pour chacune des lignes permettant d'activer et désactiver leur affichage.
+        /// Enfin elle crée un bouton permettant d'activer ou désactiver l'affichage de l'ensemble des lignes directement.
         /// </summary>
         private void AjouterBoutonsLignes()
         {
@@ -248,6 +257,10 @@ namespace Livin_paris_WinFormsApp
         #endregion
 
         #region Panel bas
+
+        /// <summary>
+        /// Cette méthode crée le panel du bas et y implémente les différents boutons.
+        /// </summary>
         private void AjouterPanelBas()
         {
             panelBas = new Panel
@@ -276,21 +289,21 @@ namespace Livin_paris_WinFormsApp
             {
                 Width = 120,
                 PlaceholderText = "Station départ",
-                Location = new Point(150, 15)
+                Location = new Point(130, 15)
             };
             panelBas.Controls.Add(txtStationDepart);
             txtStationArrivee = new TextBox
             {
                 Width = 120,
                 PlaceholderText = "Station arrivée",
-                Location = new Point(280, 15)
+                Location = new Point(250, 15)
             };
             panelBas.Controls.Add(txtStationArrivee);
             btnCalculerChemin = new Button
             {
                 Text = "Calculer",
                 Width = 100,
-                Location = new Point(420, 15)
+                Location = new Point(370, 15)
             };
             btnCalculerChemin.Click += BtnCalculerChemin_Click;
             panelBas.Controls.Add(btnCalculerChemin);
@@ -298,16 +311,26 @@ namespace Livin_paris_WinFormsApp
             {
                 Text = "Afficher chemin",
                 Width = 120,
-                Location = new Point(520, 15)
+                Location = new Point(470, 15)
             };
             btnAfficherChemin.Click += BtnAfficherChemin_Click;
             panelBas.Controls.Add(btnAfficherChemin);
+            btnAfficherColoration = new Button
+            {
+                Text = "Colorer Graphe",
+                Width = 120,
+                Location = new Point(590, 15)
+            };
+            btnAfficherColoration.Click += BtnAfficherColoration_Click;
+            panelBas.Controls.Add(btnAfficherColoration);
 
             this.Controls.Add(panelBas);
         }
 
+        #region Méthodes annexe
+
         /// <summary>
-        /// Méthode permettant l'affichage d'une liste (ici utilisé pour afficher le chemin trouvée par l'algorithme de parcours)
+        /// Cette méthode crée le texte lié à l'affichage du plus court chemin après avoir géré l'affichage des liens entre les stations du chemin.
         /// </summary>
         private string AfficherCheminActuel()
         {
@@ -353,38 +376,12 @@ namespace Livin_paris_WinFormsApp
             }
             return retour;
         }
-        private void BtnAfficherStation_Click(object sender, EventArgs e)
-        {
-            afficherStations = !afficherStations;
-            if (afficherStations)
-            {
-                foreach (var marker in marqueursStations.Values)
-                {
-                    overlayStations.Markers.Add(marker);
-                }
-                (sender as Button).Text = "Masquer stations";
-            }
-            else
-            {
-                overlayStations.Markers.Clear();
-                (sender as Button).Text = "Afficher stations";
-            }
-            gmap.Refresh();
-        }
+
         /// <summary>
-        /// Cette fonction permet d'exporter le graphe sous forme d'image .png en cliquant sur un bouton
+        /// Cette méthode affiche une boite de texte donnant le résultat du chemin le plus court si celui ci est valable et un message d'erreur sinon.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnExporter_Click(object sender, EventArgs e)
-        {
-            using (Bitmap bmp = new Bitmap(this.ClientSize.Width, this.ClientSize.Height))
-            {
-                gmap.DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
-                bmp.Save("graphe.png");
-                MessageBox.Show("Graphe exporté sous 'graphe.png'", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
+        /// <param name="stationDepart">Station de départ du plus court chemin à calculer</param>
+        /// <param name="stationArrivee">Station d'arrivée du plus court chemin à calculer</param>
         private void CalculerChemin(string stationDepart, string stationArrivee)
         {
             if (string.IsNullOrWhiteSpace(stationDepart) || string.IsNullOrWhiteSpace(stationArrivee))
@@ -411,10 +408,111 @@ namespace Livin_paris_WinFormsApp
             MessageBox.Show("Chemin trouvé ! Coût total : " + coutTotal + " minutes \nStation parcourues : " + AfficherCheminActuel() + "\nVous êtes arrivé !", "Résultat", MessageBoxButtons.OK, MessageBoxIcon.Information);
             gmap.Refresh();
         }
+
+        /// <summary>
+        /// Cette méthode permet de visualiser la coloration via les marqueurs des stations.
+        /// </summary>
+        /// <param name="coloration">Résultat de la coloration du graphe</param>
+        private void AppliquerColoration(Dictionary<Noeud<int>, int> coloration)
+        {
+            overlayStations.Markers.Clear();
+            marqueursStations.Clear();
+            foreach (var station in graphe.GetNoeuds())
+            {
+                var couleurId = coloration.FirstOrDefault(kvp => Noeud<int>.memeStation(kvp.Key, station)).Value;
+                GMarkerGoogleType type = GMarkerGoogleType.blue;
+                switch (couleurId)
+                {
+                    case 0: type = GMarkerGoogleType.blue; break;
+                    case 1: type = GMarkerGoogleType.green; break;
+                    case 2: type = GMarkerGoogleType.red; break;
+                    case 3: type = GMarkerGoogleType.yellow; break;
+                    case 4: type = GMarkerGoogleType.orange; break;
+                    case 5: type = GMarkerGoogleType.purple; break;
+                    case 6: type = GMarkerGoogleType.gray_small; break;
+                }
+                string nomLigne = station.Ligne;
+                if (marqueursStations.TryGetValue(station.Nom, out var existingMarker))
+                {
+                    if (!existingMarker.ToolTipText.Contains(nomLigne))
+                    {
+                        existingMarker.ToolTipText += ", " + nomLigne;
+                    }
+                }
+                else
+                {
+                    var marker = new GMarkerGoogle(
+                        new PointLatLng(station.Latitude, station.Longitude),
+                        type);
+                    marker.ToolTipText = station.Nom + Environment.NewLine + "Ligne : " + nomLigne;
+                    marker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+                    overlayStations.Markers.Add(marker);
+                    marqueursStations[station.Nom] = marker;
+                }
+            }
+            gmap.Refresh();
+        }
+
+        /// <summary>
+        /// Cette méthode renvoie un graphe supprimant les "doublons" de stations dans les noeuds. 
+        /// C'est à dire qu'on considère chaque station comme n'étant qu'un seul et unique noeud meme si plusieurs lignes passent.
+        /// </summary>
+        /// <param name="grapheOriginal"></param>
+        /// <returns></returns>
+        private Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> CalculGrapheReduit(Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> grapheOriginal)
+        {
+            Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> grapheReduit = new Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>>();
+            foreach (var noeud in grapheOriginal.Keys)
+            {
+                var stationExistante = grapheReduit.Keys.FirstOrDefault(n => Noeud<int>.memeStation(n, noeud));
+                Noeud<int> station;
+                if (stationExistante != null)
+                {
+                    station = stationExistante;
+                }
+                else
+                {
+                    station = noeud;
+                    grapheReduit[station] = new Dictionary<Noeud<int>, int>();
+                }
+                foreach (var voisin in grapheOriginal[noeud])
+                {
+                    var voisinStation = grapheReduit.Keys.FirstOrDefault(n => Noeud<int>.memeStation(n, voisin.Key));
+                    if (voisinStation == null)
+                    {
+                        voisinStation = voisin.Key;
+                        grapheReduit[voisinStation] = new Dictionary<Noeud<int>, int>();
+                    }
+
+                    if (!Noeud<int>.memeStation(station, voisinStation))
+                    {
+                        grapheReduit[station][voisinStation] = voisin.Value;
+                    }
+                }
+            }
+            return grapheReduit;
+        }
+        #endregion
+
+        #region Méthodes pour les boutons
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Calculer chemin est cliqué.
+        /// Elle appelle la fonction Calculer chemin.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnCalculerChemin_Click(object sender, EventArgs e)
         {
             CalculerChemin(txtStationDepart.Text, txtStationArrivee.Text);
         }
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Afficher chemin est cliqué. 
+        /// Il active un overlay comprenant uniquement les stations du plus court chemin.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnAfficherChemin_Click(object sender, EventArgs e)
         {
             if (cheminActuel == null || cheminActuel.Count == 0)
@@ -431,6 +529,67 @@ namespace Livin_paris_WinFormsApp
             }
             gmap.Refresh();
         }
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Afficher / Masquer stations est cliqué.
+        /// Elle change l'état de l'overlay des stations afin qu'il soit visible ou non.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnAfficherStation_Click(object sender, EventArgs e)
+        {
+            afficherStations = !afficherStations;
+            if (afficherStations)
+            {
+                foreach (var marker in marqueursStations.Values)
+                {
+                    overlayStations.Markers.Add(marker);
+                }
+                (sender as Button).Text = "Masquer stations";
+            }
+            else
+            {
+                overlayStations.Markers.Clear();
+                (sender as Button).Text = "Afficher stations";
+            }
+            gmap.Refresh();
+        }
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Exporter est cliqué.
+        /// Elle sauvegarde l'état actuel du graphe sous forme d'image .png.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnExporter_Click(object sender, EventArgs e)
+        {
+            using (Bitmap bmp = new Bitmap(this.ClientSize.Width, this.ClientSize.Height))
+            {
+                gmap.DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
+                bmp.Save("graphe.png");
+                MessageBox.Show("Graphe exporté sous 'graphe.png'", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Afficher coloration est cliqué.
+        /// Elle permet de voir visuellement la coloration du graphe.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnAfficherColoration_Click(object sender, EventArgs e)
+        {
+            Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> grapheReduit = CalculGrapheReduit(graphe.GetListeAdjacence());
+            Dictionary<Noeud<int>, int> coloration = Graphe<int>.WelshPowell(grapheReduit);
+            if (coloration == null || coloration.Count == 0)
+            {
+                MessageBox.Show("Aucune coloration calculée.", "Coloration", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            AppliquerColoration(coloration);
+        }
+
+        #endregion
 
         #endregion
 
