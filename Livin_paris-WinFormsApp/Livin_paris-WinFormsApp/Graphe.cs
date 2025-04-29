@@ -35,11 +35,20 @@ namespace Livin_paris_WinFormsApp
             this.nbNoeuds = 0;
             this.tempsChangement = 3;
             ChargerGrapheCSV(noeuds, arcs);
-            var result = WelshPowell(listeAdjacence);
-            //foreach (var kvp in result)
-            //{
-            //    Console.WriteLine($"Noeud {kvp.Key} → Couleur {kvp.Value}");
-            //}
+
+            //List<Noeud<T>> dfs = DFS(new Noeud(1));
+            //Console.Write("DFS : ");
+            //AfficherListe(dfs);
+
+
+            //List<Noeud<T>> bfs = BFS(new Noeud(1));
+            //Console.Write("BFS : ");
+            //AfficherListe(bfs);
+
+
+            //Console.WriteLine(this.EstConnexe());
+
+            //this.ContientCicuits();
         }
 
         /// <summary>
@@ -290,6 +299,7 @@ namespace Livin_paris_WinFormsApp
                 }
             }
 
+            // pas de poids negatifs donc inutile
             foreach (var u in this.listeAdjacence.Keys)
             {
                 foreach (var v in this.listeAdjacence[u])
@@ -395,70 +405,6 @@ namespace Livin_paris_WinFormsApp
                 }
                 Console.WriteLine();
             }
-        }
-
-        public static Dictionary<Noeud<int>, int> WelshPowell(
-    Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> graphe)
-        {
-            var couleurs = new Dictionary<Noeud<int>, int>();
-
-            var degres = new List<KeyValuePair<Noeud<int>, int>>();
-            foreach (var kvp in graphe)
-            {
-                degres.Add(new KeyValuePair<Noeud<int>, int>(kvp.Key, kvp.Value.Count));
-            }
-
-            for (int i = 0; i < degres.Count - 1; i++)
-            {
-                for (int j = i + 1; j < degres.Count; j++)
-                {
-                    if (degres[j].Value > degres[i].Value)
-                    {
-                        var temp = degres[i];
-                        degres[i] = degres[j];
-                        degres[j] = temp;
-                    }
-                }
-            }
-
-            int couleurActuelle = 0;
-
-            foreach (var kvp in degres)
-            {
-                var noeud = kvp.Key;
-                if (!couleurs.ContainsKey(noeud))
-                {
-                    couleurs[noeud] = couleurActuelle;
-
-                    foreach (var autre in degres)
-                    {
-                        var voisin = autre.Key;
-                        if (!couleurs.ContainsKey(voisin))
-                        {
-                            bool conflit = false;
-                            if (graphe.ContainsKey(voisin))
-                            {
-                                foreach (var v in graphe[voisin])
-                                {
-                                    if (couleurs.ContainsKey(v.Key) && couleurs[v.Key] == couleurActuelle)
-                                    {
-                                        conflit = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (!conflit)
-                            {
-                                couleurs[voisin] = couleurActuelle;
-                            }
-                        }
-                    }
-
-                    couleurActuelle++;
-                }
-            }
-
-            return couleurs;
         }
     }
 }
