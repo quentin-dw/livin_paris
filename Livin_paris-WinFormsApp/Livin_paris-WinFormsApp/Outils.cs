@@ -329,6 +329,7 @@ namespace Livin_paris_WinFormsApp
             string[] valueString = new string[reader.FieldCount];
             while (reader.Read())
             {
+                valueString = new string[reader.FieldCount];
                 if (affichage)
                 {
                     Console.Write("◌ ");

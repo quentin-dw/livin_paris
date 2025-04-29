@@ -47,6 +47,7 @@ namespace Livin_paris_WinFormsApp
             string connectionString = "Server=localhost;Database=psi_demougeot_dehecohen_dewolf;User ID=root;Password=root;SslMode=none;";
             connexion = ConnexionSQL(connectionString);
 
+            Thread.Sleep(50000);
             int width = Console.WindowWidth;
             int height = Console.WindowHeight;
 
