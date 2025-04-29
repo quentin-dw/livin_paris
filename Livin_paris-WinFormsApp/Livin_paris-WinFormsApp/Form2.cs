@@ -17,6 +17,7 @@ namespace Livin_paris_WinFormsApp
 {
     public partial class Form2 : Form
     {
+        #region Attributs
         private Graphe<int> graphe;
 
         private Dictionary<string, List<Noeud<int>>> lignes;
@@ -41,7 +42,13 @@ namespace Livin_paris_WinFormsApp
         private Button btnCalculerChemin;
         private List<Noeud<int>> cheminActuel = new List<Noeud<int>>();
         private Button btnAfficherChemin;
+        #endregion
 
+        /// <summary>
+        /// Cette méthode permet de créer une fenêtre microsoft form pour l'affichage d'un plan interractif du metro et de son fond de carte.
+        /// </summary>
+        /// <param name="noeudsFile">Lien vers le fichier csv contenant les noeuds du graphe</param>
+        /// <param name="arcsFile">Lien vers le fichier csv contenant les arcs du graphe</param>
         public Form2(string noeudsFile, string arcsFile)
         {
             InitializeComponent();
@@ -81,6 +88,9 @@ namespace Livin_paris_WinFormsApp
         }
 
         #region Affichage carte
+        /// <summary>
+        /// Cette fonction crée un marqueur pour chaque station.
+        /// </summary>
         private void AfficherStations()
         {
             marqueursStations = new Dictionary<string, GMarkerGoogle>();
@@ -104,8 +114,9 @@ namespace Livin_paris_WinFormsApp
                 }
             }
         }
+
         /// <summary>
-        /// Cette fonction permet de regrouper les noeuds en fonction de leur ligne
+        /// Cette fonction permet de regrouper les noeuds en fonction de leur ligne.
         /// </summary>
         private void CalculerLignes()
         {
@@ -127,7 +138,7 @@ namespace Livin_paris_WinFormsApp
         }
 
         /// <summary>
-        /// Cette fonction permet de donner une couleur a chaque ligne
+        /// Cette fonction assigne une couleur aléatoire à chaque ligne.
         /// </summary>
         private void AssignerCouleursLignes()
         {
@@ -138,32 +149,29 @@ namespace Livin_paris_WinFormsApp
             }
         }
 
+        /// <summary>
+        /// Cette méthode crée et remplit un overlay pour les lignes.
+        /// </summary>
         private void AfficherLignes()
         {
             CalculerLignes();
             overlayLignes = new GMapOverlay("lignes");
-
             foreach (var ligne in lignes)
             {
                 string nomLigne = ligne.Key;
                 List<Noeud<int>> stations = ligne.Value;
-
-                // On trie les stations par ID pour éviter les zigzags (à affiner si besoin)
                 stations = stations.OrderBy(s => s.Id).ToList();
-
                 List<PointLatLng> points = new List<PointLatLng>();
                 foreach (var station in stations)
                 {
                     points.Add(new PointLatLng(station.Latitude, station.Longitude));
                 }
-
                 if (points.Count >= 2)
                 {
                     GMapRoute route = new GMapRoute(points, nomLigne)
                     {
-                        Stroke = new Pen(couleursLignes[nomLigne], 3) // couleur et épaisseur
+                        Stroke = new Pen(couleursLignes[nomLigne], 3)
                     };
-
                     overlayLignes.Routes.Add(route);
                 }
             }
@@ -174,7 +182,9 @@ namespace Livin_paris_WinFormsApp
 
         #region Pannel Lignes
         /// <summary>
-        /// Cette fonction sert à créer les boutons pour chacune des lignes permettant ensuite d'activer ou désactiver leur affichage
+        /// Cette méthode crée un panel sur la droite de l'écran. 
+        /// De plus elle crée directement des boutons pour chacune des lignes permettant d'activer et désactiver leur affichage.
+        /// Enfin elle crée un bouton permettant d'activer ou désactiver l'affichage de l'ensemble des lignes directement.
         /// </summary>
         private void AjouterBoutonsLignes()
         {
@@ -248,6 +258,10 @@ namespace Livin_paris_WinFormsApp
         #endregion
 
         #region Panel bas
+
+        /// <summary>
+        /// Cette méthode crée le panel du bas et y implémente les différents boutons.
+        /// </summary>
         private void AjouterPanelBas()
         {
             panelBas = new Panel
@@ -306,8 +320,10 @@ namespace Livin_paris_WinFormsApp
             this.Controls.Add(panelBas);
         }
 
+        #region Méthodes annexe
+
         /// <summary>
-        /// Méthode permettant l'affichage d'une liste (ici utilisé pour afficher le chemin trouvée par l'algorithme de parcours)
+        /// Cette méthode crée le texte lié à l'affichage du plus court chemin après avoir géré l'affichage des liens entre les stations du chemin.
         /// </summary>
         private string AfficherCheminActuel()
         {
@@ -353,38 +369,12 @@ namespace Livin_paris_WinFormsApp
             }
             return retour;
         }
-        private void BtnAfficherStation_Click(object sender, EventArgs e)
-        {
-            afficherStations = !afficherStations;
-            if (afficherStations)
-            {
-                foreach (var marker in marqueursStations.Values)
-                {
-                    overlayStations.Markers.Add(marker);
-                }
-                (sender as Button).Text = "Masquer stations";
-            }
-            else
-            {
-                overlayStations.Markers.Clear();
-                (sender as Button).Text = "Afficher stations";
-            }
-            gmap.Refresh();
-        }
+
         /// <summary>
-        /// Cette fonction permet d'exporter le graphe sous forme d'image .png en cliquant sur un bouton
+        /// Cette méthode affiche une boite de texte donnant le résultat du chemin le plus court si celui ci est valable et un message d'erreur sinon.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnExporter_Click(object sender, EventArgs e)
-        {
-            using (Bitmap bmp = new Bitmap(this.ClientSize.Width, this.ClientSize.Height))
-            {
-                gmap.DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
-                bmp.Save("graphe.png");
-                MessageBox.Show("Graphe exporté sous 'graphe.png'", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
+        /// <param name="stationDepart">Station de départ du plus court chemin à calculer</param>
+        /// <param name="stationArrivee">Station d'arrivée du plus court chemin à calculer</param>
         private void CalculerChemin(string stationDepart, string stationArrivee)
         {
             if (string.IsNullOrWhiteSpace(stationDepart) || string.IsNullOrWhiteSpace(stationArrivee))
@@ -411,10 +401,28 @@ namespace Livin_paris_WinFormsApp
             MessageBox.Show("Chemin trouvé ! Coût total : " + coutTotal + " minutes \nStation parcourues : " + AfficherCheminActuel() + "\nVous êtes arrivé !", "Résultat", MessageBoxButtons.OK, MessageBoxIcon.Information);
             gmap.Refresh();
         }
+
+        #endregion
+
+        #region Méthodes pour les boutons
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Calculer chemin est cliqué.
+        /// Elle appelle la fonction Calculer chemin.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnCalculerChemin_Click(object sender, EventArgs e)
         {
             CalculerChemin(txtStationDepart.Text, txtStationArrivee.Text);
         }
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Afficher chemin est cliqué. 
+        /// Il active un overlay comprenant uniquement les stations du plus court chemin.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnAfficherChemin_Click(object sender, EventArgs e)
         {
             if (cheminActuel == null || cheminActuel.Count == 0)
@@ -431,6 +439,49 @@ namespace Livin_paris_WinFormsApp
             }
             gmap.Refresh();
         }
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Afficher / Masquer stations est cliqué.
+        /// Elle change l'état de l'overlay des stations afin qu'il soit visible ou non.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnAfficherStation_Click(object sender, EventArgs e)
+        {
+            afficherStations = !afficherStations;
+            if (afficherStations)
+            {
+                foreach (var marker in marqueursStations.Values)
+                {
+                    overlayStations.Markers.Add(marker);
+                }
+                (sender as Button).Text = "Masquer stations";
+            }
+            else
+            {
+                overlayStations.Markers.Clear();
+                (sender as Button).Text = "Afficher stations";
+            }
+            gmap.Refresh();
+        }
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Exporter est cliqué.
+        /// Elle sauvegarde l'état actuel du graphe sous forme d'image .png.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnExporter_Click(object sender, EventArgs e)
+        {
+            using (Bitmap bmp = new Bitmap(this.ClientSize.Width, this.ClientSize.Height))
+            {
+                gmap.DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
+                bmp.Save("graphe.png");
+                MessageBox.Show("Graphe exporté sous 'graphe.png'", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        #endregion
 
         #endregion
 
