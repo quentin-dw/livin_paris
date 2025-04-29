@@ -69,12 +69,12 @@ namespace Livin_paris_WinFormsApp
                 Thread.Sleep(5);
             }
             
-            AffichageMenuPrincipal();
+            AffichageMenuPrincipal(graphe);
 
 
         }
 
-        static void AffichageMenuPrincipal()
+        static void AffichageMenuPrincipal(Graphe<int> graphe)
         {
             AffichageLivinParis();
             MenuAdminSelected();
@@ -103,32 +103,32 @@ namespace Livin_paris_WinFormsApp
                             switch (menuSelected)
                             {
                                 case 0 :
-                                    TableauAdmin.AffichageMenuAdmin();
+                                    TableauAdmin.AffichageMenuAdmin(graphe);
                                     entreeCorrecte = true;
                                     break;
                                 case 1 :
-                                    TableauClient.AffichageMenuClient();
+                                    TableauClient.AffichageMenuClient(graphe);
                                     entreeCorrecte = true;
                                     break;
                                 case 2 :
-                                    TableauCuisinier.AffichageMenuCuisinier();
+                                    TableauCuisinier.AffichageMenuCuisinier(graphe);
                                     entreeCorrecte = true;
                                     break;
                             }
                         }
                         else if (keyInfo.Key == ConsoleKey.NumPad1 || keyInfo.Key == ConsoleKey.D1)
                         {
-                            TableauAdmin.AffichageMenuAdmin();
+                            TableauAdmin.AffichageMenuAdmin(graphe);
                             entreeCorrecte = true;
                         }
                         else if (keyInfo.Key == ConsoleKey.NumPad2 || keyInfo.Key == ConsoleKey.D2)
                         {
-                            TableauClient.AffichageMenuClient();
+                            TableauClient.AffichageMenuClient(graphe);
                             entreeCorrecte = true;
                         }
                         else if (keyInfo.Key == ConsoleKey.NumPad3 || keyInfo.Key == ConsoleKey.D3)
                         {
-                            TableauCuisinier.AffichageMenuCuisinier();
+                            TableauCuisinier.AffichageMenuCuisinier(graphe);
                             entreeCorrecte = true;
                         }
                         else if (keyInfo.Key == ConsoleKey.Escape)

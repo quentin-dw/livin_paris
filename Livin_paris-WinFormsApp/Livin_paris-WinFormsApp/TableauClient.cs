@@ -12,7 +12,7 @@ namespace Livin_paris_WinFormsApp
     //faire truc qui affiche historique de ttes les transactions
     public class TableauClient
     {
-        public static void AffichageMenuClient()
+        public static void AffichageMenuClient(Graphe<int> graphe)
         {
             Client client = null;
             int choix = MenuCirculaire(4, "connexion", "associer un compte", "creer un compte", "trouver mon identifiant", "Menu Client");
@@ -31,7 +31,7 @@ namespace Livin_paris_WinFormsApp
             }
             else if (choix == 2)
             {
-                client = CreationCompteClient();
+                client = CreationCompteClient(graphe);
                 if (client == null)
                 {
                     return;

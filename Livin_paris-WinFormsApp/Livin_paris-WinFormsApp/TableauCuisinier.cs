@@ -14,7 +14,7 @@ namespace Livin_paris_WinFormsApp
     public class TableauCuisinier
     {
         private static Cuisinier cuisinierCourant;
-        public static void AffichageMenuCuisinier()
+        public static void AffichageMenuCuisinier(Graphe<int> graphe)
         {
             Cuisinier cuisinier = null;
             int choix = MenuCirculaire(4, "connexion", "associer un compte", "creer un compte", "trouver mon identifiant", "Menu Cuisinier");
@@ -33,7 +33,7 @@ namespace Livin_paris_WinFormsApp
             }
             else if (choix == 2)
             {
-                cuisinier = CreationCompteCuisinier();
+                cuisinier = CreationCompteCuisinier(graphe);
                 if (cuisinier == null)
                 {
                     return;
