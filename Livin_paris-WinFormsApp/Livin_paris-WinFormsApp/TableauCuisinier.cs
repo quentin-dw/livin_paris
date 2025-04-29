@@ -13,7 +13,11 @@ namespace Livin_paris_WinFormsApp
 {
     public class TableauCuisinier
     {
+
         private static Cuisinier cuisinierCourant;
+        /// <summary>
+        /// Gestion de la connexion d'un utilisateur vers sont compte cuisinier
+        /// </summary>
         public static void AffichageMenuCuisinier(Graphe<int> graphe)
         {
             Cuisinier cuisinier = null;
@@ -45,7 +49,7 @@ namespace Livin_paris_WinFormsApp
                 return;
             }
 
-            if(cuisinier == null)
+            if (cuisinier == null)
             {
                 return;
             }
@@ -55,7 +59,7 @@ namespace Livin_paris_WinFormsApp
             bool end = false;
             while (!end)
             {
-                int choix2 = MenuCirculaire(4, "proposer nouveau plat", "modifier plats", "livraisons à effectuer", "historique livraisons", "Menu Cuisinier");
+                int choix2 = MenuCirculaire(4, "proposer nouveau plat", "modifier plats", "livraisons à effectuer", "historique livraisons", "Menu Cuisinier", true);
                 if (choix2 == -2)
                 {
                     end = true;
@@ -76,10 +80,18 @@ namespace Livin_paris_WinFormsApp
                 {
                     HistoriqueLivraisons();
                 }
+                else if (choix2 == -5)
+                {
+                    MessagerieCuisinier(cuisinierCourant);
+                }
             }
         }
 
         #region Connexion, Association, Creation de compte, Trouver identifiant
+        /// <summary>
+        /// Affiche l'interface permettant au un utilisateur de se connecter en tant que cuisinier
+        /// </summary>
+        /// <returns></returns>
         static Cuisinier ConnexionCuisinier()
         {
             Cuisinier cuisinier = null;
@@ -107,7 +119,7 @@ namespace Livin_paris_WinFormsApp
                 Console.ResetColor();
                 id_compte = Convert.ToInt32(Demander("Entrez votre numero d'identifiant de compte (ou -1 pour sortir)", "int", true));
 
-                if(id_compte == -1)
+                if (id_compte == -1)
                 {
                     return cuisinier;
                 }
@@ -118,6 +130,7 @@ namespace Livin_paris_WinFormsApp
                 if (idExists == "1")
                 {
                     valide = true;
+                    messageErreur = "";
                 }
                 else
                 {
@@ -149,6 +162,7 @@ namespace Livin_paris_WinFormsApp
                 if (mot_de_passe == cuisinier.Mot_de_passe)
                 {
                     valide = true;
+                    messageErreur = "";
                 }
                 else
                 {
@@ -167,6 +181,9 @@ namespace Livin_paris_WinFormsApp
             return cuisinier;
         }
 
+        /// <summary>
+        /// Permet l'association d'un compte client vers un compte cuisinier
+        /// </summary>
         static void AssocierCompteCuisinier()
         {
             Console.ResetColor();
@@ -196,7 +213,7 @@ namespace Livin_paris_WinFormsApp
                 Thread.Sleep(1500);
                 return;
             }
-            
+
             bool ok = DML_SQL($"INSERT INTO Cuisinier (id_compte) VALUES ({id_compte});");
             if (!ok)
             {
@@ -204,7 +221,7 @@ namespace Livin_paris_WinFormsApp
                 Thread.Sleep(1500);
                 return;
             }
-            
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Compte associé comme cuisinier ✅");
             Console.ResetColor();
@@ -227,7 +244,7 @@ namespace Livin_paris_WinFormsApp
 
 
             string reponse = "";
-            string  prenom = "", nom = "", telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe;
+            string prenom = "", nom = "", telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe;
 
             string viaJSON = Demander("Voulez-vous importer votre profil depuis le fichier nouveauCuisinier.json ? [oui/non]", "string", true);
             if (viaJSON.ToLower() == "oui")
@@ -249,7 +266,8 @@ namespace Livin_paris_WinFormsApp
                     metro_le_plus_proche = root.GetProperty("metro_le_plus_proche").GetString().ToLower();
                     email = root.GetProperty("email").GetString().ToLower();
                     mot_de_passe = root.GetProperty("mot_de_passe").GetString().ToLower();
-                } catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Console.WriteLine("Une erreur est survenue, nous allons créer le compte autrement");
                     Console.WriteLine("Champs obligatoires marqués par *");
@@ -340,6 +358,9 @@ namespace Livin_paris_WinFormsApp
             return cuisinier;
         }
 
+        /// <summary>
+        /// Permet de determiner l'identifiant d'un cuisinier en fonction de son email ou num de telephone
+        /// </summary>
         static void TrouverIdentifiantCuisinier()
         {
             Console.ResetColor();
@@ -432,6 +453,9 @@ namespace Livin_paris_WinFormsApp
         }
         #endregion
 
+        /// <summary>
+        /// Ajoute un nouveau plat dans la base de donnée
+        /// </summary>
         static void NouveauPlat()
         {
             Console.ResetColor();
@@ -474,7 +498,7 @@ namespace Livin_paris_WinFormsApp
                 DML_SQL(insertRec);
                 idRecette = Convert.ToInt32(DQL_SQL("SELECT LAST_INSERT_ID();", false)[0][0]);
 
-                
+
                 DQL_SQL("SELECT id_ingredient, nom_ingredient FROM Ingrédient;", true);
                 string listIng = Demander("Entrez les ids d'ingrédients séparés par des virgules (optionnel)", "string", false);
                 if (!string.IsNullOrWhiteSpace(listIng))
@@ -498,6 +522,9 @@ namespace Livin_paris_WinFormsApp
             Thread.Sleep(1500);
         }
 
+        /// <summary>
+        /// Permet la modification des plats
+        /// </summary>
         static void ModifierPlats()
         {
             Console.ResetColor();
@@ -529,7 +556,7 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine();
                 string choixChampStr = Demander("Entrez le numéro du champ", "int", true);
                 int choixChamp = Convert.ToInt32(choixChampStr) - 1;
-                if (choixChamp < 0 || choixChamp >= champs.Length+1)
+                if (choixChamp < 0 || choixChamp >= champs.Length + 1)
                 {
                     Console.WriteLine("Choix invalide");
                     Thread.Sleep(1000);
@@ -562,10 +589,13 @@ namespace Livin_paris_WinFormsApp
                     Console.WriteLine("Modifications effectuées avec succès ✅");
                     finModif = true;
                 }
-                
+
             }
         }
 
+        /// <summary>
+        /// Affiche les livraisons qui sont à effectuer pour un cuisinier
+        /// </summary>
         static void Livraisons()
         {
             Console.ResetColor();
@@ -578,12 +608,15 @@ namespace Livin_paris_WinFormsApp
             Console.ResetColor();
             Console.WriteLine();
 
-            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Plat p ON l.id_plat = p.id_plat WHERE p.id_cuisinier = {cuisinierCourant.Id_cuisinier};";
+            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Plat p ON l.id_plat = p.id_plat WHERE p.id_cuisinier = {cuisinierCourant.Id_cuisinier} AND l.date_livraison >= CURDATE();";
             DQL_SQL(requete, true);
             Console.WriteLine("\n\nAppuyez sur ENTREE pour sortir");
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Affiche l'historique des livraisons d'un cuisinier
+        /// </summary>
         static void HistoriqueLivraisons()
         {
             Console.ResetColor();
@@ -596,10 +629,85 @@ namespace Livin_paris_WinFormsApp
             Console.ResetColor();
             Console.WriteLine();
 
-            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Plat p ON l.id_plat = p.id_plat WHERE p.id_cuisinier = {cuisinierCourant.Id_cuisinier};";
+            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Plat p ON l.id_plat = p.id_plat WHERE p.id_cuisinier = {cuisinierCourant.Id_cuisinier} AND l.date_livraison < CURDATE();";
             DQL_SQL(requete, true);
             Console.WriteLine("\nAppuyez sur ENTREE pour sortir");
             Console.ReadLine();
         }
+
+        #region MESSAGERIE CUISINIER
+        static void MessagerieCuisinier(Cuisinier cuisinier)
+        {
+            bool quitter = false;
+            while (!quitter)
+            {
+                Console.Clear();
+                Console.WriteLine("📬 VOS DISCUSSIONS (cuisinier)\n");
+
+                string req = $"SELECT CL.id_client,CP.prenom, CP.nom, MAX(M.date_envoi) AS derniere FROM Message M JOIN Client CL ON M.id_client = CL.id_client JOIN Compte CP ON CL.id_compte = CP.id_compte WHERE  M.id_cuisinier = {cuisinier.Id_cuisinier} GROUP  BY CL.id_client, CP.prenom, CP.nom ORDER  BY derniere DESC;";
+                var rows = DQL_SQL(req, true);
+
+                Console.WriteLine("\nn° id ➜ Continuer la discussion");
+                Console.WriteLine("0 ➜ Nouvelle discussion");
+                Console.WriteLine("-1 ➜ Retour\n");
+
+                int choix = Convert.ToInt32(Demander("Choix", "int", true));
+                if (choix == -1)
+                {
+                    quitter = true;
+                }
+                else if (choix == 0)
+                {
+                    NouvelleDiscussionCuisinier(cuisinier);
+                }
+                else
+                {
+                    ConversationCuisinier(cuisinier, choix);
+                }
+            }
+        }
+
+        static void NouvelleDiscussionCuisinier(Cuisinier cuisinier)
+        {
+            int idClient = Convert.ToInt32(Demander("ID du client", "int", true));
+            string texte = Demander("Votre message", "string", true);
+            string insert = $"INSERT INTO Message(id_client, id_cuisinier, contenu, from_client) VALUES ({idClient}, {cuisinier.Id_cuisinier}, '{texte.Replace("'", "''")}', 0);";
+            if (DML_SQL(insert))
+            {
+                Console.WriteLine("✅ Message envoyé");
+            }
+            Console.ReadLine();
+        }
+
+        static void ConversationCuisinier(Cuisinier cuisinier, int idClient)
+        {
+            bool retour = false;
+            while (!retour)
+            {
+                Console.Clear();
+                Console.WriteLine($"💬 Discussion avec le client #{idClient}\n");
+
+                string req = $"SELECT contenu, date_envoi, from_client FROM Message WHERE id_client = {idClient} AND id_cuisinier = {cuisinier.Id_cuisinier} ORDER BY date_envoi;";
+                foreach (var m in DQL_SQL(req, false))
+                {
+                    bool provientClient = m[2] == "1";
+                    Console.WriteLine($"{(provientClient ? "👤" : "👨‍🍳")} {m[1]}  :  {m[0]}");
+                }
+
+                Console.WriteLine("\n1 ➜ Répondre     0 ➜ Retour");
+                int c = Convert.ToInt32(Demander("Choix", "int", true));
+                if (c == 0)
+                {
+                    retour = true;
+                }
+                else
+                {
+                    string txt = Demander("Votre message", "string", true);
+                    DML_SQL($"INSERT INTO Message(id_client,id_cuisinier,contenu,from_client) VALUES ({idClient},{cuisinier.Id_cuisinier}, '{txt.Replace("'", "''")}',0);");
+                }
+            }
+        }
+        #endregion
+
     }
 }

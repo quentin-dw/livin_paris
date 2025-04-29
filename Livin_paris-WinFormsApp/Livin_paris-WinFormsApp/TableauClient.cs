@@ -9,9 +9,12 @@ using static Livin_paris_WinFormsApp.Outils;
 
 namespace Livin_paris_WinFormsApp
 {
-    //faire truc qui affiche historique de ttes les transactions
     public class TableauClient
     {
+        /// <summary>
+        /// Gestion de la connexion d'un utilisateur vers sont compte client
+        /// </summary>
+        /// <param name="graphe"></param>
         public static void AffichageMenuClient(Graphe<int> graphe)
         {
             Client client = null;
@@ -43,11 +46,33 @@ namespace Livin_paris_WinFormsApp
                 return;
             }
 
-            if(client == null)
+            if (client == null)
             {
                 return;
             }
-            NouvelleCommande(client);
+
+            bool end = false;
+            while (!end)
+            {
+                int choix2 = MenuCirculaire(2, "Passer une commande", "Historique des commandes", "", "", "Menu Client", true);
+                if (choix2 == -2)
+                {
+                    end = true;
+                }
+                else if (choix2 == 0)
+                {
+
+                    NouvelleCommande(client);
+                }
+                else if (choix2 == 1)
+                {
+                    HistoriqueCommandesClient(client);
+                }
+                else if (choix2 == -5)
+                {
+                    MessagerieClient(client);
+                }
+            }
         }
 
         #region Connexion, Asociation, Creation de compte, Trouver identifiant
@@ -86,7 +111,9 @@ namespace Livin_paris_WinFormsApp
                 if (idExists == "1")
                 {
                     valide = true;
-                } else
+                    messageErreur = "";
+                }
+                else
                 {
                     if (DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE id_compte = {id_compte})", false)[0][0] == "1")
                     {
@@ -118,11 +145,12 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine(messageErreur);
 
                 Console.ResetColor();
-                
+
                 string mot_de_passe = Demander("Entrez votre mot de passe", "mdp", true);
                 if (mot_de_passe == client.Mot_de_passe)
                 {
                     valide = true;
+                    messageErreur = "";
                 }
                 else
                 {
@@ -130,14 +158,6 @@ namespace Livin_paris_WinFormsApp
                 }
             }
 
-            /*Console.BackgroundColor = ConsoleColor.DarkGreen;
-            Console.Clear();
-            string message = " Connexion réussie ";
-            Console.SetCursorPosition((Console.WindowWidth / 2) - (message.Length / 2), Console.WindowHeight / 2);
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.Write(message);
-            Thread.Sleep(1500);*/
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine();
@@ -253,8 +273,8 @@ namespace Livin_paris_WinFormsApp
                     email = root.GetProperty("email").GetString().ToLower();
                     mot_de_passe = root.GetProperty("mot_de_passe").GetString().ToLower();
                 }
-                catch (Exception ex) 
-                { 
+                catch (Exception ex)
+                {
                     Console.WriteLine("Une erreur est survenue, nous allons créer le compte autrement");
                     Console.WriteLine("Champs obligatoires marqués par *");
 
@@ -349,7 +369,7 @@ namespace Livin_paris_WinFormsApp
 
 
             string requeteInsertCompte = $"INSERT INTO Compte (prenom, nom, telephone, rue, numero, code_postal, ville, metro_le_plus_proche, email, mot_de_passe) VALUES ('{prenom}', '{nom}', '{telephone}', '{rue}', {Convert.ToInt32(numero)}, {Convert.ToInt32(code_postal)}, '{ville}', '{metro_le_plus_proche}', '{email}', '{mot_de_passe}');";
-            
+
             bool InsertCompte = DML_SQL(requeteInsertCompte);
 
             string requete = "SELECT LAST_INSERT_ID();";
@@ -416,7 +436,7 @@ namespace Livin_paris_WinFormsApp
                 string email = Demander("Entrez votre adresse e-mail", "string", true);
                 Console.WriteLine();
 
-                if (Convert.ToInt32(DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE email='{email}')", false)[0][0])==0)
+                if (Convert.ToInt32(DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE email='{email}')", false)[0][0]) == 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
 
@@ -444,7 +464,7 @@ namespace Livin_paris_WinFormsApp
                 string telephone = Demander("Entrez votre numero de telephone", "string", true);
                 Console.WriteLine();
 
-                if (Convert.ToInt32(DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE telephone='{telephone}')", false)[0][0])==0)
+                if (Convert.ToInt32(DQL_SQL($"SELECT EXISTS (SELECT * FROM compte WHERE telephone='{telephone}')", false)[0][0]) == 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
 
@@ -648,5 +668,98 @@ namespace Livin_paris_WinFormsApp
             Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
             Console.ReadLine();
         }
+        static void HistoriqueCommandesClient(Client client)
+        {
+            Console.ResetColor();
+            Console.Clear();
+
+            Console.SetCursorPosition(1, 0);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(" ▪ " + "Historique des commandes ");
+            Console.ResetColor();
+            Console.WriteLine();
+
+            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Commande c ON l.id_commande = c.id_commande WHERE c.id_client = {client.Id_client} AND l.date_livraison < CURDATE();";
+            DQL_SQL(requete, true);
+            Console.WriteLine("\nAppuyez sur ENTREE pour sortir");
+            Console.ReadLine();
+        }
+
+
+        #region MESSAGERIE CLIENT
+        static void MessagerieClient(Client client)
+        {
+            bool quitter = false;
+            while (!quitter)
+            {
+                Console.Clear();
+                Console.WriteLine("📬 VOS DISCUSSIONS (client)\n");
+
+                string req = $"SELECT CU.id_cuisinier,CP.prenom, CP.nom,MAX(M.date_envoi) AS derniere FROM Message M JOIN Cuisinier CU ON M.id_cuisinier = CU.id_cuisinier JOIN Compte CP ON CU.id_compte = CP.id_compte WHERE M.id_client = {client.Id_client} GROUP BY CU.id_cuisinier, CP.prenom, CP.nom ORDER BY derniere DESC;";
+                var rows = DQL_SQL(req, true);
+
+                Console.WriteLine("\nn° id ➜ Continuer la discussion");
+                Console.WriteLine("0 ➜ Nouvelle discussion");
+                Console.WriteLine("-1 ➜ Retour\n");
+
+                int choix = Convert.ToInt32(Demander("Choix", "int", true));
+                if (choix == -1)
+                {
+                    quitter = true;
+                }
+                else if (choix == 0)
+                {
+                    NouvelleDiscussionClient(client);
+                }
+                else
+                {
+                    ConversationClient(client, choix);
+                }
+            }
+        }
+        static void NouvelleDiscussionClient(Client client)
+        {
+            int idCuis = Convert.ToInt32(Demander("ID du cuisinier destinataire", "int", true));
+            string texte = Demander("Votre message", "string", true);
+
+            string insert = $"INSERT INTO Message(id_client, id_cuisinier, contenu, from_client) VALUES ({client.Id_client}, {idCuis}, '{texte.Replace("'", "''")}', 1);";
+            if (DML_SQL(insert))
+            {
+                Console.WriteLine("✅ Message envoyé");
+            }
+            Console.ReadLine();
+        }
+
+        static void ConversationClient(Client client, int idCuisinier)
+        {
+            bool retour = false;
+            while (!retour)
+            {
+                Console.Clear();
+                Console.WriteLine($"💬  Discussion avec le cuisinier #{idCuisinier}\n");
+
+                string req = $" SELECT contenu, date_envoi, from_client FROM Message WHERE id_client = {client.Id_client} AND id_cuisinier = {idCuisinier} ORDER BY date_envoi;";
+                foreach (var m in DQL_SQL(req, false))
+                {
+                    bool moi = m[2] == "1";
+                    Console.WriteLine($"{(moi ? "👤" : "👨‍🍳")} {m[1]}  :  {m[0]}");
+                }
+
+                Console.WriteLine("\n1 ➜ Répondre    0 ➜ Retour");
+                int c = Convert.ToInt32(Demander("Choix", "int", true));
+                if (c == 0)
+                {
+                    retour = true;
+                }
+                else
+                {
+                    string txt = Demander("Votre message", "string", true);
+                    DML_SQL($"INSERT INTO Message(id_client,id_cuisinier,contenu,from_client) VALUES ({client.Id_client},{idCuisinier},'{txt.Replace("'", "''")}',1);");
+                }
+            }
+        }
+        #endregion
+
     }
 }

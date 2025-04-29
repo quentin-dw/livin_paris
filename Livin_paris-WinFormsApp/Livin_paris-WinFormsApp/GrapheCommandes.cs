@@ -92,7 +92,7 @@ namespace Livin_paris_WinFormsApp
                 sommets.Add(pair.Key);
             }
 
-            // trier les sommets par degré décroissant (tri à bulles)
+            // trier les sommets par degré décroissant (tri à bulles)...
             for (int i = 0; i < sommets.Count - 1; i++)
             {
                 for (int j = i + 1; j < sommets.Count; j++)

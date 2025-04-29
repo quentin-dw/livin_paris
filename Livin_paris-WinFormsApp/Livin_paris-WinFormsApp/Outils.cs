@@ -20,7 +20,7 @@ namespace Livin_paris_WinFormsApp
         /// <param name="required">Indique si le champ est requis à l'endroit où il est placé</param>
         /// <returns></returns>
         public static string Demander(string question, string type, bool required, Graphe<int> graphe = null)
-        {// daire prise en compte de la date
+        {
             string reponse = "";
             bool correcte = false;
             while (correcte == false)
@@ -69,23 +69,28 @@ namespace Livin_paris_WinFormsApp
                             correcte = true;
                             reponse = "False";
                         }
-                    } else if (type == "mdp" && reponse.Trim() != "")
+                    }
+                    else if (type == "mdp" && reponse.Trim() != "")
                     {
                         correcte = true;
                         reponse = reponse.Trim();
-                    } else if (type == "station" && graphe.GetNoeuds().Any(noeud => noeud.Nom == reponse.Trim()))
+                    }
+                    else if (type == "station" && graphe.GetNoeuds().Any(noeud => noeud.Nom == reponse.Trim()))
                     {
                         correcte = true;
                         reponse = reponse.Trim();
-                    } else if (type == "email" && Regex.IsMatch(reponse.Trim(), @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                    }
+                    else if (type == "email" && Regex.IsMatch(reponse.Trim(), @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                     {
                         correcte = true;
                         reponse = reponse.Trim();
-                    } else if (type == "date" && Regex.IsMatch(reponse.Trim(), @"^\d{2}/\d{2}/\d{4}$"))
+                    }
+                    else if (type == "date" && Regex.IsMatch(reponse.Trim(), @"^\d{2}/\d{2}/\d{4}$"))
                     {
                         correcte = true;
                         reponse = reponse.Trim();
-                    } else if (type == "numTel" && Regex.IsMatch(reponse.Trim(), @"^\d{10}$"))
+                    }
+                    else if (type == "numTel" && Regex.IsMatch(reponse.Trim(), @"^\d{10}$"))
                     {
                         correcte = true;
                         reponse = reponse.Trim();
@@ -135,7 +140,7 @@ namespace Livin_paris_WinFormsApp
         /// <param name="libelle4">Quatrieme choix proposé à l'utilisateur</param>
         /// <returns>Retourne un chiffre entre 0 et 3 si un choix a été fait (sens de rotation antihoraire), 
         /// retourne -1 si erreur, retourne -2 si l'utilisateur souhaite quitter le menu</returns>
-        public static int MenuCirculaire(int nbChoix, string libelle1, string libelle2, string libelle3, string libelle4, string message)
+        public static int MenuCirculaire(int nbChoix, string libelle1, string libelle2, string libelle3, string libelle4, string message, bool messagerie = false)
         {
             int choixSelected = -1;
             bool end = false;
@@ -147,12 +152,18 @@ namespace Livin_paris_WinFormsApp
                 Console.SetCursorPosition(1, 0);
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.Write(" ▪ " + message+ " ");
+                Console.Write(" ▪ " + message + " ");
                 Console.ResetColor();
                 Console.SetCursorPosition(1, 1);
                 Console.Write("Utilisez les touches flechées de votre clavier");
                 Console.SetCursorPosition(1, 2);
                 Console.Write("Appuyez sur ECHAP pour sortir");
+
+                if (messagerie)
+                {
+                    Console.SetCursorPosition(1, 3);
+                    Console.Write("Appuyez sur la touche 'M' pour accéder à la messagerie");
+                }
 
                 string libelle = "";
                 int width = Console.WindowWidth;
@@ -223,6 +234,15 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine(libelle);
                 Console.ResetColor();
 
+                if (messagerie)
+                {
+                    Console.SetCursorPosition(2, height - 2);
+
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    Console.Write(" (M) Messagerie ");
+                    Console.ResetColor();
+                }
 
                 Console.SetCursorPosition(width / 2, height / 2 - 1);
                 Console.Write("▲");
@@ -233,7 +253,7 @@ namespace Livin_paris_WinFormsApp
                 Console.SetCursorPosition(width / 2, height / 2 + 1);
                 Console.Write("▼");
 
-                Console.SetCursorPosition(0, height-1);
+                Console.SetCursorPosition(0, height - 1);
 
                 bool entreeCorrecte = false;
                 while (!entreeCorrecte)
@@ -275,12 +295,18 @@ namespace Livin_paris_WinFormsApp
                             end = true;
                             choixSelected = -2;
                         }
+                        else if (keyInfo.Key == ConsoleKey.M)
+                        {
+                            entreeCorrecte = true;
+                            end = true;
+                            choixSelected = -5;
+                        }
+
+                        Thread.Sleep(50);
                     }
-
-                    Thread.Sleep(50);
                 }
-            }
 
+            }
             return choixSelected;
         }
 
