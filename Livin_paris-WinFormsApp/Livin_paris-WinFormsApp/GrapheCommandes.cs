@@ -85,14 +85,12 @@ namespace Livin_paris_WinFormsApp
         {
             Dictionary<Compte<int>, int> couleurs = new Dictionary<Compte<int>, int>();
 
-            // creer la liste des sommets
             List<Compte<int>> sommets = new List<Compte<int>>();
             foreach (var pair in graphe)
             {
                 sommets.Add(pair.Key);
             }
 
-            // trier les sommets par degré décroissant (tri à bulles)...
             for (int i = 0; i < sommets.Count - 1; i++)
             {
                 for (int j = i + 1; j < sommets.Count; j++)
@@ -109,7 +107,6 @@ namespace Livin_paris_WinFormsApp
                 }
             }
 
-            // appliquer l'algorithme de Welsh Powell
             int couleurActuelle = 0;
 
             for (int i = 0; i < sommets.Count; i++)
@@ -160,7 +157,6 @@ namespace Livin_paris_WinFormsApp
             Dictionary<string, object> resultats = new Dictionary<string, object>();
             Console.WriteLine("\nAnalyse du graphe des commandes entre clients et cuisiniers :");
 
-            // nombre minimal de couleurs
             int nombreCouleurs = 0;
             List<int> couleursUtilisees = new List<int>();
 
@@ -175,7 +171,6 @@ namespace Livin_paris_WinFormsApp
             resultats["nombre_couleurs"] = nombreCouleurs;
             Console.WriteLine($"\nnombre minimal de couleurs : {nombreCouleurs}");
 
-            // Groupes independants (par couleur)
             Console.WriteLine("\nGroupes indépendants :");
             List<List<Compte<int>>> groupes = new List<List<Compte<int>>>();
 
@@ -200,7 +195,7 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine();
             }
 
-            // verifier si le graphe est biparti (= 2 couleurs sans conflit)
+
             bool estBiparti = false;
             if (nombreCouleurs == 2)
             {
@@ -232,7 +227,7 @@ namespace Livin_paris_WinFormsApp
             else
                 Console.WriteLine("Le graphe n’est pas biparti : plus de 2 couleurs ou conflit detecte");
 
-            // planarité : test d’euler (m ≤ 3n - 6)
+
             Console.WriteLine("\nPlanaire :");
             bool planaire = true;
             int n = graphe.Count;
@@ -275,7 +270,7 @@ namespace Livin_paris_WinFormsApp
 
         public static void ExporterEnXml(ResultatsAnalyse resultats, string cheminFichier)
         {
-            // Sérialiser l'objet personnalisé en XML
+
             var xmlSerializer = new XmlSerializer(typeof(ResultatsAnalyse));
 
             using (var writer = new StreamWriter(cheminFichier))

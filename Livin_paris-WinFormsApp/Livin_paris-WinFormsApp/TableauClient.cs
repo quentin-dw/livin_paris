@@ -269,7 +269,7 @@ namespace Livin_paris_WinFormsApp
                     rue = root.GetProperty("rue").GetString().ToLower();
                     ville = root.GetProperty("ville").GetString().ToLower();
                     code_postal = root.GetProperty("code_postal").GetString().ToLower();
-                    metro_le_plus_proche = root.GetProperty("metro_le_plus_proche").GetString().ToLower();
+                    metro_le_plus_proche = root.GetProperty("metro_le_plus_proche").GetString();
                     email = root.GetProperty("email").GetString().ToLower();
                     mot_de_passe = root.GetProperty("mot_de_passe").GetString().ToLower();
                 }
@@ -665,6 +665,7 @@ namespace Livin_paris_WinFormsApp
                 else
                     Console.WriteLine($"Plus court chemin ({coutG} min) :\n {string.Join("\n -> ", chemin)}");
             }
+            Application.Run(new Form2("../../../../../noeuds.csv", "../../../../../arcs.csv"));
             Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
             Console.ReadLine();
         }

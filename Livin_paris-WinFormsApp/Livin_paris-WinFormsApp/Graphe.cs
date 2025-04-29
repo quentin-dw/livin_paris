@@ -36,10 +36,6 @@ namespace Livin_paris_WinFormsApp
             this.tempsChangement = 3;
             ChargerGrapheCSV(noeuds, arcs);
             var result = WelshPowell(listeAdjacence);
-            //foreach (var kvp in result)
-            //{
-            //    Console.WriteLine($"Noeud {kvp.Key} → Couleur {kvp.Value}");
-            //}
         }
 
         /// <summary>
