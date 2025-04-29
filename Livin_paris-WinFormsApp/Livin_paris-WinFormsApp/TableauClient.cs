@@ -718,7 +718,7 @@ namespace Livin_paris_WinFormsApp
             while (!retour)
             {
                 Console.Clear();
-                Console.WriteLine($"💬 Discussion avec le cuisinier #{idCuisinier}\n");
+                Console.WriteLine($"💬  Discussion avec le cuisinier #{idCuisinier}\n");
 
                 string req = $" SELECT contenu, date_envoi, from_client FROM Message WHERE id_client = {client.Id_client} AND id_cuisinier = {idCuisinier} ORDER BY date_envoi;";
                 foreach (var m in DQL_SQL(req, false))
