@@ -73,7 +73,7 @@ namespace Livin_paris_WinFormsApp
                     {
                         correcte = true;
                         reponse = reponse.Trim();
-                    } else if (type == "station" && graphe.GetNoeuds().Any(noeud => noeud.Nom == reponse))
+                    } else if (type == "station" && graphe.GetNoeuds().Any(noeud => noeud.Nom == reponse.Trim()))
                     {
                         correcte = true;
                         reponse = reponse.Trim();
