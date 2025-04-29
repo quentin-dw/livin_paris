@@ -20,14 +20,13 @@ namespace Livin_paris_WinFormsApp
         #region Attributs
         private Graphe<int> graphe;
 
-        private Dictionary<string, List<Noeud<int>>> lignes;
-        private HashSet<string> lignesAffichees;
-        private Dictionary<string, Color> couleursLignes;
-
         private GMapControl gmap;
         private GMapOverlay overlayStations;
         private Dictionary<string, GMarkerGoogle> marqueursStations;
         private GMapOverlay overlayLignes;
+        private Dictionary<string, List<Noeud<int>>> lignes;
+        private HashSet<string> lignesAffichees;
+        private Dictionary<string, Color> couleursLignes;
         private GMapOverlay overlayPlusCourtChemin;
 
         private Panel panelLignes;
@@ -402,6 +401,15 @@ namespace Livin_paris_WinFormsApp
             gmap.Refresh();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coloration">Résultat de la coloration du graphe</param>
+        private void AppliquerColoration(Dictionary<Noeud<int>, int> coloration)
+        {
+
+        }
+
         #endregion
 
         #region Méthodes pour les boutons
@@ -480,6 +488,24 @@ namespace Livin_paris_WinFormsApp
                 MessageBox.Show("Graphe exporté sous 'graphe.png'", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        /// <summary>
+        /// Méthode appliqué lorsque le bouton Afficher coloration est cliqué.
+        /// Elle permet de voir visuellement la coloration du graphe.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnAfficherColoration_Click(object sender, EventArgs e)
+        {
+            Dictionary<Noeud<int>, int> coloration = Graphe<int>.WelshPowell(graphe.GetListeAdjacence());
+            if (coloration == null || coloration.Count == 0)
+            {
+                MessageBox.Show("Aucune coloration calculée.", "Coloration", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            AppliquerColoration(coloration);
+        }
+
 
         #endregion
 
