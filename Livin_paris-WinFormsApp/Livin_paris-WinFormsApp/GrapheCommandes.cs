@@ -52,8 +52,8 @@ namespace Livin_paris_WinFormsApp
             }
             Dictionary<Compte<int>, int> coloration = WelshPowell(listeAdjacence);
             Dictionary<string, object> resultats = AnalyserColorationGraphe(listeAdjacence, coloration);
-            string cheminJSON = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..", "resultats.json");
-            string cheminXML = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..", "resultats.xml");
+            string cheminJSON = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..", "resultats.json");
+            string cheminXML = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..", "resultats.xml");
             ExporterEnJson(resultats, cheminJSON);
             var resultats_xml = new ResultatsAnalyse
             {

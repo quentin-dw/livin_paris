@@ -183,7 +183,7 @@ namespace Livin_paris_WinFormsApp
             {
                 try
                 {
-                    string jsonString = File.ReadAllText("../../../nouveauClient.json");
+                    string jsonString = File.ReadAllText("../../../../../nouveauClient.json");
 
                     using JsonDocument doc = JsonDocument.Parse(jsonString);
                     JsonElement root = doc.RootElement;
@@ -696,7 +696,7 @@ namespace Livin_paris_WinFormsApp
                         Console.WriteLine("Lecture du fichier et ajout du compte dans notre base de données...");
                         try
                         {
-                            string jsonString = File.ReadAllText("../../../nouveauCuisinier.json");
+                            string jsonString = File.ReadAllText("../../../../../nouveauCuisinier.json");
                             using JsonDocument doc = JsonDocument.Parse(jsonString);
                             JsonElement root = doc.RootElement;
 

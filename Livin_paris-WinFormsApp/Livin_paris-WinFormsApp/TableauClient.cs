@@ -246,7 +246,7 @@ namespace Livin_paris_WinFormsApp
             {
                 try
                 {
-                    string jsonString = File.ReadAllText("../../../nouveauClient.json");
+                    string jsonString = File.ReadAllText("../../../../../nouveauClient.json");
 
                     using JsonDocument doc = JsonDocument.Parse(jsonString);
                     JsonElement root = doc.RootElement;
