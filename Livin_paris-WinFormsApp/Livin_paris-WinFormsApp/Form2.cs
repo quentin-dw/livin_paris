@@ -41,6 +41,7 @@ namespace Livin_paris_WinFormsApp
         private Button btnCalculerChemin;
         private List<Noeud<int>> cheminActuel = new List<Noeud<int>>();
         private Button btnAfficherChemin;
+        private Button btnAfficherColoration;
         #endregion
 
         /// <summary>
@@ -96,7 +97,6 @@ namespace Livin_paris_WinFormsApp
             foreach (var station in graphe.GetNoeuds())
             {
                 string nomLigne = station.Ligne;
-
                 if (marqueursStations.TryGetValue(station.Nom, out var existingMarker))
                 {
                     existingMarker.ToolTipText += ", " + nomLigne;
@@ -289,21 +289,21 @@ namespace Livin_paris_WinFormsApp
             {
                 Width = 120,
                 PlaceholderText = "Station départ",
-                Location = new Point(150, 15)
+                Location = new Point(130, 15)
             };
             panelBas.Controls.Add(txtStationDepart);
             txtStationArrivee = new TextBox
             {
                 Width = 120,
                 PlaceholderText = "Station arrivée",
-                Location = new Point(280, 15)
+                Location = new Point(250, 15)
             };
             panelBas.Controls.Add(txtStationArrivee);
             btnCalculerChemin = new Button
             {
                 Text = "Calculer",
                 Width = 100,
-                Location = new Point(420, 15)
+                Location = new Point(370, 15)
             };
             btnCalculerChemin.Click += BtnCalculerChemin_Click;
             panelBas.Controls.Add(btnCalculerChemin);
@@ -311,10 +311,18 @@ namespace Livin_paris_WinFormsApp
             {
                 Text = "Afficher chemin",
                 Width = 120,
-                Location = new Point(520, 15)
+                Location = new Point(470, 15)
             };
             btnAfficherChemin.Click += BtnAfficherChemin_Click;
             panelBas.Controls.Add(btnAfficherChemin);
+            btnAfficherColoration = new Button
+            {
+                Text = "Colorer Graphe",
+                Width = 120,
+                Location = new Point(590, 15)
+            };
+            btnAfficherColoration.Click += BtnAfficherColoration_Click;
+            panelBas.Controls.Add(btnAfficherColoration);
 
             this.Controls.Add(panelBas);
         }
@@ -402,14 +410,88 @@ namespace Livin_paris_WinFormsApp
         }
 
         /// <summary>
-        /// 
+        /// Cette méthode permet de visualiser la coloration via les marqueurs des stations.
         /// </summary>
         /// <param name="coloration">Résultat de la coloration du graphe</param>
         private void AppliquerColoration(Dictionary<Noeud<int>, int> coloration)
         {
-
+            overlayStations.Markers.Clear();
+            marqueursStations.Clear();
+            foreach (var station in graphe.GetNoeuds())
+            {
+                var couleurId = coloration.FirstOrDefault(kvp => Noeud<int>.memeStation(kvp.Key, station)).Value;
+                GMarkerGoogleType type = GMarkerGoogleType.blue;
+                switch (couleurId)
+                {
+                    case 0: type = GMarkerGoogleType.blue; break;
+                    case 1: type = GMarkerGoogleType.green; break;
+                    case 2: type = GMarkerGoogleType.red; break;
+                    case 3: type = GMarkerGoogleType.yellow; break;
+                    case 4: type = GMarkerGoogleType.orange; break;
+                    case 5: type = GMarkerGoogleType.purple; break;
+                    case 6: type = GMarkerGoogleType.gray_small; break;
+                }
+                string nomLigne = station.Ligne;
+                if (marqueursStations.TryGetValue(station.Nom, out var existingMarker))
+                {
+                    if (!existingMarker.ToolTipText.Contains(nomLigne))
+                    {
+                        existingMarker.ToolTipText += ", " + nomLigne;
+                    }
+                }
+                else
+                {
+                    var marker = new GMarkerGoogle(
+                        new PointLatLng(station.Latitude, station.Longitude),
+                        type);
+                    marker.ToolTipText = station.Nom + Environment.NewLine + "Ligne : " + nomLigne;
+                    marker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+                    overlayStations.Markers.Add(marker);
+                    marqueursStations[station.Nom] = marker;
+                }
+            }
+            gmap.Refresh();
         }
 
+        /// <summary>
+        /// Cette méthode renvoie un graphe supprimant les "doublons" de stations dans les noeuds. 
+        /// C'est à dire qu'on considère chaque station comme n'étant qu'un seul et unique noeud meme si plusieurs lignes passent.
+        /// </summary>
+        /// <param name="grapheOriginal"></param>
+        /// <returns></returns>
+        private Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> CalculGrapheReduit(Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> grapheOriginal)
+        {
+            Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> grapheReduit = new Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>>();
+            foreach (var noeud in grapheOriginal.Keys)
+            {
+                var stationExistante = grapheReduit.Keys.FirstOrDefault(n => Noeud<int>.memeStation(n, noeud));
+                Noeud<int> station;
+                if (stationExistante != null)
+                {
+                    station = stationExistante;
+                }
+                else
+                {
+                    station = noeud;
+                    grapheReduit[station] = new Dictionary<Noeud<int>, int>();
+                }
+                foreach (var voisin in grapheOriginal[noeud])
+                {
+                    var voisinStation = grapheReduit.Keys.FirstOrDefault(n => Noeud<int>.memeStation(n, voisin.Key));
+                    if (voisinStation == null)
+                    {
+                        voisinStation = voisin.Key;
+                        grapheReduit[voisinStation] = new Dictionary<Noeud<int>, int>();
+                    }
+
+                    if (!Noeud<int>.memeStation(station, voisinStation))
+                    {
+                        grapheReduit[station][voisinStation] = voisin.Value;
+                    }
+                }
+            }
+            return grapheReduit;
+        }
         #endregion
 
         #region Méthodes pour les boutons
@@ -497,7 +579,8 @@ namespace Livin_paris_WinFormsApp
         /// <param name="e"></param>
         private void BtnAfficherColoration_Click(object sender, EventArgs e)
         {
-            Dictionary<Noeud<int>, int> coloration = Graphe<int>.WelshPowell(graphe.GetListeAdjacence());
+            Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> grapheReduit = CalculGrapheReduit(graphe.GetListeAdjacence());
+            Dictionary<Noeud<int>, int> coloration = Graphe<int>.WelshPowell(grapheReduit);
             if (coloration == null || coloration.Count == 0)
             {
                 MessageBox.Show("Aucune coloration calculée.", "Coloration", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -505,7 +588,6 @@ namespace Livin_paris_WinFormsApp
             }
             AppliquerColoration(coloration);
         }
-
 
         #endregion
 
