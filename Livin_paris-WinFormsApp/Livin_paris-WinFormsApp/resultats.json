@@ -3,8 +3,8 @@
   "groupes_independants": [
     [
       {
-        "Id": 6,
-        "Type": "client"
+        "Id": 1,
+        "Type": "cuisinier"
       },
       {
         "Id": 2,
@@ -19,14 +19,30 @@
         "Type": "cuisinier"
       },
       {
-        "Id": 10,
-        "Type": "client"
+        "Id": 5,
+        "Type": "cuisinier"
+      },
+      {
+        "Id": 5,
+        "Type": "cuisinier"
+      },
+      {
+        "Id": 1,
+        "Type": "cuisinier"
+      },
+      {
+        "Id": 5,
+        "Type": "cuisinier"
+      },
+      {
+        "Id": 5,
+        "Type": "cuisinier"
       }
     ],
     [
       {
-        "Id": 5,
-        "Type": "cuisinier"
+        "Id": 6,
+        "Type": "client"
       },
       {
         "Id": 7,
@@ -41,8 +57,24 @@
         "Type": "client"
       },
       {
-        "Id": 1,
-        "Type": "cuisinier"
+        "Id": 10,
+        "Type": "client"
+      },
+      {
+        "Id": 17,
+        "Type": "client"
+      },
+      {
+        "Id": 20,
+        "Type": "client"
+      },
+      {
+        "Id": 46,
+        "Type": "client"
+      },
+      {
+        "Id": 47,
+        "Type": "client"
       }
     ]
   ],

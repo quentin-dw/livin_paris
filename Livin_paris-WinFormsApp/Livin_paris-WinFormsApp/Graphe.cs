@@ -393,6 +393,16 @@ namespace Livin_paris_WinFormsApp
             }
         }
 
+        /// <summary>
+        /// Applique l'algorithme de Welsh-Powell pour colorier le graphe
+        /// </summary>
+        /// <param name="graphe">
+        /// Le graphe représenté sous forme de liste d'adjacence :
+        /// chaque nœud est associé à un dictionnaire de ses voisins et du poids de chaque arête (le poids est ignoré ici).
+        /// </param>
+        /// <returns>
+        /// Un dictionnaire associant chaque nœud à un numéro de couleur tel qu’aucun nœud adjacent ne partage la même couleur.
+        /// </returns>
         public static Dictionary<Noeud<int>, int> WelshPowell(
     Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> graphe)
         {
