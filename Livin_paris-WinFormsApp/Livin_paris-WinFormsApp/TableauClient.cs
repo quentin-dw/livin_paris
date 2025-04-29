@@ -203,7 +203,7 @@ namespace Livin_paris_WinFormsApp
             Thread.Sleep(1500);
         }
 
-        static Client CreationCompteClient()
+        static Client CreationCompteClient(Graphe<int> graphe)
         {
             Client client = null;
 
@@ -282,7 +282,7 @@ namespace Livin_paris_WinFormsApp
                         nom_entreprise = "NULL";
                     }
 
-                    telephone = Demander("Numéro de téléphone", "string", true);
+                    telephone = Demander("Numéro de téléphone", "numTel", true);
 
                     numero = Demander("Numéro de rue de résidence", "int", true);
 
@@ -292,11 +292,11 @@ namespace Livin_paris_WinFormsApp
 
                     code_postal = Demander("Code postal de ville de résidence", "int", true);
 
-                    metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+                    metro_le_plus_proche = Demander("Station de metro la plus proche", "station", true, graphe);
 
-                    email = Demander("Adresse e-mail", "string", true);
+                    email = Demander("Adresse e-mail", "email", true);
 
-                    mot_de_passe = Demander("Mot de passe", "string", true);
+                    mot_de_passe = Demander("Mot de passe", "mdp", true);
                 }
             }
 
@@ -328,7 +328,7 @@ namespace Livin_paris_WinFormsApp
                     nom_entreprise = "NULL";
                 }
 
-                telephone = Demander("Numéro de téléphone", "string", true);
+                telephone = Demander("Numéro de téléphone", "numTel", true);
 
                 numero = Demander("Numéro de rue de résidence", "int", true);
 
@@ -338,10 +338,10 @@ namespace Livin_paris_WinFormsApp
 
                 code_postal = Demander("Code postal de ville de résidence", "int", true);
 
-                metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+                metro_le_plus_proche = Demander("Station de metro la plus proche", "station", true, graphe);
 
 
-                email = Demander("Adresse e-mail", "string", true);
+                email = Demander("Adresse e-mail", "email", true);
 
                 mot_de_passe = Demander("Mot de passe", "mdp", true);
             }

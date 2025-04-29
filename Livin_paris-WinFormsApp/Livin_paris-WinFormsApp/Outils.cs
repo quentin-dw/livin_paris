@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Livin_paris_WinFormsApp
 {
@@ -14,10 +16,10 @@ namespace Livin_paris_WinFormsApp
         /// Permet la gestion centralisée des demandes d'entrée au près de l'utilisateur sur la console. L'entrée est vérifiée et sécurisée dans une certaine mesure.
         /// </summary>
         /// <param name="question">Question qui va être affichée</param>
-        /// <param name="type">Type de réponse attendue (int, string, bool)</param>
+        /// <param name="type">Type de réponse attendue (int, string, bool, mdp, station, email, date, numTel)</param>
         /// <param name="required">Indique si le champ est requis à l'endroit où il est placé</param>
         /// <returns></returns>
-        public static string Demander(string question, string type, bool required)
+        public static string Demander(string question, string type, bool required, Graphe<int> graphe = null)
         {// daire prise en compte de la date
             string reponse = "";
             bool correcte = false;
@@ -68,6 +70,22 @@ namespace Livin_paris_WinFormsApp
                             reponse = "False";
                         }
                     } else if (type == "mdp" && reponse.Trim() != "")
+                    {
+                        correcte = true;
+                        reponse = reponse.Trim();
+                    } else if (type == "station" && graphe.GetNoeuds().Any(noeud => noeud.Nom == reponse.Trim()))
+                    {
+                        correcte = true;
+                        reponse = reponse.Trim();
+                    } else if (type == "email" && Regex.IsMatch(reponse.Trim(), @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                    {
+                        correcte = true;
+                        reponse = reponse.Trim();
+                    } else if (type == "date" && Regex.IsMatch(reponse.Trim(), @"^\d{2}/\d{2}/\d{4}$"))
+                    {
+                        correcte = true;
+                        reponse = reponse.Trim();
+                    } else if (type == "numTel" && Regex.IsMatch(reponse.Trim(), @"^\d{10}$"))
                     {
                         correcte = true;
                         reponse = reponse.Trim();

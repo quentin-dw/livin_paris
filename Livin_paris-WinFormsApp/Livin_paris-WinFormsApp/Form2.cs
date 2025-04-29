@@ -312,23 +312,46 @@ namespace Livin_paris_WinFormsApp
         private string AfficherCheminActuel()
         {
             overlayPlusCourtChemin.Routes.Clear();
-            // 2) Si pas de chemin, on renvoie le message et on sort
             if (cheminActuel == null || cheminActuel.Count < 2)
                 return "Aucun chemin trouvé.";
-            // 3) Construire la liste de points GPS
             var pts = cheminActuel
                 .Select(n => new PointLatLng(n.Latitude, n.Longitude))
                 .ToList();
-            // 4) Créer la route rouge
             var route = new GMapRoute(pts, "chemin")
             {
                 Stroke = new Pen(Color.Red, 4)
             };
             overlayPlusCourtChemin.Routes.Add(route);
-            // 5) Forcer le rafraîchissement de la carte
             gmap.Refresh();
-            // 6) Construire et retourner le texte du chemin
-            return string.Join(" -> ", cheminActuel.Select(n => n.Nom));
+            string ligneActuelle = null;
+            string retour = "";
+            string stationsLigne = "";
+            foreach (var station in cheminActuel)
+            {
+                if (ligneActuelle == null)
+                {
+                    stationsLigne += " (" + station.Nom;
+                    ligneActuelle = station.Ligne;
+                    retour += "\nLigne " + ligneActuelle + " : " + station.Nom + " -> ";
+                }
+                else if (ligneActuelle != station.Ligne)
+                {
+                    stationsLigne += ")";
+                    ligneActuelle = station.Ligne;
+                    retour += station.Nom + stationsLigne + "\nLigne " + ligneActuelle + " : " + station.Nom + " -> ";
+                    stationsLigne = " (" + station.Nom;
+                }
+                else if (station.Nom == txtStationArrivee.Text)
+                {
+                    stationsLigne += " -> " + station.Nom + ")";
+                    retour += station.Nom + stationsLigne;
+                }
+                else
+                {
+                    stationsLigne += " -> " + station.Nom;
+                }
+            }
+            return retour;
         }
         private void BtnAfficherStation_Click(object sender, EventArgs e)
         {
@@ -385,7 +408,7 @@ namespace Livin_paris_WinFormsApp
             {
                 MessageBox.Show("Aucun chemin trouvé entre ces deux stations.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            MessageBox.Show("Chemin trouvé ! Coût total : " + coutTotal + " minutes \nStation parcourues : " + AfficherCheminActuel(), "Résultat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Chemin trouvé ! Coût total : " + coutTotal + " minutes \nStation parcourues : " + AfficherCheminActuel() + "\nVous êtes arrivé !", "Résultat", MessageBoxButtons.OK, MessageBoxIcon.Information);
             gmap.Refresh();
         }
         private void BtnCalculerChemin_Click(object sender, EventArgs e)
