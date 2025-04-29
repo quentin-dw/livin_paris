@@ -608,7 +608,7 @@ namespace Livin_paris_WinFormsApp
             Console.ResetColor();
             Console.WriteLine();
 
-            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Plat p ON l.id_plat = p.id_plat WHERE p.id_cuisinier = {cuisinierCourant.Id_cuisinier};";
+            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Plat p ON l.id_plat = p.id_plat WHERE p.id_cuisinier = {cuisinierCourant.Id_cuisinier} AND l.date_livraison >= CURDATE();";
             DQL_SQL(requete, true);
             Console.WriteLine("\n\nAppuyez sur ENTREE pour sortir");
             Console.ReadLine();
@@ -629,7 +629,7 @@ namespace Livin_paris_WinFormsApp
             Console.ResetColor();
             Console.WriteLine();
 
-            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Plat p ON l.id_plat = p.id_plat WHERE p.id_cuisinier = {cuisinierCourant.Id_cuisinier};";
+            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Plat p ON l.id_plat = p.id_plat WHERE p.id_cuisinier = {cuisinierCourant.Id_cuisinier} AND l.date_livraison < CURDATE();";
             DQL_SQL(requete, true);
             Console.WriteLine("\nAppuyez sur ENTREE pour sortir");
             Console.ReadLine();

@@ -66,7 +66,7 @@ namespace Livin_paris_WinFormsApp
                 }
                 else if (choix2 == 1)
                 {
-
+                    HistoriqueCommandesClient(client);
                 }
                 else if (choix2 == -5)
                 {
@@ -666,6 +666,23 @@ namespace Livin_paris_WinFormsApp
                     Console.WriteLine($"Plus court chemin ({coutG} min) :\n {string.Join("\n -> ", chemin)}");
             }
             Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
+            Console.ReadLine();
+        }
+        static void HistoriqueCommandesClient(Client client)
+        {
+            Console.ResetColor();
+            Console.Clear();
+
+            Console.SetCursorPosition(1, 0);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(" ▪ " + "Historique des commandes ");
+            Console.ResetColor();
+            Console.WriteLine();
+
+            string requete = $"SELECT l.id_ligne_de_commande, l.date_livraison, l.lieu_livraison, l.quantite, l.cout FROM Ligne_de_commande l JOIN Commande c ON l.id_commande = c.id_commande WHERE c.id_client = {client.Id_client} AND l.date_livraison < CURDATE();";
+            DQL_SQL(requete, true);
+            Console.WriteLine("\nAppuyez sur ENTREE pour sortir");
             Console.ReadLine();
         }
 
