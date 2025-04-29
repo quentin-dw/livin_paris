@@ -57,7 +57,8 @@ Ce projet intègre la gestion d'utilisateurs, de commandes, de parcours de livra
    ```bash
    https://github.com/quentin-dw/livin_paris.git
    ```
-2. Lancer la solution `Livin_paris-WinFormsApp.sln` dans Visual Studio
+2. Exécuter `creation_db_demougeot_dehecohen_dewolf.sql` dans MySQL pour créer la base de donnée
+3. Lancer la solution `Livin_paris-WinFormsApp.sln` dans Visual Studio
 
 ---
 
