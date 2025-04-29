@@ -406,21 +406,5 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine();
             }
         }
-
-        public List<Noeud<T>> TriNoeuds()
-        {
-            List<int> degreeNoeuds = new List<int>();
-            foreach (var noeud in this.noeuds)
-            {
-                degreeNoeuds[noeud.Id] = listeAdjacence[noeud].Count;
-            }
-            List<Noeud<T>> noeudsTriés = new List<Noeud<T>>();
-            return noeudsTriés;
-        }
-        public Dictionary<Noeud<T>, int> AlgoWelshPowell(Graphe<T> graphe)
-        {
-            Dictionary<Noeud<T>, int> retour = new Dictionary<Noeud<T>, int>();
-            return retour;
-        }
     }
 }
