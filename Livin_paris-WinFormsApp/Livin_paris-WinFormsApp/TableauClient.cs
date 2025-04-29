@@ -677,7 +677,7 @@ namespace Livin_paris_WinFormsApp
                 Console.Clear();
                 Console.WriteLine("📬 VOS DISCUSSIONS (client)\n");
 
-                string req = $"SELECT CU.id_cuisinier,CP.prenom, CP.nom,MAX(M.date_envoi) AS derniere FROM   Message M JOIN Cuisinier CU ON M.id_cuisinier = CU.id_cuisinier JOIN Compte    CP ON CU.id_compte    = CP.id_compte WHERE  M.id_client = {client.Id_client} GROUP  BY CU.id_cuisinier, CP.prenom, CP.nom ORDER  BY derniere DESC;";
+                string req = $"SELECT CU.id_cuisinier,CP.prenom, CP.nom,MAX(M.date_envoi) AS derniere FROM Message M JOIN Cuisinier CU ON M.id_cuisinier = CU.id_cuisinier JOIN Compte CP ON CU.id_compte = CP.id_compte WHERE M.id_client = {client.Id_client} GROUP BY CU.id_cuisinier, CP.prenom, CP.nom ORDER BY derniere DESC;";
                 var rows = DQL_SQL(req, true);
 
                 Console.WriteLine("\nn° id ➜ Continuer la discussion");
