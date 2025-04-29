@@ -13,7 +13,7 @@ namespace Livin_paris_WinFormsApp
 
     public class TableauAdmin
     {
-        public static void AffichageMenuAdmin()
+        public static void AffichageMenuAdmin(Graphe<int> graphe)
         {
             Console.ResetColor();
             Console.Clear();
@@ -38,15 +38,15 @@ namespace Livin_paris_WinFormsApp
                     {
                         case 0:
                             entreeCorrecte = true;
-                            ModuleClient();
+                            ModuleClient(graphe);
                             break;
                         case 1:
                             entreeCorrecte = true;
-                            ModuleCuisinier();
+                            ModuleCuisinier(graphe);
                             break;
                         case 2:
                             entreeCorrecte = true;
-                            ModuleCommande();
+                            ModuleCommande(graphe);
                             break;
                         case 3:
                             entreeCorrecte = true;
@@ -71,7 +71,7 @@ namespace Livin_paris_WinFormsApp
         /// <summary>
         /// Affichage et gestion du module Client
         /// </summary>
-        static void ModuleClient()
+        static void ModuleClient(Graphe<int> graphe)
         {
             bool end = false;
             while (!end)
@@ -135,7 +135,7 @@ namespace Livin_paris_WinFormsApp
                         if (keyInfo.Key == ConsoleKey.UpArrow)
                         {
                             entreeCorrecte = true;
-                            AjouterClient();
+                            AjouterClient(graphe);
                         }
                         else if (keyInfo.Key == ConsoleKey.LeftArrow)
                         {
@@ -561,7 +561,7 @@ namespace Livin_paris_WinFormsApp
         /// <summary>
         /// Affiche et gère le module cuisinier
         /// </summary>
-        static void ModuleCuisinier()
+        static void ModuleCuisinier(Graphe<int> graphe)
         {
             bool end = false;
             while (!end)
@@ -623,7 +623,7 @@ namespace Livin_paris_WinFormsApp
                         if (keyInfo.Key == ConsoleKey.UpArrow)
                         {
                             entreeCorrecte = true;
-                            AjouterCuisinier();
+                            AjouterCuisinier(graphe);
                         }
                         else if (keyInfo.Key == ConsoleKey.LeftArrow)
                         {
@@ -961,7 +961,7 @@ namespace Livin_paris_WinFormsApp
         /// <summary>
         /// Gestion et affichage du module de gestion des commandes
         /// </summary>
-        static void ModuleCommande()
+        static void ModuleCommande(Graphe<int> graphe)
         {
             bool end = false;
             while (!end)
@@ -1025,7 +1025,7 @@ namespace Livin_paris_WinFormsApp
                         if (keyInfo.Key == ConsoleKey.UpArrow)
                         {
                             entreeCorrecte = true;
-                            NouvelleCommande();
+                            NouvelleCommande(graphe);
                         }
                         else if (keyInfo.Key == ConsoleKey.LeftArrow)
                         {
@@ -1056,7 +1056,7 @@ namespace Livin_paris_WinFormsApp
             /// <summary>
             /// Permet de créer de nouvelles commandes en faisant apparaître l'interface appropriée
             /// </summary>
-            static void NouvelleCommande()
+            static void NouvelleCommande(Graphe<int> graphe)
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Clear();
@@ -1082,7 +1082,7 @@ namespace Livin_paris_WinFormsApp
                 }
                 else
                 {
-                    id_client = AjouterClient();
+                    id_client = AjouterClient(graphe);
                     id_compte_requete = $"SELECT id_compte FROM Client WHERE id_client = {id_client};";
                     id_compte = DQL_SQL(id_compte_requete, false)[0][0];
                 }
@@ -1233,7 +1233,6 @@ namespace Livin_paris_WinFormsApp
                     Console.WriteLine("station depart : " + metro_le_plus_proche_cusinier);
                     Console.WriteLine("station arrivée : " + metro_le_plus_proche_client);
 
-                    Graphe<int> graphe = new Graphe<int>(noeuds, arcs);
                     string depart = metro_le_plus_proche_cusinier;
                     string arrivee = metro_le_plus_proche_client;
                     var (chemin, coutG) = graphe.TrouverMeilleurChemin(depart, arrivee);
