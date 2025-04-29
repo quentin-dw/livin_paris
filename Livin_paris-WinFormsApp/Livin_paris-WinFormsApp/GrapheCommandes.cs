@@ -52,8 +52,8 @@ namespace Livin_paris_WinFormsApp
             }
             Dictionary<Compte<int>, int> coloration = WelshPowell(listeAdjacence);
             Dictionary<string, object> resultats = AnalyserColorationGraphe(listeAdjacence, coloration);
-            string cheminJSON = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..", "resultats.json");
-            string cheminXML = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..", "resultats.xml");
+            string cheminJSON = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..", "resultats.json");
+            string cheminXML = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..", "resultats.xml");
             ExporterEnJson(resultats, cheminJSON);
             var resultats_xml = new ResultatsAnalyse
             {
@@ -64,6 +64,12 @@ namespace Livin_paris_WinFormsApp
             ExporterEnXml(resultats_xml, cheminXML);
         }
 
+        /// <summary>
+        /// Affiche dans la console le contenu d'une liste d'adjacence représentant un graphe
+        /// </summary>
+        /// <param name="liste">
+        /// La liste d'adjacence, sous forme de dictionnaire où chaque compte est associé à une liste de ses voisins.
+        /// </param>
         public static void AfficherListe(Dictionary<Compte<int>, List<Compte<int>>> liste)
         {
             foreach (var pair in liste)
@@ -81,18 +87,25 @@ namespace Livin_paris_WinFormsApp
 
         }
 
+        /// <summary>
+        /// Applique l'algorithme de Welsh-Powell pour colorier le graphe
+        /// </summary>
+        /// <param name="graphe">
+        /// Le graphe représenté sous forme de liste d'adjacence : chaque compte est associé à la liste des comptes avec lesquels il il a passé ou recu une commande
+        /// </param>
+        /// <returns>
+        /// Un dictionnaire associant chaque sommet à un entier représentant sa couleur. Aucun sommet adjacent ne partage la même couleur.
+        /// </returns>
         public static Dictionary<Compte<int>, int> WelshPowell(Dictionary<Compte<int>, List<Compte<int>>> graphe)
         {
             Dictionary<Compte<int>, int> couleurs = new Dictionary<Compte<int>, int>();
 
-            // creer la liste des sommets
             List<Compte<int>> sommets = new List<Compte<int>>();
             foreach (var pair in graphe)
             {
                 sommets.Add(pair.Key);
             }
 
-            // trier les sommets par degré décroissant (tri à bulles)...
             for (int i = 0; i < sommets.Count - 1; i++)
             {
                 for (int j = i + 1; j < sommets.Count; j++)
@@ -109,7 +122,6 @@ namespace Livin_paris_WinFormsApp
                 }
             }
 
-            // appliquer l'algorithme de Welsh Powell
             int couleurActuelle = 0;
 
             for (int i = 0; i < sommets.Count; i++)
@@ -154,13 +166,26 @@ namespace Livin_paris_WinFormsApp
             return couleurs;
         }
 
+        /// <summary>
+        /// Analyse les résultats de la coloration du graphe et extrait plusieurs propriétés du graphe.
+        /// </summary>
+        /// <param name="graphe">
+        /// Le graphe représenté sous forme de liste d’adjacence
+        /// </param>
+        /// <param name="coloration">
+        /// Un dictionnaire contenant la coloration du graphe, associant chaque sommet à un numéro de couleur.
+        /// </param>
+        /// <returns>
+        /// Un dictionnaire contenant les résultats de l’analyse, avec les clés suivantes :
+        /// "nombre_couleurs" (int), "groupes_independants" (List<List<Compte<int>>>), 
+        /// "biparti" (bool) et "planaire" (bool).
+        /// </returns>
         public static Dictionary<string, object> AnalyserColorationGraphe(Dictionary<Compte<int>, List<Compte<int>>> graphe,
                                             Dictionary<Compte<int>, int> coloration)
         {
             Dictionary<string, object> resultats = new Dictionary<string, object>();
             Console.WriteLine("\nAnalyse du graphe des commandes entre clients et cuisiniers :");
 
-            // nombre minimal de couleurs
             int nombreCouleurs = 0;
             List<int> couleursUtilisees = new List<int>();
 
@@ -175,7 +200,6 @@ namespace Livin_paris_WinFormsApp
             resultats["nombre_couleurs"] = nombreCouleurs;
             Console.WriteLine($"\nnombre minimal de couleurs : {nombreCouleurs}");
 
-            // Groupes independants (par couleur)
             Console.WriteLine("\nGroupes indépendants :");
             List<List<Compte<int>>> groupes = new List<List<Compte<int>>>();
 
@@ -200,7 +224,7 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine();
             }
 
-            // verifier si le graphe est biparti (= 2 couleurs sans conflit)
+
             bool estBiparti = false;
             if (nombreCouleurs == 2)
             {
@@ -232,7 +256,7 @@ namespace Livin_paris_WinFormsApp
             else
                 Console.WriteLine("Le graphe n’est pas biparti : plus de 2 couleurs ou conflit detecte");
 
-            // planarité : test d’euler (m ≤ 3n - 6)
+
             Console.WriteLine("\nPlanaire :");
             bool planaire = true;
             int n = graphe.Count;
@@ -265,6 +289,15 @@ namespace Livin_paris_WinFormsApp
             return resultats;
         }
 
+        /// <summary>
+        /// Exporte les résultats de l’analyse du graphe au format JSON dans un fichier.
+        /// </summary>
+        /// <param name="resultats">
+        /// Un dictionnaire contenant les résultats de l’analyse de la coloration
+        /// </param>
+        /// <param name="cheminFichier">
+        /// Le chemin du fichier dans lequel le JSON sera enregistré.
+        /// </param>
         public static void ExporterEnJson(Dictionary<string, object> resultats, string cheminFichier)
         {
             string json = JsonSerializer.Serialize(resultats, new JsonSerializerOptions { WriteIndented = true });
@@ -273,9 +306,18 @@ namespace Livin_paris_WinFormsApp
             Console.WriteLine($"\nLes résultats ont été exportés en JSON dans le fichier : {cheminFichier}");
         }
 
+        /// <summary>
+        /// Exporte les résultats de l’analyse du graphe au format XML dans un fichier.
+        /// </summary>
+        /// <param name="resultats">
+        /// Un dictionnaire contenant les résultats de l’analyse de la coloration
+        /// </param>
+        /// <param name="cheminFichier">
+        /// Le chemin du fichier dans lequel le XML sera enregistré.
+        /// </param>
         public static void ExporterEnXml(ResultatsAnalyse resultats, string cheminFichier)
         {
-            // Sérialiser l'objet personnalisé en XML
+
             var xmlSerializer = new XmlSerializer(typeof(ResultatsAnalyse));
 
             using (var writer = new StreamWriter(cheminFichier))

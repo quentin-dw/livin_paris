@@ -40,10 +40,6 @@ namespace Livin_paris_WinFormsApp
             this.tempsChangement = 3;
             ChargerGrapheCSV(noeuds, arcs);
             var result = WelshPowell(listeAdjacence);
-            //foreach (var kvp in result)
-            //{
-            //    Console.WriteLine($"Noeud {kvp.Key} → Couleur {kvp.Value}");
-            //}
         }
 
         /// <summary>
@@ -401,59 +397,61 @@ namespace Livin_paris_WinFormsApp
             }
         }
 
+        /// <summary>
+        /// Applique l'algorithme de Welsh-Powell pour colorier le graphe
+        /// </summary>
+        /// <param name="graphe">
+        /// Le graphe représenté sous forme de liste d'adjacence :
+        /// chaque nœud est associé à un dictionnaire de ses voisins et du poids de chaque arête (le poids est ignoré ici).
+        /// </param>
+        /// <returns>
+        /// Un dictionnaire associant chaque nœud à un numéro de couleur tel qu’aucun nœud adjacent ne partage la même couleur.
+        /// </returns>
         public static Dictionary<Noeud<int>, int> WelshPowell(
             Dictionary<Noeud<int>, Dictionary<Noeud<int>, int>> graphe)
         {
             var couleurs = new Dictionary<Noeud<int>, int>();
 
-            var degres = new List<KeyValuePair<Noeud<int>, int>>();
-            foreach (var kvp in graphe)
-            {
-                degres.Add(new KeyValuePair<Noeud<int>, int>(kvp.Key, kvp.Value.Count));
-            }
+            var stationsColorées = new Dictionary<Noeud<int>, int>();
 
-            for (int i = 0; i < degres.Count - 1; i++)
-            {
-                for (int j = i + 1; j < degres.Count; j++)
-                {
-                    if (degres[j].Value > degres[i].Value)
-                    {
-                        var temp = degres[i];
-                        degres[i] = degres[j];
-                        degres[j] = temp;
-                    }
-                }
-            }
+            var degres = graphe.Select(kvp => new KeyValuePair<Noeud<int>, int>(kvp.Key, kvp.Value.Count))
+                               .OrderByDescending(kvp => kvp.Value)
+                               .ToList();
 
             int couleurActuelle = 0;
 
             foreach (var kvp in degres)
             {
                 var noeud = kvp.Key;
+
+                var stationExistante = stationsColorées.Keys.FirstOrDefault(n => Noeud<int>.memeStation(n, noeud));
+                if (stationExistante != null)
+                {
+                    couleurs[noeud] = stationsColorées[stationExistante];
+                    continue;
+                }
+
                 if (!couleurs.ContainsKey(noeud))
                 {
                     couleurs[noeud] = couleurActuelle;
+                    stationsColorées[noeud] = couleurActuelle;
 
                     foreach (var autre in degres)
                     {
                         var voisin = autre.Key;
+
                         if (!couleurs.ContainsKey(voisin))
                         {
-                            bool conflit = false;
-                            if (graphe.ContainsKey(voisin))
-                            {
-                                foreach (var v in graphe[voisin])
-                                {
-                                    if (couleurs.ContainsKey(v.Key) && couleurs[v.Key] == couleurActuelle)
-                                    {
-                                        conflit = true;
-                                        break;
-                                    }
-                                }
-                            }
+                            bool conflit = graphe[voisin].Any(v => couleurs.TryGetValue(v.Key, out int c) && c == couleurActuelle);
+
                             if (!conflit)
                             {
                                 couleurs[voisin] = couleurActuelle;
+
+                                if (!stationsColorées.Any(sc => Noeud<int>.memeStation(sc.Key, voisin)))
+                                {
+                                    stationsColorées[voisin] = couleurActuelle;
+                                }
                             }
                         }
                     }
@@ -464,5 +462,6 @@ namespace Livin_paris_WinFormsApp
 
             return couleurs;
         }
+
     }
 }

@@ -1,0 +1,14 @@
+{
+    "entreprise": true,
+    "nom_entreprise": "ENTREPRISE X",
+    "prenom": "Jean",
+    "nom": "Dupont",
+    "numero_telephone": "0612345678",
+    "numero_residence": "38",
+    "rue": "rue de Paris",
+    "ville": "Paris",
+    "code_postal": "75001",
+    "metro_le_plus_proche": "Gare du Nord",
+    "email": "jean.dupont@gmail.com",
+    "mot_de_passe": "PASSWORD"
+}
