@@ -36,7 +36,7 @@ namespace Livin_paris_WinFormsApp
 
             string noeuds = "../../../../../noeuds.csv";
             string arcs = "../../../../../arcs.csv";
-            new Graphe<int>(noeuds, arcs);
+            Graphe<int> graphe = new Graphe<int>(noeuds, arcs);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form1("../../../../../noeuds.csv", "../../../../../arcs.csv"));

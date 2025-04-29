@@ -168,7 +168,7 @@ namespace Livin_paris_WinFormsApp
         /// Permet d'ajouter un client en faisant apparaitre l'interface appropriée
         /// </summary>
         /// <returns>Retourne l'id du client ajouté</returns>
-        static int AjouterClient()
+        static int AjouterClient(Graphe<int> graphe)
         {
             Console.Clear();
             Console.WriteLine("Ajout client\n");
@@ -239,7 +239,7 @@ namespace Livin_paris_WinFormsApp
                         nom_entreprise = "NULL";
                     }
 
-                    telephone = Demander("Numéro de téléphone", "string", true);
+                    telephone = Demander("Numéro de téléphone", "numTel", true);
 
                     numero = Demander("Numéro de rue de résidence", "int", true);
 
@@ -249,11 +249,11 @@ namespace Livin_paris_WinFormsApp
 
                     code_postal = Demander("Code postal de ville de résidence", "int", true);
 
-                    metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+                    metro_le_plus_proche = Demander("Station de metro la plus proche", "station", true, graphe);
 
-                    email = Demander("Adresse e-mail", "string", true);
+                    email = Demander("Adresse e-mail", "email", true);
 
-                    mot_de_passe = Demander("Mot de passe", "string", true);
+                    mot_de_passe = Demander("Mot de passe", "mdp", true);
                 }
             }
 
@@ -262,7 +262,7 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine("Champs obligatoires marqués par *");
 
 
-                reponse = Demander("Representez-vous une entreprise ? [Oui/Non]", "string", true);
+                reponse = Demander("Representez-vous une entreprise ? [Oui/Non]", "bool", true);
                 if (reponse.ToLower() == "oui")
                 {
                     entreprise = "TRUE";
@@ -285,7 +285,7 @@ namespace Livin_paris_WinFormsApp
                     nom_entreprise = "NULL";
                 }
 
-                telephone = Demander("Numéro de téléphone", "string", true);
+                telephone = Demander("Numéro de téléphone", "numTel", true);
 
                 numero = Demander("Numéro de rue de résidence", "int", true);
 
@@ -295,10 +295,9 @@ namespace Livin_paris_WinFormsApp
 
                 code_postal = Demander("Code postal de ville de résidence", "int", true);
 
-                metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+                metro_le_plus_proche = Demander("Station de metro la plus proche", "station", true, graphe);
 
-
-                email = Demander("Adresse e-mail", "string", true);
+                email = Demander("Adresse e-mail", "email", true);
 
                 mot_de_passe = Demander("Mot de passe", "mdp", true);
             }
@@ -656,7 +655,7 @@ namespace Livin_paris_WinFormsApp
             /// <summary>
             /// Permet d'ajouter un cuisinier en faisant apparaitre l'interface appropriée
             /// </summary>
-            static void AjouterCuisinier()
+            static void AjouterCuisinier(Graphe<int> graphe)
             {
                 Console.Clear();
                 Console.WriteLine("Ajout cuisinier\n");
@@ -721,7 +720,7 @@ namespace Livin_paris_WinFormsApp
 
                             nom = Demander("Nom", "string", true);
 
-                            telephone = Demander("Numéro de téléphone", "string", true);
+                            telephone = Demander("Numéro de téléphone", "numTel", true);
 
                             numero = Demander("Numéro de rue de résidence", "int", true);
 
@@ -731,9 +730,9 @@ namespace Livin_paris_WinFormsApp
 
                             code_postal = Demander("Code postal de ville de résidence", "int", true);
 
-                            metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+                            metro_le_plus_proche = Demander("Station de metro la plus proche", "station", true, graphe);
 
-                            email = Demander("Adresse e-mail", "string", true);
+                            email = Demander("Adresse e-mail", "email", true);
 
                             mot_de_passe = Demander("Mot de passe", "mdp", true);
                         }
@@ -747,7 +746,7 @@ namespace Livin_paris_WinFormsApp
 
                         nom = Demander("Nom", "string", true);
 
-                        telephone = Demander("Numéro de téléphone", "string", true);
+                        telephone = Demander("Numéro de téléphone", "numTel", true);
 
                         numero = Demander("Numéro de rue de résidence", "int", true);
 
@@ -757,11 +756,11 @@ namespace Livin_paris_WinFormsApp
 
                         code_postal = Demander("Code postal de ville de résidence", "int", true);
 
-                        metro_le_plus_proche = Demander("Station de metro la plus proche", "string", true);
+                        metro_le_plus_proche = Demander("Station de metro la plus proche", "station", true, graphe);
 
-                        email = Demander("Adresse e-mail", "string", true);
+                        email = Demander("Adresse e-mail", "email", true);
 
-                        mot_de_passe = Demander("Mot de passe", "string", true);
+                        mot_de_passe = Demander("Mot de passe", "mdp", true);
                     }
 
 
