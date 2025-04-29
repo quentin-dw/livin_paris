@@ -1347,7 +1347,7 @@ namespace Livin_paris_WinFormsApp
         static void moduleStats()
         {
             Console.Clear();
-
+            GrapheCommandes grapheCommandes = new GrapheCommandes();
             Console.BackgroundColor = ConsoleColor.DarkYellow;
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Nombre de livraisons par cuisinier");
@@ -1356,7 +1356,7 @@ namespace Livin_paris_WinFormsApp
 
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.Write("id_client | prenom | nom | nbr livraison");
+            Console.Write("id_cuisinier | prenom | nom | nbr livraison");
             Console.ResetColor();
             Console.WriteLine();
             string affichier_cuisinier_requete = $"SELECT C.id_cuisinier, Cpt.prenom, Cpt.nom, count(L.id_cuisinier) FROM Cuisinier C JOIN Compte Cpt ON C.id_compte = Cpt.id_compte JOIN Livre L ON C.id_cuisinier = L.id_cuisinier GROUP BY id_cuisinier;";

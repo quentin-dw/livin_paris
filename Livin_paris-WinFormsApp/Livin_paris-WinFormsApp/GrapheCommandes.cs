@@ -50,7 +50,6 @@ namespace Livin_paris_WinFormsApp
                     this.listeAdjacence[client].Add(cuisinier);
                 }
             }
-            AfficherListe(listeAdjacence);
             Dictionary<Compte<int>, int> coloration = WelshPowell(listeAdjacence);
             Dictionary<string, object> resultats = AnalyserColorationGraphe(listeAdjacence, coloration);
             string cheminJSON = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..", "resultats.json");
@@ -234,7 +233,7 @@ namespace Livin_paris_WinFormsApp
                 Console.WriteLine("Le graphe n’est pas biparti : plus de 2 couleurs ou conflit detecte");
 
             // planarité : test d’euler (m ≤ 3n - 6)
-            Console.WriteLine("\nPlanarité :");
+            Console.WriteLine("\nPlanaire :");
             bool planaire = true;
             int n = graphe.Count;
             int m = 0;
@@ -271,7 +270,7 @@ namespace Livin_paris_WinFormsApp
             string json = JsonSerializer.Serialize(resultats, new JsonSerializerOptions { WriteIndented = true });
 
             File.WriteAllText(cheminFichier, json);
-            Console.WriteLine($"Les résultats ont été exportés en JSON dans le fichier : {cheminFichier}");
+            Console.WriteLine($"\nLes résultats ont été exportés en JSON dans le fichier : {cheminFichier}");
         }
 
         public static void ExporterEnXml(ResultatsAnalyse resultats, string cheminFichier)
@@ -284,7 +283,7 @@ namespace Livin_paris_WinFormsApp
                 xmlSerializer.Serialize(writer, resultats);
             }
 
-            Console.WriteLine($"Les résultats ont été exportés en XML dans le fichier : {cheminFichier}");
+            Console.WriteLine($"\nLes résultats ont été exportés en XML dans le fichier : {cheminFichier}\n");
         }
     }
 }
