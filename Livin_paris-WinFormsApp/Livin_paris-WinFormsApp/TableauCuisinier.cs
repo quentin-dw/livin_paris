@@ -693,7 +693,7 @@ namespace Livin_paris_WinFormsApp
                     Console.WriteLine($"{(provientClient ? "👤" : "👨‍🍳")} {m[1]}  :  {m[0]}");
                 }
 
-                Console.WriteLine("\n1 ➜ Répondre    0 ➜ Retour");
+                Console.WriteLine("\n1 ➜ Répondre     0 ➜ Retour");
                 int c = Convert.ToInt32(Demander("Choix", "int", true));
                 if (c == 0)
                 {
