@@ -9,7 +9,6 @@ using static Livin_paris_WinFormsApp.Outils;
 
 namespace Livin_paris_WinFormsApp
 {
-    //faire truc qui affiche historique de ttes les transactions
     public class TableauClient
     {
         /// <summary>
@@ -51,7 +50,29 @@ namespace Livin_paris_WinFormsApp
             {
                 return;
             }
-            NouvelleCommande(client);
+
+            bool end = false;
+            while (!end)
+            {
+                int choix2 = MenuCirculaire(2, "Passer une commande", "Historique des commandes", "", "", "Menu Client", true);
+                if (choix2 == -2)
+                {
+                    end = true;
+                }
+                else if (choix2 == 0)
+                {
+
+                    NouvelleCommande(client);
+                }
+                else if (choix2 == 1)
+                {
+                    
+                }
+                else if (choix2 == -5)
+                {
+                    MessagerieClient(client);
+                }
+            }
         }
 
         #region Connexion, Asociation, Creation de compte, Trouver identifiant
@@ -646,5 +667,80 @@ namespace Livin_paris_WinFormsApp
             Console.WriteLine("\n Pressez la touche ENTREE pour sortir ");
             Console.ReadLine();
         }
+
+        #region MESSAGERIE CLIENT
+        static void MessagerieClient(Client client)
+        {
+            bool quitter = false;
+            while (!quitter)
+            {
+                Console.Clear();
+                Console.WriteLine("📬 VOS DISCUSSIONS (client)\n");
+
+                string req = $"SELECT CU.id_cuisinier,CP.prenom, CP.nom,MAX(M.date_envoi) AS derniere FROM   Message M JOIN Cuisinier CU ON M.id_cuisinier = CU.id_cuisinier JOIN Compte    CP ON CU.id_compte    = CP.id_compte WHERE  M.id_client = {client.Id_client} GROUP  BY CU.id_cuisinier, CP.prenom, CP.nom ORDER  BY derniere DESC;";
+                var rows = DQL_SQL(req, true);
+
+                Console.WriteLine("\nn° id ➜ Continuer la discussion");
+                Console.WriteLine("0 ➜ Nouvelle discussion");
+                Console.WriteLine("-1 ➜ Retour\n");
+
+                int choix = Convert.ToInt32(Demander("Choix", "int", true));
+                if (choix == -1)
+                {
+                    quitter = true;
+                }
+                else if (choix == 0)
+                {
+                    NouvelleDiscussionClient(client);
+                }
+                else
+                {
+                    ConversationClient(client, choix);
+                }
+            }
+        }
+        static void NouvelleDiscussionClient(Client client)
+        {
+            int idCuis = Convert.ToInt32(Demander("ID du cuisinier destinataire", "int", true));
+            string texte = Demander("Votre message", "string", true);
+
+            string insert = $"INSERT INTO Message(id_client, id_cuisinier, contenu, from_client) VALUES ({client.Id_client}, {idCuis}, '{texte.Replace("'", "''")}', 1);";
+            if (DML_SQL(insert))
+            {
+                Console.WriteLine("✅ Message envoyé");
+            }
+            Console.ReadLine();
+        }
+
+        static void ConversationClient(Client client, int idCuisinier)
+        {
+            bool retour = false;
+            while (!retour)
+            {
+                Console.Clear();
+                Console.WriteLine($"💬  Discussion avec le cuisinier #{idCuisinier}\n");
+
+                string req = $" SELECT contenu, date_envoi, from_client FROM Message WHERE id_client = {client.Id_client} AND id_cuisinier = {idCuisinier} ORDER BY date_envoi;";
+                foreach (var m in DQL_SQL(req, false))
+                {
+                    bool moi = m[2] == "1";
+                    Console.WriteLine($"{(moi ? "👤" : "👨‍🍳")} {m[1]}  :  {m[0]}");
+                }
+
+                Console.WriteLine("\n1 ➜ Répondre    0 ➜ Retour");
+                int c = Convert.ToInt32(Demander("Choix", "int", true));
+                if (c == 0)
+                {
+                    retour = true;
+                }
+                else
+                {
+                    string txt = Demander("Votre message", "string", true);
+                    DML_SQL($"INSERT INTO Message(id_client,id_cuisinier,contenu,from_client) VALUES ({client.Id_client},{idCuisinier},'{txt.Replace("'", "''")}',1);");
+                }
+            }
+        }
+        #endregion
+
     }
 }

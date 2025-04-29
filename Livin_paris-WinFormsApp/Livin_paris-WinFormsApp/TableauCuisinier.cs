@@ -59,7 +59,7 @@ namespace Livin_paris_WinFormsApp
             bool end = false;
             while (!end)
             {
-                int choix2 = MenuCirculaire(4, "proposer nouveau plat", "modifier plats", "livraisons à effectuer", "historique livraisons", "Menu Cuisinier");
+                int choix2 = MenuCirculaire(4, "proposer nouveau plat", "modifier plats", "livraisons à effectuer", "historique livraisons", "Menu Cuisinier", true);
                 if (choix2 == -2)
                 {
                     end = true;
@@ -82,6 +82,7 @@ namespace Livin_paris_WinFormsApp
                 }
                 else if (choix2 == -5)
                 {
+                    MessagerieCuisinier(cuisinierCourant);
                 }
             }
         }
@@ -632,5 +633,80 @@ namespace Livin_paris_WinFormsApp
             Console.WriteLine("\nAppuyez sur ENTREE pour sortir");
             Console.ReadLine();
         }
+
+        #region MESSAGERIE CUISINIER
+        static void MessagerieCuisinier(Cuisinier cuisinier)
+        {
+            bool quitter = false;
+            while (!quitter)
+            {
+                Console.Clear();
+                Console.WriteLine("📬 VOS DISCUSSIONS (cuisinier)\n");
+
+                string req = $"SELECT CL.id_client,CP.prenom, CP.nom, MAX(M.date_envoi) AS derniere FROM Message M JOIN Client CL ON M.id_client = CL.id_client JOIN Compte CP ON CL.id_compte = CP.id_compte WHERE  M.id_cuisinier = {cuisinier.Id_cuisinier} GROUP  BY CL.id_client, CP.prenom, CP.nom ORDER  BY derniere DESC;";
+                var rows = DQL_SQL(req, true);
+
+                Console.WriteLine("\nn° id ➜ Continuer la discussion");
+                Console.WriteLine("0 ➜ Nouvelle discussion");
+                Console.WriteLine("-1 ➜ Retour\n");
+
+                int choix = Convert.ToInt32(Demander("Choix", "int", true));
+                if (choix == -1)
+                {
+                    quitter = true;
+                }
+                else if (choix == 0)
+                {
+                    NouvelleDiscussionCuisinier(cuisinier);
+                }
+                else
+                {
+                    ConversationCuisinier(cuisinier, choix);
+                }
+            }
+        }
+
+        static void NouvelleDiscussionCuisinier(Cuisinier cuisinier)
+        {
+            int idClient = Convert.ToInt32(Demander("ID du client", "int", true));
+            string texte = Demander("Votre message", "string", true);
+            string insert = $"INSERT INTO Message(id_client, id_cuisinier, contenu, from_client) VALUES ({idClient}, {cuisinier.Id_cuisinier}, '{texte.Replace("'", "''")}', 0);";
+            if (DML_SQL(insert))
+            {
+                Console.WriteLine("✅ Message envoyé");
+            }
+            Console.ReadLine();
+        }
+
+        static void ConversationCuisinier(Cuisinier cuisinier, int idClient)
+        {
+            bool retour = false;
+            while (!retour)
+            {
+                Console.Clear();
+                Console.WriteLine($"💬  Discussion avec le client #{idClient}\n");
+
+                string req = $"SELECT contenu, date_envoi, from_client FROM Message WHERE id_client = {idClient} AND id_cuisinier = {cuisinier.Id_cuisinier} ORDER BY date_envoi;";
+                foreach (var m in DQL_SQL(req, false))
+                {
+                    bool provientClient = m[2] == "1";
+                    Console.WriteLine($"{(provientClient ? "👤" : "👨‍🍳")} {m[1]}  :  {m[0]}");
+                }
+
+                Console.WriteLine("\n1 ➜ Répondre    0 ➜ Retour");
+                int c = Convert.ToInt32(Demander("Choix", "int", true));
+                if (c == 0)
+                {
+                    retour = true;
+                }
+                else
+                {
+                    string txt = Demander("Votre message", "string", true);
+                    DML_SQL($"INSERT INTO Message(id_client,id_cuisinier,contenu,from_client) VALUES ({idClient},{cuisinier.Id_cuisinier}, '{txt.Replace("'", "''")}',0);");
+                }
+            }
+        }
+        #endregion
+
     }
 }

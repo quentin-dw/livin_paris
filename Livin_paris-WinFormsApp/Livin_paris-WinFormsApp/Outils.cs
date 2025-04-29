@@ -147,12 +147,18 @@ namespace Livin_paris_WinFormsApp
                 Console.SetCursorPosition(1, 0);
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.Write(" ▪ " + message+ " ");
+                Console.Write(" ▪ " + message + " ");
                 Console.ResetColor();
                 Console.SetCursorPosition(1, 1);
                 Console.Write("Utilisez les touches flechées de votre clavier");
                 Console.SetCursorPosition(1, 2);
                 Console.Write("Appuyez sur ECHAP pour sortir");
+
+                if (messagerie)
+                {
+                    Console.SetCursorPosition(1, 3);
+                    Console.Write("Appuyez sur la touche 'M' pour accéder à la messagerie");
+                }
 
                 string libelle = "";
                 int width = Console.WindowWidth;
@@ -229,7 +235,7 @@ namespace Livin_paris_WinFormsApp
 
                     Console.BackgroundColor = ConsoleColor.White;
                     Console.ForegroundColor = ConsoleColor.DarkBlue;
-                    Console.Write(" (A) Messagerie ");
+                    Console.Write(" (M) Messagerie ");
                     Console.ResetColor();
                 }
 
@@ -242,7 +248,7 @@ namespace Livin_paris_WinFormsApp
                 Console.SetCursorPosition(width / 2, height / 2 + 1);
                 Console.Write("▼");
 
-                Console.SetCursorPosition(0, height-1);
+                Console.SetCursorPosition(0, height - 1);
 
                 bool entreeCorrecte = false;
                 while (!entreeCorrecte)
@@ -284,18 +290,18 @@ namespace Livin_paris_WinFormsApp
                             end = true;
                             choixSelected = -2;
                         }
-                        else if (keyInfo.Key == ConsoleKey.NumPad1)
+                        else if (keyInfo.Key == ConsoleKey.M)
                         {
                             entreeCorrecte = true;
                             end = true;
                             choixSelected = -5;
-
                         }
 
-                    Thread.Sleep(50);
+                        Thread.Sleep(50);
+                    }
                 }
-            }
 
+            }
             return choixSelected;
         }
 
