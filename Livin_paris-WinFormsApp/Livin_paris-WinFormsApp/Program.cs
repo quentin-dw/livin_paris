@@ -50,23 +50,6 @@ namespace Livin_paris_WinFormsApp
             int width = Console.WindowWidth;
             int height = Console.WindowHeight;
 
-            string[] fondAccueil = ["░", "▒", "▓"];
-            ConsoleColor[] couleurAccueil = [ConsoleColor.Cyan, ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta];
-
-            for (int i = 0; i < 5; i++)
-            {
-                for (int j = 0; j < width; j = j + 2)
-                {
-                    Console.ForegroundColor = couleurAccueil[i];
-                    for (int k = 0; k < height; k++)
-                    {
-                        Console.SetCursorPosition(j, k);
-                        Console.Write(fondAccueil[(i + j + k) % 3]);
-                        Console.Write(fondAccueil[(i + j + k) % 3]);
-                    }
-                }
-                Thread.Sleep(5);
-            }
             
             AffichageMenuPrincipal(graphe);
 

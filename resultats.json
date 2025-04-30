@@ -25,22 +25,6 @@
       {
         "Id": 5,
         "Type": "cuisinier"
-      },
-      {
-        "Id": 1,
-        "Type": "cuisinier"
-      },
-      {
-        "Id": 5,
-        "Type": "cuisinier"
-      },
-      {
-        "Id": 5,
-        "Type": "cuisinier"
-      },
-      {
-        "Id": 5,
-        "Type": "cuisinier"
       }
     ],
     [
@@ -65,23 +49,7 @@
         "Type": "client"
       },
       {
-        "Id": 17,
-        "Type": "client"
-      },
-      {
-        "Id": 20,
-        "Type": "client"
-      },
-      {
-        "Id": 46,
-        "Type": "client"
-      },
-      {
-        "Id": 47,
-        "Type": "client"
-      },
-      {
-        "Id": 49,
+        "Id": 6,
         "Type": "client"
       }
     ]
